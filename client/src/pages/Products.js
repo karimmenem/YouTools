@@ -10,7 +10,6 @@ const Products = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentCategory, setCurrentCategory] = useState(null);
   const location = useLocation();
   const { t } = useLanguage();
 
@@ -24,13 +23,14 @@ const Products = () => {
     loadData();
   }, []);
 
+  // Update products when path or products change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const category = getCurrentCategory();
     if (category && allProducts.length > 0) {
       filterProductsByCategory(category);
     } else if (allProducts.length > 0) {
       setProducts(allProducts);
-      setCurrentCategory(null);
     }
   }, [location.pathname, allProducts]);
 
@@ -62,7 +62,6 @@ const Products = () => {
     
     // Find category name for display
     const categoryData = categories.find(cat => cat.slug === categorySlug);
-    setCurrentCategory(categoryData);
   };
 
   const getCategoryTitle = () => {

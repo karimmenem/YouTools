@@ -1,0 +1,31 @@
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 50px;
+  margin-top: 100px;
+  margin-bottom: 80px;
+}
+
+.brand-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #1e1e1e;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  min-height: 340px;
+  width: 100%;
+}
+.brand-card:hover {
+  background: #2a2a2a;
+}
+
+.brand-logo {
+  display: block;
+  max-width: 90%;
+  max-height: 300px;
+  object-fit: contain;
+  margin: auto;
+}

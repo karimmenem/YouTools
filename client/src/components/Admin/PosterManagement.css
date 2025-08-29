@@ -1,0 +1,40 @@
+.poster-management {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #fff;
+}
+
+.add-poster-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.poster-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.poster-item {
+  position: relative;
+}
+
+.poster-item img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(211,47,47,0.8);
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}

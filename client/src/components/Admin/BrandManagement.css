@@ -1,0 +1,92 @@
+.brand-management {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #fff;
+}
+
+.add-brand-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.brand-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+}
+
+/* Brand card */
+.brand-item {
+  position: relative;
+  text-align: center;
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  border: 2px solid rgba(211, 47, 47, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.brand-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.brand-item img {
+  width: 100%;
+  height: 100px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
+}
+
+.brand-item span {
+  display: block;
+  margin-top: 12px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.brand-item .delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #d32f2f;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* Edit/Save/Cancel buttons */
+.edit-btn,
+.save-btn,
+.cancel-btn {
+  background: #1976d2;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  margin: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.cancel-btn {
+  background: #666;
+}
+
+/* Preview of uploaded image */
+.brand-preview {
+  width: 100%;
+  max-height: 100px;
+  object-fit: contain;
+  margin-top: 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(211, 47, 47, 0.4);
+}

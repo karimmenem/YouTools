@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { getBrands } from '../../services/brandService';
 import { FiPhone, FiGlobe, FiUser } from 'react-icons/fi';
 import { useLanguage } from '../../context/LanguageContext';
 import './Header.css';
@@ -8,6 +9,14 @@ const Header = () => {
   const { language, toggleLanguage, t } = useLanguage();
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
+  const [brands, setBrands] = useState([]);
+  useEffect(() => {
+    // load dynamic brands
+    (async () => {
+      const res = await getBrands();
+      if (res.success) setBrands(res.data);
+    })();
+  }, []);
 
   return (
     <header className="header">
@@ -60,24 +69,22 @@ const Header = () => {
         <nav className="navigation">
           <div className="container">
             <div className="nav-menu">
-              <Link to="/" className="nav-item">
-                {t('specialOffers')}
+              {/* Home link */}
+              <Link
+                to="/"
+                className={`nav-item ${location.pathname === '/' ? 'active' : ''}`}
+              >
+                {language === 'pt' ? 'Início' : 'Home'}
               </Link>
-              <Link to="/ferramentas-manuais" className="nav-item">
-                {t('manualTools')}
-              </Link>
-              <Link to="/maquinas-eletricas" className="nav-item">
-                {t('electricMachines')}
-              </Link>
-              <Link to="/movimentacao-carga" className="nav-item">
-                {t('cargoMovement')}
-              </Link>
-              <Link to="/construcao-civil" className="nav-item">
-                {t('civilConstruction')}
-              </Link>
-              <Link to="/jardim-agricultura" className="nav-item">
-                {t('gardenAgriculture')}
-              </Link>
+              {brands.map(b => (
+                <Link
+                  key={b.slug}
+                  to={`/${b.slug}`}
+                  className={`nav-item ${location.pathname.startsWith(`/${b.slug}`) ? 'active' : ''}`}
+                >
+                  {b.name}
+                </Link>
+              ))}
             </div>
           </div>
         </nav>

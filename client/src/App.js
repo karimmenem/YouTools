@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
-import { logout } from './services/authService';
 import Layout from './components/Layout/Layout';
 import Home from './pages/Home';
 import Products from './pages/Products';
+import BrandProducts from './pages/BrandProducts';
 import Auth from './pages/Auth';
 import './styles/App.css';
 
@@ -46,6 +46,7 @@ function App() {
             <Route path="movimentacao-carga" element={<Products />} />
             <Route path="construcao-civil" element={<Products />} />
             <Route path="jardim-agricultura" element={<Products />} />
+            <Route path=":brandSlug" element={<BrandProducts />} />
           </Route>
           <Route path="/admin/*" element={<Auth />} />
           <Route path="*" element={<Navigate to="/" replace />} />

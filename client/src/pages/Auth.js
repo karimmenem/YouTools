@@ -3,6 +3,7 @@ import Login from '../components/Auth/Login';
 import SignUp from '../components/Auth/SignUp';
 import AdminPanel from '../components/Admin/AdminPanel';
 import { useLanguage } from '../context/LanguageContext';
+import { Link } from 'react-router-dom';
 
 const Auth = () => {
   const { language } = useLanguage();
@@ -81,14 +82,32 @@ const Auth = () => {
     );
   }
 
-  // Show login/signup forms
+  // Show login/signup forms with back link
   return (
-    <div>
-      {isLogin ? (
-        <Login onToggle={toggleForm} onLogin={handleLoginSuccess} />
-      ) : (
-        <SignUp onToggle={toggleForm} onSignUpSuccess={handleSignUpSuccess} />
-      )}
+    <div style={{ position: 'relative', minHeight: '100vh', background: '#1a1a1a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <Link
+        to="/"
+        style={{
+          position: 'absolute',
+          top: '20px',
+          left: '20px',
+          backgroundColor: '#d32f2f',
+          color: '#fff',
+          padding: '8px 16px',
+          borderRadius: '8px',
+          textDecoration: 'none',
+          fontWeight: '600'
+        }}
+      >
+        {language === 'pt' ? 'Início' : 'Home'}
+      </Link>
+      <div style={{ width: '100%', maxWidth: '400px' }}>
+        {isLogin ? (
+          <Login onToggle={toggleForm} onLogin={handleLoginSuccess} />
+        ) : (
+          <SignUp onToggle={toggleForm} onSignUpSuccess={handleSignUpSuccess} />
+        )}
+      </div>
     </div>
   );
 };

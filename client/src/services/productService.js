@@ -1,158 +1,167 @@
-import productsData from '../data/products.json';
+// Product service using Mirage.js backend
 
-// Simple storage key for products
-const PRODUCTS_STORAGE_KEY = 'youtools_products';
+const API_BASE = '/api';
 
-// Initialize products in localStorage if not exists
-const initializeProducts = () => {
-  const stored = localStorage.getItem(PRODUCTS_STORAGE_KEY);
-  if (!stored) {
-    localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(productsData));
-    return productsData;
+// Helper function to handle API responses
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
-  const products = JSON.parse(stored);
-  // Ensure is_special_offer is properly converted to boolean
-  const fixedProducts = products.map(product => ({
-    ...product,
-    is_special_offer: Boolean(product.is_special_offer)
-  }));
-  return fixedProducts;
+  return await response.json();
 };
 
 // Get all products
-export const getProducts = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const products = initializeProducts();
-      resolve({
-        success: true,
-        data: products
-      });
-    }, 100); // Simulate API delay
-  });
+export const getProducts = async () => {
+  try {
+    const response = await fetch(`${API_BASE}/products`);
+    const data = await handleResponse(response);
+    
+    return {
+      success: true,
+      data: data.products || data // Mirage returns { products: [...] }
+    };
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return {
+      success: false,
+      message: error.message
+    };
+  }
+};
+
+// Get special offers
+export const getSpecialOffers = async () => {
+  try {
+    // Fetch only special offers from Mirage special-offers route
+    const response = await fetch(`${API_BASE}/products/special-offers`);
+    const data = await handleResponse(response);
+    // Mirage returns { products: [...] }
+    return {
+      success: true,
+      data: data.products || data
+    };
+  } catch (error) {
+    console.error('Error fetching special offers:', error);
+    return {
+      success: false,
+      message: error.message
+    };
+  }
 };
 
 // Get product by ID
-export const getProductById = (id) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const products = initializeProducts();
-      const product = products.find(p => p.id === parseInt(id));
-      resolve({
-        success: !!product,
-        data: product
-      });
-    }, 100);
-  });
+export const getProductById = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE}/products/${id}`);
+    const data = await handleResponse(response);
+    
+    return {
+      success: true,
+      data: data.product || data
+    };
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    return {
+      success: false,
+      message: error.message
+    };
+  }
 };
 
 // Add new product
-export const addProduct = (productData) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const products = initializeProducts();
-      const newId = Math.max(...products.map(p => p.id)) + 1;
-      const newProduct = {
-        ...productData,
-        id: newId,
-        price: parseFloat(productData.price),
-        original_price: productData.original_price ? parseFloat(productData.original_price) : null,
-        is_special_offer: Boolean(productData.is_special_offer)
-      };
-      
-      products.push(newProduct);
-      localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
-      
-      resolve({
-        success: true,
-        data: newProduct
-      });
-    }, 100);
-  });
+export const addProduct = async (productData) => {
+  try {
+    const response = await fetch(`${API_BASE}/products`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productData),
+    });
+    
+    const data = await handleResponse(response);
+    
+    return {
+      success: true,
+      data: data.product || data
+    };
+  } catch (error) {
+    console.error('Error adding product:', error);
+    return {
+      success: false,
+      message: error.message
+    };
+  }
 };
 
 // Update product
-export const updateProduct = (id, productData) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const products = initializeProducts();
-      const index = products.findIndex(p => p.id === parseInt(id));
-      
-      if (index === -1) {
-        resolve({
-          success: false,
-          message: 'Product not found'
-        });
-        return;
-      }
-      
-      products[index] = {
-        ...products[index],
-        ...productData,
-        id: parseInt(id),
-        price: parseFloat(productData.price),
-        original_price: productData.original_price ? parseFloat(productData.original_price) : null,
-        is_special_offer: Boolean(productData.is_special_offer)
-      };
-      
-      localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
-      
-      resolve({
-        success: true,
-        data: products[index]
-      });
-    }, 100);
-  });
+export const updateProduct = async (id, productData) => {
+  try {
+    const response = await fetch(`${API_BASE}/products/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productData),
+    });
+    
+    const data = await handleResponse(response);
+    
+    return {
+      success: true,
+      data: data.product || data
+    };
+  } catch (error) {
+    console.error('Error updating product:', error);
+    return {
+      success: false,
+      message: error.message
+    };
+  }
 };
 
 // Delete product
-export const deleteProduct = (id) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const products = initializeProducts();
-      const index = products.findIndex(p => p.id === parseInt(id));
-      
-      if (index === -1) {
-        resolve({
-          success: false,
-          message: 'Product not found'
-        });
-        return;
-      }
-      
-      products.splice(index, 1);
-      localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
-      
-      resolve({
-        success: true,
-        message: 'Product deleted successfully'
-      });
-    }, 100);
-  });
+export const deleteProduct = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE}/products/${id}`, {
+      method: 'DELETE',
+    });
+    
+    await handleResponse(response);
+    
+    return {
+      success: true,
+      message: 'Product deleted successfully'
+    };
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    return {
+      success: false,
+      message: error.message
+    };
+  }
 };
 
 // Get categories
-export const getCategories = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const categories = [
-        { id: 1, name: 'Ferramentas Manuais', slug: 'ferramentas-manuais' },
-        { id: 2, name: 'Máquinas Elétricas', slug: 'maquinas-eletricas' },
-        { id: 3, name: 'Movimentação de Carga', slug: 'movimentacao-carga' },
-        { id: 4, name: 'Construção Civil', slug: 'construcao-civil' },
-        { id: 5, name: 'Jardim e Agricultura', slug: 'jardim-agricultura' }
-      ];
-      
-      resolve({
-        success: true,
-        data: categories
-      });
-    }, 100);
-  });
+export const getCategories = async () => {
+  try {
+    const response = await fetch(`${API_BASE}/categories`);
+    const data = await handleResponse(response);
+    
+    return {
+      success: true,
+      data: data.categories || data
+    };
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return {
+      success: false,
+      message: error.message
+    };
+  }
 };
 
-// Force refresh products from JSON (clear localStorage and reload)
-export const refreshProducts = () => {
-  localStorage.removeItem(PRODUCTS_STORAGE_KEY);
-  return getProducts();
+// Force refresh (clear any caches)
+export const refreshProducts = async () => {
+  return await getProducts();
 };

@@ -197,6 +197,11 @@
   padding: 8px 0;
   transition: color 0.3s;
 }
+/* Active nav link */
+.nav-item.active {
+  color: #d32f2f;
+  border-bottom: 2px solid #d32f2f;
+}
 
 .nav-item:hover {
   color: #d32f2f;

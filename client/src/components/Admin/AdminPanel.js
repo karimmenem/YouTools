@@ -4,6 +4,8 @@ import { getProducts, getCategories } from '../../services/productService';
 import AddProduct from './AddProduct';
 import ProductList from './ProductList';
 import UserManagement from './UserManagement';
+import PosterManagement from './PosterManagement';
+import BrandManagement from './BrandManagement';
 import Header from '../Layout/Header';
 import './AdminPanel.css';
 
@@ -51,6 +53,16 @@ const AdminPanel = ({ user, onLogout }) => {
       id: 'add-product', 
       label: language === 'pt' ? 'Adicionar Produto' : 'Add Product', 
       icon: '➕' 
+    },
+    { 
+      id: 'manage-posters', 
+      label: language === 'pt' ? 'Cartazes' : 'Posters', 
+      icon: '🖼️' 
+    },
+    { 
+      id: 'manage-brands', 
+      label: language === 'pt' ? 'Marcas' : 'Brands', 
+      icon: '🔖' 
     },
     { 
       id: 'users', 
@@ -105,6 +117,10 @@ const AdminPanel = ({ user, onLogout }) => {
         return <ProductList onStatsUpdate={loadStats} />;
       case 'add-product':
         return <AddProduct onProductAdded={loadStats} />;
+      case 'manage-posters':
+        return <PosterManagement />;
+      case 'manage-brands':
+        return <BrandManagement />;
       case 'users':
         return <UserManagement onStatsUpdate={loadStats} />;
       default:

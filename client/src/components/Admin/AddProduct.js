@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { addProduct, getCategories } from '../../services/productService';
+import { addProduct } from '../../services/productService';
+import { getBrands } from '../../services/brandService';
 
 const AddProduct = ({ onProductAdded }) => {
   const { language } = useLanguage();
-  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
     price: '',
-    original_price: '',
-    code: '',
-    category: '',
-    in_stock: true,
-    badge: '',
-    image_url: '',
-    is_special_offer: false
+    brand: '',
+    image_url: ''
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
@@ -23,19 +18,12 @@ const AddProduct = ({ onProductAdded }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    loadCategories();
+    // load available brands
+    (async () => {
+      const res = await getBrands();
+      if (res.success) setBrands(res.data);
+    })();
   }, []);
-
-  const loadCategories = async () => {
-    try {
-      const response = await getCategories();
-      if (response.success) {
-        setCategories(response.data);
-      }
-    } catch (error) {
-      console.error('Error loading categories:', error);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -43,15 +31,6 @@ const AddProduct = ({ onProductAdded }) => {
       ...formData,
       [name]: type === 'checkbox' ? checked : value
     });
-
-    // Clear original price if not special offer
-    if (name === 'is_special_offer' && !checked) {
-      setFormData(prev => ({
-        ...prev,
-        [name]: checked,
-        original_price: ''
-      }));
-    }
 
     if (message.text) setMessage({ type: '', text: '' });
   };
@@ -76,21 +55,12 @@ const AddProduct = ({ onProductAdded }) => {
     setMessage({ type: '', text: '' });
 
     try {
-      // Find category info
-      const selectedCategory = categories.find(cat => cat.slug === formData.category);
-      
       let imageUrl = formData.image_url;
-      
-      // If user uploaded a file, convert to base64 for localStorage
-      if (imageFile) {
-        imageUrl = imagePreview; // Use the base64 data URL
-      }
-
+      if (imageFile) imageUrl = imagePreview;
       const productData = {
-        ...formData,
-        category_name: selectedCategory ? selectedCategory.name : formData.category,
+        name: formData.name,
         price: parseFloat(formData.price),
-        original_price: formData.original_price ? parseFloat(formData.original_price) : null,
+        brand: formData.brand,
         image_url: imageUrl
       };
 
@@ -105,15 +75,9 @@ const AddProduct = ({ onProductAdded }) => {
         // Reset form
         setFormData({
           name: '',
-          description: '',
           price: '',
-          original_price: '',
-          code: '',
-          category: '',
-          in_stock: true,
-          badge: '',
-          image_url: '',
-          is_special_offer: false
+          brand: '',
+          image_url: ''
         });
         setImageFile(null);
         setImagePreview('');
@@ -155,6 +119,28 @@ const AddProduct = ({ onProductAdded }) => {
       )}
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* Brand selection */}
+        <div>
+          <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
+            {language === 'pt' ? 'Marca *' : 'Brand *'}
+          </label>
+          <select
+            name="brand"
+            value={formData.brand}
+            onChange={handleChange}
+            required
+            disabled={loading}
+            style={{
+              width: '100%', padding: '12px', borderRadius: '8px', border: '2px solid rgba(211, 47, 47, 0.3)', backgroundColor: '#2a2a2a', color: '#fff', fontSize: '16px'
+            }}
+          >
+            <option value="">{language === 'pt' ? 'Selecione a marca' : 'Select brand'}</option>
+            {brands.map(b => (
+              <option key={b.id} value={b.slug}>{b.name}</option>
+            ))}
+          </select>
+        </div>
+
         {/* Product Name */}
         <div>
           <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
@@ -180,68 +166,11 @@ const AddProduct = ({ onProductAdded }) => {
           />
         </div>
 
-        {/* Description */}
-        <div>
-          <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-            {language === 'pt' ? 'Descrição *' : 'Description *'}
-          </label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            disabled={loading}
-            rows="3"
-            style={{
-              width: '100%',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '2px solid rgba(211, 47, 47, 0.3)',
-              backgroundColor: '#2a2a2a',
-              color: '#fff',
-              fontSize: '16px',
-              resize: 'vertical'
-            }}
-            placeholder={language === 'pt' ? 'Descreva o produto' : 'Describe the product'}
-          />
-        </div>
-
-        {/* Special Offer Toggle */}
-        <div style={{ 
-          padding: '16px', 
-          backgroundColor: 'rgba(211, 47, 47, 0.1)', 
-          border: '2px solid rgba(211, 47, 47, 0.3)', 
-          borderRadius: '8px' 
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <input
-              type="checkbox"
-              name="is_special_offer"
-              checked={formData.is_special_offer}
-              onChange={handleChange}
-              disabled={loading}
-              style={{ transform: 'scale(1.2)' }}
-            />
-            <label style={{ color: '#fff', fontWeight: 'bold' }}>
-              {language === 'pt' ? '🏷️ Este produto está em OFERTA ESPECIAL' : '🏷️ This product is a SPECIAL OFFER'}
-            </label>
-          </div>
-          <p style={{ color: '#ccc', fontSize: '14px', margin: 0 }}>
-            {language === 'pt' 
-              ? 'Produtos em oferta especial aparecem na página inicial e podem ter preço original.' 
-              : 'Special offer products appear on the homepage and can have an original price.'
-            }
-          </p>
-        </div>
-
         {/* Price and Original Price */}
-        <div style={{ display: 'grid', gridTemplateColumns: formData.is_special_offer ? '1fr 1fr' : '1fr', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
           <div>
             <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-              {formData.is_special_offer 
-                ? (language === 'pt' ? 'Preço Promocional *' : 'Sale Price *')
-                : (language === 'pt' ? 'Preço *' : 'Price *')
-              } (R$)
+              {language === 'pt' ? 'Preço *' : 'Price *'} (R$)
             </label>
             <input
               type="number"
@@ -263,106 +192,6 @@ const AddProduct = ({ onProductAdded }) => {
               }}
               placeholder="0.00"
             />
-          </div>
-
-          {formData.is_special_offer && (
-            <div>
-              <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-                {language === 'pt' ? 'Preço Original' : 'Original Price'} (R$)
-              </label>
-              <input
-                type="number"
-                name="original_price"
-                value={formData.original_price}
-                onChange={handleChange}
-                step="0.01"
-                min="0"
-                disabled={loading}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: '2px solid rgba(211, 47, 47, 0.3)',
-                  backgroundColor: '#2a2a2a',
-                  color: '#fff',
-                  fontSize: '16px'
-                }}
-                placeholder="0.00"
-              />
-              {formData.price && formData.original_price && formData.original_price > formData.price && (
-                <div style={{ 
-                  marginTop: '8px', 
-                  padding: '8px', 
-                  backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                  border: '1px solid rgba(76, 175, 80, 0.3)',
-                  borderRadius: '4px',
-                  color: '#4caf50',
-                  fontSize: '14px'
-                }}>
-                  💰 {language === 'pt' ? 'Desconto: ' : 'Discount: '}
-                  <strong>
-                    {(((formData.original_price - formData.price) / formData.original_price) * 100).toFixed(0)}%
-                  </strong>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Code and Category */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          <div>
-            <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-              {language === 'pt' ? 'Código' : 'Code'}
-            </label>
-            <input
-              type="text"
-              name="code"
-              value={formData.code}
-              onChange={handleChange}
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '2px solid rgba(211, 47, 47, 0.3)',
-                backgroundColor: '#2a2a2a',
-                color: '#fff',
-                fontSize: '16px'
-              }}
-              placeholder="123456"
-            />
-          </div>
-
-          <div>
-            <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-              {language === 'pt' ? 'Categoria *' : 'Category *'}
-            </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '2px solid rgba(211, 47, 47, 0.3)',
-                backgroundColor: '#2a2a2a',
-                color: '#fff',
-                fontSize: '16px'
-              }}
-            >
-              <option value="">
-                {language === 'pt' ? 'Selecione uma categoria' : 'Select a category'}
-              </option>
-              {categories.map(category => (
-                <option key={category.id} value={category.slug}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
 
@@ -400,46 +229,6 @@ const AddProduct = ({ onProductAdded }) => {
               />
             </div>
           )}
-        </div>
-
-        {/* Badge and Stock */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '16px', alignItems: 'end' }}>
-          <div>
-            <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-              {language === 'pt' ? 'Badge/Selo' : 'Badge'}
-            </label>
-            <input
-              type="text"
-              name="badge"
-              value={formData.badge}
-              onChange={handleChange}
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '2px solid rgba(211, 47, 47, 0.3)',
-                backgroundColor: '#2a2a2a',
-                color: '#fff',
-                fontSize: '16px'
-              }}
-              placeholder={language === 'pt' ? 'Ex: OFERTA, MAIS PAIR' : 'Ex: OFFER, BEST SELLER'}
-            />
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-            <input
-              type="checkbox"
-              name="in_stock"
-              checked={formData.in_stock}
-              onChange={handleChange}
-              disabled={loading}
-              style={{ transform: 'scale(1.2)' }}
-            />
-            <label style={{ color: '#fff' }}>
-              {language === 'pt' ? 'Em estoque' : 'In stock'}
-            </label>
-          </div>
         </div>
 
         {/* Submit Button */}
