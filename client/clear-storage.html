@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear YouTools Storage</title>
+</head>
+<body>
+    <h1>Clear YouTools Storage</h1>
+    <button onclick="clearStorage()">Clear Storage</button>
+    <div id="result"></div>
+    
+    <script>
+        function clearStorage() {
+            localStorage.removeItem('youtools_products');
+            localStorage.removeItem('youtools_auth');
+            document.getElementById('result').innerHTML = '<p style="color: green;">Storage cleared! Refresh your YouTools page.</p>';
+        }
+    </script>
+</body>
+</html>
