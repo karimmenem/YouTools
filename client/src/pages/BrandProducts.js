@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ProductCard from '../components/Product/ProductCard';
 import { getProducts } from '../services/productService';
-import brandsList from '../data/brands';
 import './Home.css';
 
 const BrandProducts = () => {
@@ -12,9 +11,17 @@ const BrandProducts = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const b = brandsList.find(br => br.slug === brandSlug);
-    setBrand(b);
-    // fetch products for this brand
+    const storedBrands = localStorage.getItem('brands');
+    if (storedBrands) {
+      try {
+        const parsedBrands = JSON.parse(storedBrands);
+        const currentBrand = parsedBrands.find(b => b.slug === brandSlug);
+        setBrand(currentBrand);
+      } catch (e) {
+        console.error("Failed to parse brands from localStorage", e);
+      }
+    }
+    
     loadProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brandSlug]);

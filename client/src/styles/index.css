@@ -10,8 +10,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #1a1a1a;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #333333;
 }
 
 code {
@@ -45,11 +45,11 @@ code {
 }
 
 .btn-secondary {
-  background-color: #333333;
-  color: #ffffff;
-  border: 1px solid #555555;
+  background-color: #f4f4f4;
+  color: #333333;
+  border: 1px solid #dddddd;
 }
 
 .btn-secondary:hover {
-  background-color: #444444;
+  background-color: #e0e0e0;
 }

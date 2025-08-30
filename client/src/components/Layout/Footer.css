@@ -1,8 +1,8 @@
 .footer {
-  background: #0d0d0d;
-  color: white;
+  background: #f8f8f8;
+  color: #333333;
   margin-top: auto;
-  border-top: 1px solid #333333;
+  border-top: 1px solid #e0e0e0;
 }
 
 .footer-content {
@@ -20,16 +20,16 @@
 
 .footer-section p {
   margin-bottom: 8px;
-  color: #cccccc;
+  color: #555555;
   line-height: 1.5;
 }
 
 .footer-bottom {
-  border-top: 1px solid #333333;
+  border-top: 1px solid #e0e0e0;
   padding: 20px 0;
   text-align: center;
   color: #888888;
-  background: #000000;
+  background: #ffffff;
 }
 
 @media (max-width: 768px) {

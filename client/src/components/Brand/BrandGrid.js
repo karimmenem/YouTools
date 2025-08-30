@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './BrandGrid.css';
-import { getBrands } from '../../services/brandService';
 
 const BrandGrid = () => {
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
-    (async () => {
-      const res = await getBrands();
-      if (res.success) setBrands(res.data);
-    })();
+    // Fetches brand data directly from localStorage
+    const storedBrands = localStorage.getItem('brands');
+    if (storedBrands) {
+      try {
+        const parsedBrands = JSON.parse(storedBrands);
+        setBrands(parsedBrands);
+      } catch (error) {
+        console.error("Failed to parse brands from localStorage", error);
+        setBrands([]); // Set to empty array on error
+      }
+    }
   }, []);
 
   return (

@@ -84,7 +84,7 @@ const Auth = () => {
 
   // Show login/signup forms with back link
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', background: '#1a1a1a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+    <div style={{ position: 'relative', minHeight: '100vh', background: '#ffffff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
       <Link
         to="/"
         style={{

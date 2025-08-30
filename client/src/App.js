@@ -25,8 +25,8 @@ function App() {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        background: '#1a1a1a',
-        color: '#fff',
+        background: '#ffffff',
+        color: '#333333',
         fontSize: '18px'
       }}>
         Loading...

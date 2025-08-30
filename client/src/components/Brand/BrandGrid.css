@@ -1,31 +1,53 @@
 .brand-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 50px;
-  margin-top: 100px;
-  margin-bottom: 80px;
+  grid-template-columns: repeat(3, 1fr); /* Force exactly 3 per row on large screens */
+  gap: 24px;
+  padding: 40px 20px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+/* Responsive: collapse to 2 then 1 column */
+@media (max-width: 1100px) {
+  .brand-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .brand-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .brand-card {
   display: flex;
   align-items: center;
   justify-content: center;
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;
+  background-color: #ffffff; /* Clean white background */
+  border: 1px solid #e0e0e0; /* Subtle border */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
-  border-radius: 8px;
-  background: #1e1e1e;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  min-height: 340px;
-  width: 100%;
+  text-decoration: none;
+  padding: 0; /* Remove inner padding so image can occupy full area */
+  box-sizing: border-box;
 }
+
 .brand-card:hover {
-  background: #2a2a2a;
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
 .brand-logo {
-  display: block;
-  max-width: 90%;
-  max-height: 300px;
-  object-fit: contain;
-  margin: auto;
+  display: block; /* Remove default inline spacing */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Fill the square; may crop if aspect ratios differ */
+  transition: transform 0.3s ease;
 }
+
+.brand-card:hover .brand-logo {
+  transform: scale(1.05);
+}
+

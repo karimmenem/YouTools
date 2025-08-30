@@ -1,13 +1,13 @@
 import { createServer, Model, Factory } from 'miragejs';
-import productsData from '../data/products.json';
-import brandsData from '../data/brands';
+// productsData import removed
+import { brands as brandsData } from '../data/brands';
 
 export function makeServer({ environment = 'development' } = {}) {
   let server = createServer({
     environment,
 
     models: {
-      product: Model,
+      // Mirage models not used for products; persistence via Dexie
       category: Model,
       poster: Model,
       brand: Model,
@@ -25,10 +25,7 @@ export function makeServer({ environment = 'development' } = {}) {
     },
 
     seeds(server) {
-      // Seed initial products from JSON
-      productsData.forEach(product => {
-        server.create('product', product);
-      });
+      // No initial product seeding; Dexie store persists products
 
       // Seed categories
       server.create('category', { id: 1, name: 'Ferramentas Manuais', slug: 'ferramentas-manuais' });
@@ -91,32 +88,37 @@ export function makeServer({ environment = 'development' } = {}) {
 
       this.post('/products', (schema, request) => {
         let attrs = JSON.parse(request.requestBody);
-        
         // Ensure proper data types
         attrs.price = parseFloat(attrs.price);
         attrs.original_price = attrs.original_price ? parseFloat(attrs.original_price) : null;
         attrs.is_special_offer = Boolean(attrs.is_special_offer);
         attrs.in_stock = Boolean(attrs.in_stock);
-        
-        return schema.products.create(attrs);
+        const newProduct = schema.products.create(attrs);
+        // Persist updated products to localStorage
+        window.localStorage.setItem('products', JSON.stringify(schema.products.all().models));
+        return newProduct;
       });
 
       this.put('/products/:id', (schema, request) => {
         let id = request.params.id;
         let attrs = JSON.parse(request.requestBody);
-        
         // Ensure proper data types
         attrs.price = parseFloat(attrs.price);
         attrs.original_price = attrs.original_price ? parseFloat(attrs.original_price) : null;
         attrs.is_special_offer = Boolean(attrs.is_special_offer);
         attrs.in_stock = Boolean(attrs.in_stock);
-        
-        return schema.products.find(id).update(attrs);
+        const updated = schema.products.find(id).update(attrs);
+        // Persist updated products to localStorage
+        window.localStorage.setItem('products', JSON.stringify(schema.products.all().models));
+        return updated;
       });
 
       this.delete('/products/:id', (schema, request) => {
         let id = request.params.id;
-        return schema.products.find(id).destroy();
+        const deleted = schema.products.find(id).destroy();
+        // Persist updated products to localStorage
+        window.localStorage.setItem('products', JSON.stringify(schema.products.all().models));
+        return deleted;
       });
 
       // Categories routes

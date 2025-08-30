@@ -2,7 +2,7 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  color: #fff;
+  color: #333333;
 }
 
 .add-brand-form {
@@ -23,7 +23,7 @@
 .brand-item {
   position: relative;
   text-align: center;
-  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  background: #ffffff;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 12px;
   padding: 16px;
@@ -32,7 +32,7 @@
 
 .brand-item:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .brand-item img {
@@ -40,13 +40,13 @@
   height: 100px;
   border-radius: 8px;
   object-fit: contain;
-  background: #fff;
+  background: #f8f8f8;
 }
 
 .brand-item span {
   display: block;
   margin-top: 12px;
-  color: #fff;
+  color: #333333;
   font-weight: 600;
   font-size: 14px;
 }
@@ -67,7 +67,7 @@
 .edit-btn,
 .save-btn,
 .cancel-btn {
-  background: #1976d2;
+  background: #d32f2f;
   border: none;
   color: white;
   padding: 6px 10px;
@@ -78,7 +78,7 @@
 }
 
 .cancel-btn {
-  background: #666;
+  background: #888888;
 }
 
 /* Preview of uploaded image */

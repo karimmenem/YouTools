@@ -1,43 +1,148 @@
-/* Carousel container */
-/* Carousel container with fixed height and 3D perspective */
-.poster-carousel {
-  width: 100%;
-  height: 400px; /* fixed height for posters */
-  perspective: 1000px;
+/* Redesigned Poster Carousel */
+.poster-carousel.redesigned {
   position: relative;
-  margin-bottom: 40px;
+  width: 100%;
+  height: 420px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: linear-gradient(135deg,#fafafa,#f2f2f2);
+  box-shadow: 0 20px 60px -15px rgba(0,0,0,0.25), 0 8px 24px -8px rgba(0,0,0,0.12);
+  isolation: isolate;
+  margin: 60px 0 80px;
 }
 
-/* Hide all cards by default */
-/* All cards positioned absolutely and hidden rotated */
-.poster-carousel .product-card {
+.slides-wrapper {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  transform: rotateY(90deg);
-  transform-origin: center;
-  transition: transform 0.6s ease-in-out;
+  inset: 0;
 }
 
-/* Show only the active card */
-/* Active card flips into view */
-.poster-carousel .product-card.active {
-  transform: rotateY(0deg);
+.poster-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateX(10%) scale(.96);
+  transition: opacity .9s ease, transform 1s cubic-bezier(.22,.61,.36,1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.poster-slide.active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  z-index: 2;
 }
 
-/* Ensure image container resizes to image aspect ratio */
-/* Ensure image container fills parent */
-.poster-carousel .product-image-container {
-  width: 100%;
-  height: 100%;
-}
-
-/* Image fills width, maintains aspect ratio */
-.poster-carousel .product-image {
+.poster-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: brightness(.9) contrast(1.05) saturate(1.05);
+  transition: transform 8s linear, filter .8s ease;
+  will-change: transform;
 }
+.poster-slide.active .poster-image { transform: scale(1.05); }
+.poster-carousel.redesigned:hover .poster-slide.active .poster-image { transform: scale(1.08); }
+
+/* Navigation arrows */
+.poster-nav {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.75);
+  box-shadow: 0 4px 18px rgba(0,0,0,.15);
+  cursor: pointer;
+  z-index: 5;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center; justify-content: center;
+  transition: background .3s ease, transform .3s ease;
+}
+.poster-nav::before {
+  content: '';
+  width: 14px; height: 14px;
+  border-top: 3px solid #d32f2f;
+  border-right: 3px solid #d32f2f;
+  rotate: 45deg;
+  display: block;
+}
+.poster-nav.prev { left: 28px; }
+.poster-nav.next { right: 28px; }
+.poster-nav.prev::before { rotate: 225deg; }
+.poster-nav:hover { background: rgba(255,255,255,0.95); transform: scale(1.07); }
+.poster-nav:active { transform: scale(.95); }
+
+/* Dots */
+.poster-dots {
+  position: absolute;
+  bottom: 22px; left: 50%; translate: -50% 0;
+  display: flex; gap: 10px;
+  z-index: 6;
+}
+.poster-dots .dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.55);
+  border: 2px solid #d32f2f55;
+  cursor: pointer;
+  transition: background .4s ease, transform .4s ease, border-color .4s ease;
+  padding: 0; border: none; outline: none;
+  position: relative;
+}
+.poster-dots .dot.active {
+  background: #d32f2f;
+  border-color: #d32f2f;
+  transform: scale(1.3);
+  box-shadow: 0 0 0 4px rgba(211,47,47,0.25);
+}
+.poster-dots .dot:hover { background:#fff; }
+
+/* Progress bar (auto-advance indicator) */
+.poster-progress {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 5px;
+  background: linear-gradient(to right, #d32f2f11, transparent);
+  overflow: hidden;
+  z-index: 7;
+}
+.poster-progress .bar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg,#d32f2f,#ff7247);
+  animation: progress linear 5s forwards;
+  transform-origin: left;
+}
+.poster-progress .bar.paused { animation-play-state: paused; }
+@keyframes progress { from { transform: scaleX(0);} to { transform: scaleX(1);} }
+
+/* Accessibility focus outline */
+.poster-carousel.redesigned :focus-visible { outline: 3px solid #ff7247; outline-offset: 3px; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .poster-carousel.redesigned { height: 340px; border-radius: 24px; }
+  .poster-nav { width: 48px; height: 48px; }
+  .poster-nav.prev { left: 16px; }
+  .poster-nav.next { right: 16px; }
+}
+@media (max-width: 600px) {
+  .poster-carousel.redesigned { height: 260px; border-radius: 20px; }
+  .poster-nav { width: 42px; height: 42px; }
+  .poster-dots { bottom: 14px; }
+}
+@media (max-width: 420px) {
+  .poster-carousel.redesigned { height: 220px; }
+  .poster-nav { display:none; }
+  .poster-dots { gap: 8px; }
+}
+
+/* Dark mode variations */
+body.dark .poster-carousel.redesigned { background: linear-gradient(135deg,#1e1e1f,#121213); }
+body.dark .poster-nav { background: rgba(34,34,34,.7); }
+body.dark .poster-nav:hover { background: rgba(50,50,50,.85); }
+body.dark .poster-dots .dot { background: rgba(255,255,255,.25); border-color:#d32f2f55; }
+body.dark .poster-dots .dot.active { background:#d32f2f; }

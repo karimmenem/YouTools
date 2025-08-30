@@ -1,25 +1,25 @@
 .product-list {
-  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
+  background: #ffffff;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 12px 40px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(211, 47, 47, 0.1);
 }
 
 .product-list-header {
-  background: linear-gradient(145deg, #333333 0%, #1e1e1e 100%);
+  background: #f8f8f8;
   padding: 24px 30px;
   border-bottom: 2px solid rgba(211, 47, 47, 0.3);
 }
 
 .product-list-title {
-  color: #ffffff;
+  color: #333333;
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 16px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: none;
 }
 
 .product-list-controls {
@@ -41,8 +41,8 @@
   padding: 12px 16px 12px 45px;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 10px;
-  background: linear-gradient(145deg, #1e1e1e 0%, #0d0d0d 100%);
-  color: #ffffff;
+  background: #f0f0f0;
+  color: #333333;
   font-size: 14px;
   transition: all 0.3s ease;
 }
@@ -56,7 +56,7 @@
 }
 
 .search-input::placeholder {
-  color: #666666;
+  color: #888888;
 }
 
 .search-icon {
@@ -64,7 +64,7 @@
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #666666;
+  color: #888888;
   font-size: 16px;
 }
 
@@ -78,8 +78,8 @@
   padding: 12px 16px;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 10px;
-  background: linear-gradient(145deg, #1e1e1e 0%, #0d0d0d 100%);
-  color: #ffffff;
+  background: #f0f0f0;
+  color: #333333;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -95,8 +95,8 @@
 }
 
 .filter-select option {
-  background: #2a2a2a;
-  color: #ffffff;
+  background: #ffffff;
+  color: #333333;
 }
 
 .add-product-btn {
@@ -128,25 +128,27 @@
 }
 
 .admin-product-card {
-  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
+  background: #ffffff;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-product-card:hover {
   transform: translateY(-4px);
   border-color: rgba(211, 47, 47, 0.5);
   box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.4),
+    0 8px 25px rgba(0, 0, 0, 0.1),
     0 4px 12px rgba(211, 47, 47, 0.2);
 }
 
 .admin-product-image {
   height: 200px;
-  background: #1e1e1e;
+  background: #f8f8f8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,7 +171,7 @@
 }
 
 .admin-product-title {
-  color: #ffffff;
+  color: #333333;
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 8px;
@@ -212,7 +214,7 @@
 }
 
 .stock-text {
-  color: #cccccc;
+  color: #555555;
   font-size: 14px;
   font-weight: 500;
 }
@@ -236,12 +238,12 @@
 }
 
 .btn-edit {
-  background: linear-gradient(145deg, #2196f3 0%, #1976d2 100%);
-  color: #ffffff;
+  background: #f0f0f0;
+  color: #333333;
 }
 
 .btn-edit:hover {
-  background: linear-gradient(145deg, #42a5f5 0%, #2196f3 100%);
+  background: #e0e0e0;
   transform: translateY(-1px);
 }
 
@@ -256,31 +258,31 @@
 }
 
 .btn-toggle {
-  background: linear-gradient(145deg, #ff9800 0%, #f57c00 100%);
-  color: #ffffff;
+  background: #ffc107;
+  color: #333333;
 }
 
 .btn-toggle:hover {
-  background: linear-gradient(145deg, #ffb74d 0%, #ff9800 100%);
+  background: #ffca28;
   transform: translateY(-1px);
 }
 
 .empty-state {
   text-align: center;
   padding: 60px 30px;
-  color: #666666;
+  color: #888888;
 }
 
 .empty-state-icon {
   font-size: 64px;
-  color: #444444;
+  color: #cccccc;
   margin-bottom: 16px;
 }
 
 .empty-state-title {
   font-size: 20px;
   font-weight: 600;
-  color: #888888;
+  color: #555555;
   margin-bottom: 8px;
 }
 
@@ -303,8 +305,8 @@
   padding: 8px 12px;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 6px;
-  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
-  color: #ffffff;
+  background: #f8f8f8;
+  color: #333333;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -313,18 +315,19 @@
 
 .pagination-btn:hover {
   border-color: rgba(211, 47, 47, 0.5);
-  background: linear-gradient(145deg, #333333 0%, #1e1e1e 100%);
+  background: #f0f0f0;
   transform: translateY(-1px);
 }
 
 .pagination-btn.active {
   background: linear-gradient(145deg, #d32f2f 0%, #b71c1c 100%);
   border-color: #d32f2f;
+  color: #ffffff;
 }
 
 .pagination-btn:disabled {
-  background: linear-gradient(145deg, #444444 0%, #333333 100%);
-  color: #666666;
+  background: #e0e0e0;
+  color: #aaaaaa;
   cursor: not-allowed;
   transform: none;
 }

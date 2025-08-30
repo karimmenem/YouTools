@@ -4,7 +4,7 @@
 }
 
 .admin-header {
-  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
+  background: #ffffff;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 16px;
   padding: 30px;
@@ -15,7 +15,7 @@
   flex-wrap: wrap;
   gap: 20px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(211, 47, 47, 0.1);
 }
 
@@ -31,15 +31,15 @@
 }
 
 .admin-user-info h1 {
-  color: #ffffff;
+  color: #333333;
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 8px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: none;
 }
 
 .user-welcome {
-  color: #cccccc;
+  color: #555555;
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -47,7 +47,7 @@
 }
 
 .user-welcome strong {
-  color: #ffffff;
+  color: #333333;
 }
 
 .admin-badge {
@@ -62,10 +62,10 @@
 }
 
 .logout-button {
-  background: linear-gradient(145deg, #424242 0%, #212121 100%);
+  background: #f4f4f4;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 10px;
-  color: #ffffff;
+  color: #333333;
   padding: 12px 24px;
   font-size: 14px;
   font-weight: 600;
@@ -76,7 +76,7 @@
 }
 
 .logout-button:hover {
-  background: linear-gradient(145deg, #616161 0%, #424242 100%);
+  background: #e0e0e0;
   border-color: rgba(211, 47, 47, 0.5);
   transform: translateY(-2px);
 }
@@ -92,12 +92,12 @@
   flex-direction: column;
   gap: 8px;
   min-width: 250px;
-  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
+  background: #ffffff;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 16px;
   padding: 20px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(211, 47, 47, 0.1);
 }
 
@@ -106,10 +106,10 @@
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  background: rgba(42, 42, 42, 0.5);
+  background: rgba(244, 244, 244, 0.5);
   border: 2px solid transparent;
   border-radius: 12px;
-  color: #cccccc;
+  color: #555555;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -119,9 +119,9 @@
 }
 
 .nav-button:hover {
-  background: rgba(42, 42, 42, 0.8);
+  background: rgba(244, 244, 244, 0.8);
   border-color: rgba(211, 47, 47, 0.3);
-  color: #ffffff;
+  color: #333333;
   transform: translateX(4px);
 }
 
@@ -146,22 +146,22 @@
 
 .admin-main {
   flex: 1;
-  background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
+  background: #ffffff;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 16px;
   padding: 30px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(211, 47, 47, 0.1);
 }
 
 /* Dashboard Styles */
 .dashboard h2 {
-  color: #ffffff;
+  color: #333333;
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 30px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: none;
 }
 
 .stats-grid {
@@ -171,7 +171,7 @@
 }
 
 .stat-card {
-  background: linear-gradient(145deg, #333333 0%, #1e1e1e 100%);
+  background: #f8f8f8;
   border: 2px solid rgba(211, 47, 47, 0.2);
   border-radius: 12px;
   padding: 24px;
@@ -197,7 +197,7 @@
   transform: translateY(-4px);
   border-color: rgba(211, 47, 47, 0.4);
   box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.3),
+    0 8px 25px rgba(0, 0, 0, 0.1),
     0 4px 12px rgba(211, 47, 47, 0.2);
 }
 
@@ -216,7 +216,7 @@
 }
 
 .stat-info p {
-  color: #cccccc;
+  color: #555555;
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;

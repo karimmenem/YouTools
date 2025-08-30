@@ -1,5 +1,6 @@
-// Product service using Mirage.js backend
-
+// Product service using IndexedDB (Dexie)
+import db from '../db';
+// Base URL for Mirage endpoints
 const API_BASE = '/api';
 
 // Helper function to handle API responses
@@ -10,26 +11,18 @@ const handleResponse = async (response) => {
   return await response.json();
 };
 
-// Get all products
+// Get all products from IndexedDB
 export const getProducts = async () => {
   try {
-    const response = await fetch(`${API_BASE}/products`);
-    const data = await handleResponse(response);
-    
-    return {
-      success: true,
-      data: data.products || data // Mirage returns { products: [...] }
-    };
+    const data = await db.products.toArray();
+    return { success: true, data };
   } catch (error) {
-    console.error('Error fetching products:', error);
-    return {
-      success: false,
-      message: error.message
-    };
+    console.error('Error reading products from DB:', error);
+    return { success: false, message: error.message };
   }
 };
 
-// Get special offers
+// Get special offers from Mirage
 export const getSpecialOffers = async () => {
   try {
     // Fetch only special offers from Mirage special-offers route
@@ -49,7 +42,7 @@ export const getSpecialOffers = async () => {
   }
 };
 
-// Get product by ID
+// Get product by ID from Mirage
 export const getProductById = async (id) => {
   try {
     const response = await fetch(`${API_BASE}/products/${id}`);
@@ -68,81 +61,42 @@ export const getProductById = async (id) => {
   }
 };
 
-// Add new product
+// Add new product to IndexedDB
 export const addProduct = async (productData) => {
   try {
-    const response = await fetch(`${API_BASE}/products`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(productData),
-    });
-    
-    const data = await handleResponse(response);
-    
-    return {
-      success: true,
-      data: data.product || data
-    };
+    const id = await db.products.add(productData);
+    const data = await db.products.get(id);
+    return { success: true, data };
   } catch (error) {
-    console.error('Error adding product:', error);
-    return {
-      success: false,
-      message: error.message
-    };
+    console.error('Error adding product to DB:', error);
+    return { success: false, message: error.message };
   }
 };
 
-// Update product
+// Update product in IndexedDB
 export const updateProduct = async (id, productData) => {
   try {
-    const response = await fetch(`${API_BASE}/products/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(productData),
-    });
-    
-    const data = await handleResponse(response);
-    
-    return {
-      success: true,
-      data: data.product || data
-    };
+    await db.products.update(id, productData);
+    const data = await db.products.get(id);
+    return { success: true, data };
   } catch (error) {
-    console.error('Error updating product:', error);
-    return {
-      success: false,
-      message: error.message
-    };
+    console.error('Error updating product in DB:', error);
+    return { success: false, message: error.message };
   }
 };
 
-// Delete product
+// Delete product from IndexedDB
 export const deleteProduct = async (id) => {
   try {
-    const response = await fetch(`${API_BASE}/products/${id}`, {
-      method: 'DELETE',
-    });
-    
-    await handleResponse(response);
-    
-    return {
-      success: true,
-      message: 'Product deleted successfully'
-    };
+    await db.products.delete(id);
+    return { success: true, message: 'Product deleted successfully' };
   } catch (error) {
-    console.error('Error deleting product:', error);
-    return {
-      success: false,
-      message: error.message
-    };
+    console.error('Error deleting product from DB:', error);
+    return { success: false, message: error.message };
   }
 };
 
-// Get categories
+// Get categories from Mirage
 export const getCategories = async () => {
   try {
     const response = await fetch(`${API_BASE}/categories`);

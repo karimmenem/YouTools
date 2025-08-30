@@ -27,7 +27,7 @@ const BrandSlider = () => {
             <img 
               src={brand.logo} 
               alt={brand.name}
-              className="brand-logo"
+              className="slider-brand-logo"
               onError={(e) => {
                 // Fallback to text if image fails to load
                 e.target.style.display = 'none';

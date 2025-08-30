@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { addProduct } from '../../services/productService';
 import { getBrands } from '../../services/brandService';
+import './AddProduct.css';
 
 const AddProduct = ({ onProductAdded }) => {
   const { language } = useLanguage();
@@ -27,10 +28,7 @@ const AddProduct = ({ onProductAdded }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
 
     if (message.text) setMessage({ type: '', text: '' });
   };
@@ -42,8 +40,8 @@ const AddProduct = ({ onProductAdded }) => {
       
       // Create preview
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target.result);
+      reader.onload = (ev) => {
+        setImagePreview(ev.target.result);
       };
       reader.readAsDataURL(file);
     }
@@ -51,17 +49,16 @@ const AddProduct = ({ onProductAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.name || !formData.brand || !formData.price) return;
     setLoading(true);
     setMessage({ type: '', text: '' });
 
     try {
-      let imageUrl = formData.image_url;
-      if (imageFile) imageUrl = imagePreview;
       const productData = {
         name: formData.name,
         price: parseFloat(formData.price),
         brand: formData.brand,
-        image_url: imageUrl
+        image_url: imageFile ? imagePreview : formData.image_url
       };
 
       const response = await addProduct(productData);
@@ -69,7 +66,7 @@ const AddProduct = ({ onProductAdded }) => {
       if (response.success) {
         setMessage({
           type: 'success',
-          text: language === 'pt' ? 'Produto adicionado com sucesso!' : 'Product added successfully!'
+          text: language === 'pt' ? 'Produto adicionado!' : 'Product added!'
         });
         
         // Reset form
@@ -86,10 +83,10 @@ const AddProduct = ({ onProductAdded }) => {
       } else {
         setMessage({
           type: 'error',
-          text: response.message || (language === 'pt' ? 'Erro ao adicionar produto' : 'Error adding product')
+          text: response.message || (language === 'pt' ? 'Erro ao adicionar' : 'Error adding product')
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({
         type: 'error',
         text: language === 'pt' ? 'Erro de conexão' : 'Connection error'
@@ -100,159 +97,63 @@ const AddProduct = ({ onProductAdded }) => {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h2 style={{ color: '#fff', marginBottom: '24px' }}>
-        {language === 'pt' ? 'Adicionar Produto' : 'Add Product'}
-      </h2>
+    <div className="add-product">
+      <div className="add-product-header">
+        <h2>{language === 'pt' ? 'Adicionar Produto' : 'Add Product'}</h2>
+        <p className="add-product-subtitle">{language === 'pt' ? 'Cadastre novos itens no catálogo' : 'Register new catalog items'}</p>
+      </div>
 
       {message.text && (
-        <div style={{
-          padding: '12px 16px',
-          borderRadius: '8px',
-          marginBottom: '20px',
-          backgroundColor: message.type === 'success' ? 'rgba(76, 175, 80, 0.1)' : 'rgba(244, 67, 54, 0.1)',
-          border: `1px solid ${message.type === 'success' ? '#4caf50' : '#f44336'}`,
-          color: message.type === 'success' ? '#4caf50' : '#f44336'
-        }}>
-          {message.text}
-        </div>
+        <div className={`alert ${message.type === 'success' ? 'alert-success' : 'alert-error'}`}>{message.text}</div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        {/* Brand selection */}
-        <div>
-          <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-            {language === 'pt' ? 'Marca *' : 'Brand *'}
-          </label>
-          <select
-            name="brand"
-            value={formData.brand}
-            onChange={handleChange}
-            required
-            disabled={loading}
-            style={{
-              width: '100%', padding: '12px', borderRadius: '8px', border: '2px solid rgba(211, 47, 47, 0.3)', backgroundColor: '#2a2a2a', color: '#fff', fontSize: '16px'
-            }}
-          >
-            <option value="">{language === 'pt' ? 'Selecione a marca' : 'Select brand'}</option>
-            {brands.map(b => (
-              <option key={b.id} value={b.slug}>{b.name}</option>
-            ))}
-          </select>
-        </div>
+      <form onSubmit={handleSubmit} className="product-form" noValidate>
+        <div className="form-section">
+          <h3 className="section-title">{language === 'pt' ? 'Detalhes' : 'Details'}</h3>
+          <div className="form-row">
+            <div className="form-group">
+              <label className="form-label required">{language === 'pt' ? 'Marca' : 'Brand'}</label>
+              <select name="brand" value={formData.brand} onChange={handleChange} className="form-select" required disabled={loading}>
+                <option value="">{language === 'pt' ? 'Selecione' : 'Select'}</option>
+                {brands.map(b => <option key={b.id} value={b.slug}>{b.name}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label required">{language === 'pt' ? 'Nome do Produto' : 'Product Name'}</label>
+              <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required disabled={loading} placeholder={language === 'pt' ? 'Ex: Furadeira' : 'e.g. Drill'} />
+            </div>
+            <div className="form-group">
+              <label className="form-label required">{language === 'pt' ? 'Preço' : 'Price'} (R$)</label>
+              <input type="number" name="price" value={formData.price} onChange={handleChange} className="form-input" step="0.01" min="0" required disabled={loading} placeholder="0.00" />
+            </div>
+          </div>
 
-        {/* Product Name */}
-        <div>
-          <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-            {language === 'pt' ? 'Nome do Produto *' : 'Product Name *'}
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '2px solid rgba(211, 47, 47, 0.3)',
-              backgroundColor: '#2a2a2a',
-              color: '#fff',
-              fontSize: '16px'
-            }}
-            placeholder={language === 'pt' ? 'Digite o nome do produto' : 'Enter product name'}
-          />
-        </div>
+          <div className="form-group">
+            <label className="form-label">{language === 'pt' ? 'URL da Imagem (opcional)' : 'Image URL (optional)'}</label>
+            <input type="text" name="image_url" value={formData.image_url} onChange={handleChange} className="form-input" placeholder="https://..." disabled={!!imageFile || loading} />
+          </div>
 
-        {/* Price and Original Price */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
-          <div>
-            <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-              {language === 'pt' ? 'Preço *' : 'Price *'} (R$)
-            </label>
-            <input
-              type="number"
-              name="price"
-              value={formData.price}
-              onChange={handleChange}
-              step="0.01"
-              min="0"
-              required
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '2px solid rgba(211, 47, 47, 0.3)',
-                backgroundColor: '#2a2a2a',
-                color: '#fff',
-                fontSize: '16px'
-              }}
-              placeholder="0.00"
-            />
+          <div className="form-group">
+            <label className="form-label">{language === 'pt' ? 'Upload de Imagem' : 'Upload Image'}</label>
+            <input type="file" accept="image/*" onChange={handleImageUpload} disabled={loading} className="form-input" />
+            {imagePreview && (
+              <div className="image-preview" style={{ marginTop: '12px' }}>
+                <img src={imagePreview} alt="Preview" />
+                <button type="button" className="remove-image-btn" onClick={() => { setImageFile(null); setImagePreview(''); }}>×</button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Image Upload */}
-        <div>
-          <label style={{ color: '#fff', display: 'block', marginBottom: '8px' }}>
-            {language === 'pt' ? 'Imagem do Produto' : 'Product Image'}
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '2px solid rgba(211, 47, 47, 0.3)',
-              backgroundColor: '#2a2a2a',
-              color: '#fff',
-              fontSize: '16px'
-            }}
-          />
-          {imagePreview && (
-            <div style={{ marginTop: '12px' }}>
-              <img 
-                src={imagePreview} 
-                alt="Preview" 
-                style={{ 
-                  maxWidth: '200px', 
-                  maxHeight: '200px', 
-                  borderRadius: '8px',
-                  border: '2px solid rgba(211, 47, 47, 0.3)'
-                }} 
-              />
-            </div>
-          )}
+        <div className="form-actions">
+          <button type="submit" className="btn-submit" disabled={loading}>
+            {loading ? (
+              <>
+                <span className="button-spinner" /> {language === 'pt' ? 'Salvando...' : 'Saving...'}
+              </>
+            ) : (language === 'pt' ? 'Adicionar Produto' : 'Add Product')}
+          </button>
         </div>
-
-        {/* Submit Button */}
-        <button 
-          type="submit" 
-          disabled={loading}
-          style={{
-            padding: '16px 24px',
-            borderRadius: '8px',
-            border: 'none',
-            backgroundColor: loading ? '#666' : 'linear-gradient(145deg, #d32f2f 0%, #b71c1c 100%)',
-            background: loading ? '#666' : 'linear-gradient(145deg, #d32f2f 0%, #b71c1c 100%)',
-            color: '#fff',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            marginTop: '20px'
-          }}
-        >
-          {loading 
-            ? (language === 'pt' ? 'Adicionando...' : 'Adding...') 
-            : (language === 'pt' ? 'Adicionar Produto' : 'Add Product')
-          }
-        </button>
       </form>
     </div>
   );
