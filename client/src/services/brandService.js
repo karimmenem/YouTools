@@ -3,16 +3,32 @@ import { saveLogo, ensureLogosCached } from './brandImageStore';
 
 const API_BASE = '/api';
 
-const handleResponse = async (response) => {
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+const safeJson = async (response) => {
+  const ct = response.headers.get('content-type') || '';
+  if (!ct.includes('application/json')) {
+    throw new Error('Non-JSON response');
   }
   return await response.json();
 };
 
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return await safeJson(response);
+};
+
+const fallbackBrands = () => {
+  try {
+    let list = JSON.parse(localStorage.getItem('brands') || '[]');
+    if (!list.length) list = JSON.parse(localStorage.getItem('brands_index') || '[]');
+    return list;
+  } catch { return []; }
+};
+
 export const getBrands = async () => {
   try {
-    const response = await fetch(`${API_BASE}/brands`);
+    const response = await fetch(`${API_BASE}/brands`, { headers: { 'Accept':'application/json' } });
     const data = await handleResponse(response);
     let list = data.brands || data;
     // Apply custom order if exists
@@ -36,12 +52,8 @@ export const getBrands = async () => {
     return { success: true, data: list };
   } catch (error) {
     console.error('Error fetching brands:', error);
-    try {
-      let fallback = JSON.parse(localStorage.getItem('brands') || '[]');
-      if (!fallback.length) fallback = JSON.parse(localStorage.getItem('brands_index') || '[]');
-      return { success: true, data: fallback };
-    } catch { /* ignore */ }
-    return { success: false, message: error.message };
+    const fb = fallbackBrands();
+    return { success: true, data: fb, fallback: true };
   }
 };
 
@@ -49,7 +61,7 @@ export const addBrand = async (brandData) => {
   try {
     const response = await fetch(`${API_BASE}/brands`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept':'application/json' },
       body: JSON.stringify(brandData)
     });
     const data = await handleResponse(response);
@@ -60,6 +72,17 @@ export const addBrand = async (brandData) => {
     return { success: true, data: newBrand, all: all.data };
   } catch (error) {
     console.error('Error adding brand:', error);
+    // Local append fallback
+    try {
+      const existing = fallbackBrands();
+      const id = Date.now();
+      const slug = (brandData.name || 'brand').toLowerCase().replace(/[^a-z0-9]+/g,'-') + '-' + id;
+      const localBrand = { id, slug, ...brandData };
+      existing.push(localBrand);
+      localStorage.setItem('brands', JSON.stringify(existing));
+      localStorage.setItem('brands_index', JSON.stringify(existing.map(({ id, name, slug }) => ({ id, name, slug }))));
+      return { success: true, data: localBrand, all: existing, localOnly: true };
+    } catch {}
     return { success: false, message: error.message };
   }
 };
@@ -68,7 +91,7 @@ export const updateBrand = async (id, brandData) => {
   try {
     const response = await fetch(`${API_BASE}/brands/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept':'application/json' },
       body: JSON.stringify(brandData)
     });
     const data = await handleResponse(response);
@@ -78,6 +101,17 @@ export const updateBrand = async (id, brandData) => {
     return { success: true, data: updated, all: all.data };
   } catch (error) {
     console.error('Error updating brand:', error);
+    // Local update fallback
+    try {
+      const list = fallbackBrands();
+      const idx = list.findIndex(b => b.id === id || b.slug === id);
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], ...brandData };
+        localStorage.setItem('brands', JSON.stringify(list));
+        localStorage.setItem('brands_index', JSON.stringify(list.map(({ id, name, slug }) => ({ id, name, slug }))));
+        return { success: true, data: list[idx], all: list, localOnly: true };
+      }
+    } catch {}
     return { success: false, message: error.message };
   }
 };
@@ -95,18 +129,17 @@ export const deleteBrand = async (idOrSlug) => {
     }
     if (targetId == null) throw new Error('Brand id not found');
 
-    const response = await fetch(`${API_BASE}/brands/${targetId}`, { method: 'DELETE' });
+    const response = await fetch(`${API_BASE}/brands/${targetId}`, { method: 'DELETE', headers:{'Accept':'application/json'} });
     if (!response.ok) throw new Error(`Delete failed (${response.status})`);
 
     // Refresh list
     const all = await getBrands();
     // Also prune localStorage immediately (safety if server list stale)
     try {
-      const raw = JSON.parse(localStorage.getItem('brands') || '[]');
+      const raw = fallbackBrands();
       const filtered = raw.filter(b => b.id !== targetId && b.slug !== idOrSlug);
       localStorage.setItem('brands', JSON.stringify(filtered));
-      const idx = filtered.map(({ id, name, slug }) => ({ id, name, slug }));
-      localStorage.setItem('brands_index', JSON.stringify(idx));
+      localStorage.setItem('brands_index', JSON.stringify(filtered.map(({ id, name, slug }) => ({ id, name, slug }))));
     } catch { /* ignore */ }
 
     return { success: true, all: all.data };
@@ -114,12 +147,11 @@ export const deleteBrand = async (idOrSlug) => {
     console.error('Error deleting brand:', error);
     // Attempt local fallback deletion if we at least have slug/id
     try {
-      const raw = JSON.parse(localStorage.getItem('brands') || '[]');
+      const raw = fallbackBrands();
       const filtered = raw.filter(b => b.id !== idOrSlug && b.slug !== idOrSlug);
       if (filtered.length !== raw.length) {
         localStorage.setItem('brands', JSON.stringify(filtered));
-        const idx = filtered.map(({ id, name, slug }) => ({ id, name, slug }));
-        localStorage.setItem('brands_index', JSON.stringify(idx));
+        localStorage.setItem('brands_index', JSON.stringify(filtered.map(({ id, name, slug }) => ({ id, name, slug }))));
         return { success: true, all: filtered, localOnly: true };
       }
     } catch { /* ignore */ }
@@ -136,8 +168,7 @@ export const reorderBrands = async (orderedIds) => {
     current.data.forEach(b => { if (!orderedIds.includes(b.id)) reordered.push(b); });
     localStorage.setItem('brands', JSON.stringify(reordered));
     localStorage.setItem('brands_order', JSON.stringify(reordered.map(b => b.id)));
-    const idx = reordered.map(({ id, name, slug }) => ({ id, name, slug }));
-    localStorage.setItem('brands_index', JSON.stringify(idx));
+    localStorage.setItem('brands_index', JSON.stringify(reordered.map(({ id, name, slug }) => ({ id, name, slug }))));
     return { success: true, data: reordered };
   } catch (e) {
     return { success: false, message: e.message };

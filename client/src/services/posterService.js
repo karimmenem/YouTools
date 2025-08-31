@@ -3,11 +3,21 @@ import { savePoster, ensurePostersCached } from './posterImageStore';
 
 const API_BASE = '/api';
 
+const safeJson = async (response) => {
+  const ct = response.headers.get('content-type') || '';
+  if (!ct.includes('application/json')) throw new Error('Non-JSON response');
+  return await response.json();
+};
+
 const handleResponse = async (response) => {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  return await response.json();
+  return await safeJson(response);
+};
+
+const fallbackPosters = () => {
+  try { return JSON.parse(localStorage.getItem('posters') || '[]'); } catch { return []; }
 };
 
 async function compressImageDataUrl(file, { maxWidth = 900, maxHeight = 900, quality = 0.75, maxBytes = 120 * 1024 } = {}) {
@@ -34,29 +44,21 @@ async function compressImageDataUrl(file, { maxWidth = 900, maxHeight = 900, qua
   return dataUrl;
 };
 
-// Get all posters
 export const getPosters = async () => {
   try {
-    const response = await fetch(`${API_BASE}/posters`);
+    const response = await fetch(`${API_BASE}/posters`, { headers:{'Accept':'application/json'} });
     const data = await handleResponse(response);
     let list = data.posters || data;
     list = await ensurePostersCached(list);
-    try { localStorage.setItem('posters', JSON.stringify(list)); } catch { }
-    return {
-      success: true,
-      data: list
-    };
+    try { localStorage.setItem('posters', JSON.stringify(list)); } catch {}
+    return { success: true, data: list };
   } catch (error) {
     console.error('Error fetching posters:', error);
-    try {
-      const fallback = JSON.parse(localStorage.getItem('posters') || '[]');
-      if (fallback.length) return { success: true, data: fallback };
-    } catch {}
-    return { success: false, message: error.message };
+    const fb = fallbackPosters();
+    return { success: true, data: fb, fallback: true };
   }
 };
 
-// Add poster
 export const addPoster = async (posterData) => {
   try {
     let payload = { ...posterData };
@@ -66,22 +68,28 @@ export const addPoster = async (posterData) => {
     }
     const response = await fetch(`${API_BASE}/posters`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept':'application/json' },
       body: JSON.stringify(payload)
     });
     const data = await handleResponse(response);
     const newPoster = data.poster || data;
     if (newPoster.image_url && newPoster.image_url.startsWith('data:')) savePoster(newPoster.id, newPoster.image_url);
-    // refresh cache
     const refreshed = await getPosters();
     return { success: true, data: newPoster, all: refreshed.data };
   } catch (error) {
     console.error('Error adding poster:', error);
+    try {
+      const existing = fallbackPosters();
+      const id = Date.now();
+      const localPoster = { id, ...posterData };
+      existing.push(localPoster);
+      localStorage.setItem('posters', JSON.stringify(existing));
+      return { success: true, data: localPoster, all: existing, localOnly: true };
+    } catch {}
     return { success: false, message: error.message };
   }
 };
 
-// Update poster
 export const updatePoster = async (id, posterData) => {
   try {
     let payload = { ...posterData };
@@ -91,7 +99,7 @@ export const updatePoster = async (id, posterData) => {
     }
     const response = await fetch(`${API_BASE}/posters/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept':'application/json' },
       body: JSON.stringify(payload)
     });
     const data = await handleResponse(response);
@@ -101,19 +109,33 @@ export const updatePoster = async (id, posterData) => {
     return { success: true, data: updated, all: refreshed.data };
   } catch (error) {
     console.error('Error updating poster:', error);
+    try {
+      const list = fallbackPosters();
+      const idx = list.findIndex(p => p.id === id);
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], ...posterData };
+        localStorage.setItem('posters', JSON.stringify(list));
+        return { success: true, data: list[idx], all: list, localOnly: true };
+      }
+    } catch {}
     return { success: false, message: error.message };
   }
 };
 
-// Delete poster
 export const deletePoster = async (id) => {
   try {
-    const response = await fetch(`${API_BASE}/posters/${id}`, { method: 'DELETE' });
+    const response = await fetch(`${API_BASE}/posters/${id}`, { method: 'DELETE', headers:{'Accept':'application/json'} });
     await handleResponse(response);
     const refreshed = await getPosters();
     return { success: true, all: refreshed.data };
   } catch (error) {
     console.error('Error deleting poster:', error);
+    try {
+      const list = fallbackPosters();
+      const filtered = list.filter(p => p.id !== id);
+      localStorage.setItem('posters', JSON.stringify(filtered));
+      return { success: true, all: filtered, localOnly: true };
+    } catch {}
     return { success: false, message: error.message };
   }
 };
