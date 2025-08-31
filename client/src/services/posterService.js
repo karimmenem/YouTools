@@ -50,7 +50,8 @@ export const getPosters = async () => {
     try {
       const { data, error } = await supabase.from('posters').select('id,title,image,position,active').order('position', { ascending: true }).order('id');
       if (error) throw error;
-      const posters = await ensurePostersCached(data || []);
+      const normalized = (data || []).map(p => ({ ...p, image_url: p.image || p.image_url }));
+      const posters = await ensurePostersCached(normalized);
       try { localStorage.setItem('posters', JSON.stringify(posters)); } catch {}
       return { success: true, data: posters, remote: true };
     } catch (e) { console.warn('Supabase getPosters fallback:', e.message); }
@@ -77,11 +78,12 @@ export const addPoster = async (posterData) => {
         const { data: posData } = await supabase.from('posters').select('position').order('position', { ascending: false }).limit(1);
         if (posData && posData.length && typeof posData[0].position === 'number') nextPos = posData[0].position + 1;
       } catch {}
-      const toInsert = { ...posterData, position: nextPos };
+      const toInsert = { ...posterData, image: posterData.image_url || posterData.image, position: nextPos };
+      delete toInsert.image_url;
       const { data, error } = await supabase.from('posters').insert(toInsert).select();
       if (error) throw error;
-      const created = data[0];
-      if (created.image && created.image.startsWith('data:')) savePoster(created.id || created.title, created.image);
+      const created = { ...data[0], image_url: data[0].image };
+      if (created.image_url && created.image_url.startsWith('data:')) savePoster(created.id || created.title, created.image_url);
       const all = await getPosters();
       return { success: true, data: created, all: all.data };
     } catch (e) { console.warn('Supabase addPoster fallback:', e.message); }
@@ -119,10 +121,12 @@ export const addPoster = async (posterData) => {
 export const updatePoster = async (id, posterData) => {
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('posters').update(posterData).eq('id', id).select();
+      const toUpdate = { ...posterData, image: posterData.image_url || posterData.image };
+      delete toUpdate.image_url;
+      const { data, error } = await supabase.from('posters').update(toUpdate).eq('id', id).select();
       if (error) throw error;
-      const updated = data[0];
-      if (updated.image && updated.image.startsWith('data:')) savePoster(updated.id || updated.title, updated.image);
+      const updated = { ...data[0], image_url: data[0].image };
+      if (updated.image_url && updated.image_url.startsWith('data:')) savePoster(updated.id || updated.title, updated.image_url);
       const all = await getPosters();
       return { success: true, data: updated, all: all.data };
     } catch (e) { console.warn('Supabase updatePoster fallback:', e.message); }
