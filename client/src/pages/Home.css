@@ -204,6 +204,14 @@
   }
 }
 
+@media (max-width: 600px) {
+  .products-grid.products-grid-compact { 
+    grid-template-columns: repeat(3, 1fr) !important; 
+    gap:8px !important; 
+    margin-bottom:40px; 
+  }
+}
+
 @media (max-width: 480px) {
   .products-header h1 {
     font-size: 26px;
@@ -225,6 +233,10 @@
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
   }
+}
+
+@media (max-width: 420px) {
+  .products-grid.products-grid-compact { gap:6px !important; }
 }
 
 /* Special effect for empty state */

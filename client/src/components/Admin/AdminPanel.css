@@ -320,6 +320,9 @@
   .stat-card { padding:14px; border-width:1px; }
   .stat-icon { font-size:26px; width:40px; }
   .stat-info h3 { font-size:20px; text-shadow:none; }
+  
+  .product-list-header { padding:14px 16px; }
+  .product-list-title { font-size:16px; margin-bottom:8px; }
 }
 
 @media (max-width: 480px) {
