@@ -25,16 +25,12 @@ const PosterManagement = () => {
 
   const handleAdd = async () => {
     if (!newUrl && !imageFile) return;
-    // determine image_url from file or URL
-    let imageUrl = newUrl;
-    if (imageFile) {
-      imageUrl = imagePreview;
-    }
-    const res = await addPoster({ image_url: imageUrl });
+    const payload = imageFile ? { imageFile } : { image_url: newUrl };
+    const res = await addPoster(payload);
     if (res.success) {
       setMessage({ type: 'success', text: language === 'pt' ? 'Cartaz adicionado!' : 'Poster added!' });
-      setNewUrl('');
-      loadPosters();
+      setNewUrl(''); setImageFile(null); setImagePreview('');
+      if (res.all) setPosters(res.all); else loadPosters();
     } else {
       setMessage({ type: 'error', text: res.message });
     }
@@ -45,7 +41,7 @@ const PosterManagement = () => {
     const res = await deletePoster(id);
     if (res.success) {
       setMessage({ type: 'success', text: language === 'pt' ? 'Cartaz removido!' : 'Poster removed!' });
-      loadPosters();
+      if (res.all) setPosters(res.all); else loadPosters();
     }
   };
 

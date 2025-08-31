@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { getBrands, addBrand, deleteBrand, updateBrand } from '../../services/brandService';
+import { getBrands, addBrand, deleteBrand, updateBrand, reorderBrands } from '../../services/brandService';
 import './BrandManagement.css';
 
 // Helper to compress image to target dimensions/quality under size threshold
@@ -59,7 +59,7 @@ const BrandManagement = () => {
   };
 
   const handleAdd = async () => {
-    if (!newBrand.name || !imagePreview) return; // use compressed preview presence instead of raw file
+    if (!newBrand.name || !imagePreview) return;
     const logoUrl = imagePreview;
     const slug = newBrand.name.toLowerCase().replace(/\s+/g, '-');
     const res = await addBrand({ name: newBrand.name, slug, logo: logoUrl });
@@ -67,7 +67,8 @@ const BrandManagement = () => {
       setMessage({ type: 'success', text: language === 'pt' ? 'Marca adicionada!' : 'Brand added!' });
       setNewBrand({ name: '' });
       setImageFile(null); setImagePreview('');
-      loadBrands();
+      if (res.all) setBrands(res.all);
+      else loadBrands();
     } else {
       let txt = res.message || '';
       if (/quota|setItem/i.test(txt)) {
@@ -79,9 +80,15 @@ const BrandManagement = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm(language === 'pt' ? 'Excluir esta marca?' : 'Delete this brand?')) return;
+    // Optimistic removal
+    setBrands(prev => prev.filter(b => b.id !== id));
     const res = await deleteBrand(id);
     if (res.success) {
       setMessage({ type: 'success', text: language === 'pt' ? 'Marca removida!' : 'Brand removed!' });
+      if (res.all) setBrands(res.all);
+    } else {
+      setMessage({ type: 'error', text: res.message || 'Delete failed' });
+      // reload to revert if failure
       loadBrands();
     }
   };
@@ -109,7 +116,7 @@ const BrandManagement = () => {
     if (res.success) {
       setMessage({ type: 'success', text: language === 'pt' ? 'Marca atualizada!' : 'Brand updated!' });
       cancelEdit();
-      loadBrands();
+      if (res.all) setBrands(res.all); else loadBrands();
     } else {
       let txt = res.message || '';
       if (/quota|setItem/i.test(txt)) {
@@ -164,9 +171,44 @@ const BrandManagement = () => {
           <img src={imagePreview} alt="Preview" style={{ maxWidth: '100%', borderRadius: '8px' }} />
         </div>
       )}
-      <div className="brand-list">
-        {brands.map(b => (
-          <div key={b.id} className="brand-item" style={{ minHeight: '200px', paddingBottom: '16px' }}>
+      <div className="brand-list" style={{ display: 'grid', gap: '16px' }}>
+        {brands.map((b, index) => (
+          <div
+            key={b.id}
+            className="brand-item"
+            draggable
+            onDragStart={e => {
+              e.dataTransfer.setData('text/plain', b.id);
+              e.currentTarget.classList.add('dragging');
+            }}
+            onDragEnd={e => e.currentTarget.classList.remove('dragging')}
+            onDragOver={e => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = 'move';
+            }}
+            onDrop={async e => {
+              e.preventDefault();
+              const draggedId = e.dataTransfer.getData('text/plain');
+              if (!draggedId || draggedId === b.id) return;
+              let newOrder;
+              setBrands(prev => {
+                const fromIdx = prev.findIndex(x => String(x.id) === draggedId);
+                const toIdx = prev.findIndex(x => x.id === b.id);
+                if (fromIdx === -1 || toIdx === -1) return prev;
+                const copy = [...prev];
+                const [moved] = copy.splice(fromIdx, 1);
+                copy.splice(toIdx, 0, moved);
+                newOrder = copy.map(x => x.id);
+                return copy;
+              });
+              // wait microtask for state update and then persist
+              setTimeout(() => { if (newOrder) reorderBrands(newOrder); }, 0);
+            }}
+            data-id={b.id}
+            style={{ minHeight: '200px', paddingBottom: '16px', border: '1px dashed transparent' }}
+            onDragEnter={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#666'; }}
+            onDragLeave={e => { e.currentTarget.style.borderColor = 'transparent'; }}
+          >
             {editingId === b.id ? (
               <div className="edit-brand" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <input

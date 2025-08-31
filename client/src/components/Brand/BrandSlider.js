@@ -1,46 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './BrandSlider.css';
+import { getBrands } from '../../services/brandService';
 
 const BrandSlider = () => {
-  // Placeholder brands - client will provide actual images later
-  const brands = [
-    { id: 1, name: 'INGCO', logo: '/brands/ingco.png' },
-    { id: 2, name: 'BOSCH', logo: '/brands/bosch.png' },
-    { id: 3, name: 'MAKITA', logo: '/brands/makita.png' },
-    { id: 4, name: 'DEWALT', logo: '/brands/dewalt.png' },
-    { id: 5, name: 'STANLEY', logo: '/brands/stanley.png' },
-    { id: 6, name: 'BLACK & DECKER', logo: '/brands/blackdecker.png' },
-    { id: 7, name: 'TRAMONTINA', logo: '/brands/tramontina.png' },
-    { id: 8, name: 'VONDER', logo: '/brands/vonder.png' },
-    { id: 9, name: 'WORKER', logo: '/brands/worker.png' },
-    { id: 10, name: 'EINHELL', logo: '/brands/einhell.png' }
-  ];
+  const [brands, setBrands] = useState([]);
 
-  // Duplicate brands array for seamless infinite scroll
-  const duplicatedBrands = [...brands, ...brands];
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const res = await getBrands();
+      if (mounted && res.success) setBrands(res.data || []);
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  if (!brands.length) return null;
+
+  // Build a base list wide enough, then duplicate once for seamless loop
+  let base = [...brands];
+  // Ensure minimum number of items for smooth scroll (avoid visible reset)
+  while (base.length < 10) {
+    base = base.concat(brands);
+    if (base.length > 40) break; // safety cap
+  }
+  const loop = [...base, ...base]; // exactly two sequences for -50% translate cycle
 
   return (
-    <div className="brand-slider">
-      <div className="brand-slider-track">
-        {duplicatedBrands.map((brand, index) => (
-          <div key={`${brand.id}-${index}`} className="brand-item">
-            <img 
-              src={brand.logo} 
-              alt={brand.name}
-              className="slider-brand-logo"
-              onError={(e) => {
-                // Fallback to text if image fails to load
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
-              }}
-            />
-            <div className="brand-fallback">
-              {brand.name}
+    <section className="brand-marquee single" aria-label="Brands">
+      <div className="brand-marquee-inner">
+        <div className="marquee-track single">
+          {loop.map((b, i) => (
+            <div key={`${b.id || b.slug}-${i}`} className="brand-chip-mini" title={b.name}>
+              <img loading="lazy" src={b.logo} alt={b.name} onError={e => { e.currentTarget.style.visibility='hidden'; }} />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

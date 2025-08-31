@@ -44,3 +44,7 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+# Build output
+client/build/
+# Map files (ensure build ignored already covers)
+*.map
