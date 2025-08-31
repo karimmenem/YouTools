@@ -111,4 +111,20 @@ YouTools/
 ## 📝 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+---
+
 # YouTools
+
+Updated: Added optional Supabase backend for global persistence.
+
+## Quick Supabase Setup
+1. Create project at https://supabase.com
+2. In SQL Editor run contents of `client/supabase.sql`
+3. Copy Project URL & anon public key from Settings > API
+4. In Vercel project add env vars:
+   - REACT_APP_SUPABASE_URL=your-url
+   - REACT_APP_SUPABASE_ANON_KEY=your-anon-key
+5. Redeploy. Mirage mock API auto-disables and data becomes shared.
+
+(For stricter security later, replace permissive RLS policies with role-based rules.)

@@ -48,13 +48,12 @@ async function compressImageDataUrl(file, { maxWidth = 900, maxHeight = 900, qua
 export const getPosters = async () => {
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('posters').select('id,image_url').order('id');
+      const { data, error } = await supabase.from('posters').select('id,title,image,position,active').order('position', { ascending: true }).order('id');
       if (error) throw error;
-      let list = data || [];
-      list = await ensurePostersCached(list);
-      try { localStorage.setItem('posters', JSON.stringify(list)); } catch {}
-      return { success: true, data: list, remote: true };
-    } catch (e) { console.warn('Supabase posters fallback:', e.message); }
+      const posters = await ensurePostersCached(data || []);
+      try { localStorage.setItem('posters', JSON.stringify(posters)); } catch {}
+      return { success: true, data: posters, remote: true };
+    } catch (e) { console.warn('Supabase getPosters fallback:', e.message); }
   }
   try {
     const response = await fetch(`${API_BASE}/posters`, { headers:{'Accept':'application/json'} });
@@ -73,14 +72,18 @@ export const getPosters = async () => {
 export const addPoster = async (posterData) => {
   if (supabase) {
     try {
-      let payload = { ...posterData };
-      if (payload.imageFile) { payload.image_url = await compressImageDataUrl(payload.imageFile); delete payload.imageFile; }
-      const { data, error } = await supabase.from('posters').insert(payload).select();
+      let nextPos = 1;
+      try {
+        const { data: posData } = await supabase.from('posters').select('position').order('position', { ascending: false }).limit(1);
+        if (posData && posData.length && typeof posData[0].position === 'number') nextPos = posData[0].position + 1;
+      } catch {}
+      const toInsert = { ...posterData, position: nextPos };
+      const { data, error } = await supabase.from('posters').insert(toInsert).select();
       if (error) throw error;
-      const newPoster = data[0];
-      if (newPoster.image_url && newPoster.image_url.startsWith('data:')) savePoster(newPoster.id, newPoster.image_url);
-      const refreshed = await getPosters();
-      return { success: true, data: newPoster, all: refreshed.data };
+      const created = data[0];
+      if (created.image && created.image.startsWith('data:')) await posterImageStore.setItem(created.id || created.title, created.image);
+      const all = await getPosters();
+      return { success: true, data: created, all: all.data };
     } catch (e) { console.warn('Supabase addPoster fallback:', e.message); }
   }
   try {
@@ -116,14 +119,12 @@ export const addPoster = async (posterData) => {
 export const updatePoster = async (id, posterData) => {
   if (supabase) {
     try {
-      let payload = { ...posterData };
-      if (payload.imageFile) { payload.image_url = await compressImageDataUrl(payload.imageFile); delete payload.imageFile; }
-      const { data, error } = await supabase.from('posters').update(payload).eq('id', id).select();
+      const { data, error } = await supabase.from('posters').update(posterData).eq('id', id).select();
       if (error) throw error;
       const updated = data[0];
-      if (updated.image_url && updated.image_url.startsWith('data:')) savePoster(updated.id, updated.image_url);
-      const refreshed = await getPosters();
-      return { success: true, data: updated, all: refreshed.data };
+      if (updated.image && updated.image.startsWith('data:')) await posterImageStore.setItem(updated.id || updated.title, updated.image);
+      const all = await getPosters();
+      return { success: true, data: updated, all: all.data };
     } catch (e) { console.warn('Supabase updatePoster fallback:', e.message); }
   }
   try {
@@ -180,5 +181,27 @@ export const deletePoster = async (id) => {
       return { success: true, all: filtered, localOnly: true };
     } catch {}
     return { success: false, message: error.message };
+  }
+};
+
+export const reorderPosters = async (orderedIds) => {
+  if (supabase) {
+    try {
+      const updates = orderedIds.map((id, idx) => ({ id, position: idx + 1 }));
+      const { error } = await supabase.from('posters').upsert(updates, { onConflict: 'id' });
+      if (error) throw error;
+      const refreshed = await getPosters();
+      try { localStorage.setItem('posters_order', JSON.stringify(orderedIds)); } catch {}
+      return { success: true, data: refreshed.data };
+    } catch (e) { console.warn('Supabase reorderPosters fallback:', e.message); }
+  }
+  try {
+    const currentOrder = fallbackPosters();
+    const ordered = orderedIds.map(id => currentOrder.find(p => p.id === id)).filter(Boolean);
+    localStorage.setItem('posters', JSON.stringify(ordered));
+    return { success: true, data: ordered, localOnly: true };
+  } catch (e) {
+    console.error('Error reordering posters:', e);
+    return { success: false, message: e.message };
   }
 };

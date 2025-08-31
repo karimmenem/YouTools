@@ -28,23 +28,11 @@ const fallbackBrands = () => {
 };
 
 export const getBrands = async () => {
-  // Supabase first
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('brands').select('id,name,slug,logo').order('id');
+      const { data, error } = await supabase.from('brands').select('id,name,slug,logo,position').order('position', { ascending: true }).order('id');
       if (error) throw error;
-      let list = data || [];
-      // Apply order from brands_order if present locally (optional)
-      try {
-        const orderRaw = localStorage.getItem('brands_order');
-        if (orderRaw) {
-          const order = JSON.parse(orderRaw);
-            const map = new Map(list.map(b => [b.id, b]));
-            const ordered = order.map(id => map.get(id)).filter(Boolean);
-            list.forEach(b => { if (!order.includes(b.id)) ordered.push(b); });
-            if (ordered.length) list = ordered;
-        }
-      } catch {}
+      let list = (data || []).map(b => ({ ...b }));
       list = await ensureLogosCached(list);
       try { localStorage.setItem('brands', JSON.stringify(list)); localStorage.setItem('brands_index', JSON.stringify(list.map(({id,name,slug})=>({id,name,slug})))); } catch {}
       return { success: true, data: list, remote: true };
@@ -83,7 +71,14 @@ export const getBrands = async () => {
 export const addBrand = async (brandData) => {
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('brands').insert(brandData).select();
+      // Determine next position
+      let nextPos = 1;
+      try {
+        const { data: posData } = await supabase.from('brands').select('position').order('position', { ascending: false }).limit(1);
+        if (posData && posData.length && typeof posData[0].position === 'number') nextPos = posData[0].position + 1;
+      } catch {}
+      const insertData = { ...brandData, position: nextPos };
+      const { data, error } = await supabase.from('brands').insert(insertData).select();
       if (error) throw error;
       const newBrand = data[0];
       if (newBrand.logo && newBrand.logo.startsWith('data:')) saveLogo(newBrand.id || newBrand.slug, newBrand.logo);
@@ -218,7 +213,16 @@ export const deleteBrand = async (idOrSlug) => {
 
 export const reorderBrands = async (orderedIds) => {
   if (supabase) {
-    try { localStorage.setItem('brands_order', JSON.stringify(orderedIds)); } catch {}
+    try {
+      // Batch update positions
+      const updates = orderedIds.map((id, idx) => ({ id, position: idx + 1 }));
+      // Upsert to ensure records exist; relies on primary key id
+      const { error } = await supabase.from('brands').upsert(updates, { onConflict: 'id' });
+      if (error) throw error;
+      const refreshed = await getBrands();
+      try { localStorage.setItem('brands_order', JSON.stringify(orderedIds)); } catch {}
+      return { success: true, data: refreshed.data };
+    } catch (e) { console.warn('Supabase reorder fallback:', e.message); }
   }
   try {
     const current = await getBrands();

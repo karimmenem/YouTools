@@ -4,18 +4,12 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './styles/index.css';
 import { makeServer } from './server/mirage';
+import { supabase } from './services/supabaseClient';
 
-// Start Mirage unless explicitly disabled (needed for Vercel static deploy)
-// Set REACT_APP_ENABLE_MIRAGE=false when a real backend is available.
-if (typeof window !== 'undefined' && process.env.REACT_APP_ENABLE_MIRAGE !== 'false') {
+// Start Mirage only if Supabase not configured and not explicitly disabled
+if (typeof window !== 'undefined' && !supabase && process.env.REACT_APP_ENABLE_MIRAGE !== 'false') {
   if (!window.server) {
-    try {
-      window.server = makeServer({ environment: 'production' });
-      // console.log('Mirage server started in production mode');
-    } catch (e) {
-      // Fallback attempt (avoid crash if already created)
-      // console.warn('Mirage start failed:', e);
-    }
+    try { window.server = makeServer({ environment: 'production' }); } catch (e) {}
   }
 }
 
