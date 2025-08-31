@@ -78,8 +78,15 @@ export const addPoster = async (posterData) => {
         const { data: posData } = await supabase.from('posters').select('position').order('position', { ascending: false }).limit(1);
         if (posData && posData.length && typeof posData[0].position === 'number') nextPos = posData[0].position + 1;
       } catch {}
-      const toInsert = { ...posterData, image: posterData.image_url || posterData.image, position: nextPos };
-      delete toInsert.image_url;
+      // NEW: process imageFile (compress) or image_url
+      let imageData = posterData.image_url || posterData.image || null;
+      if (posterData.imageFile) {
+        try { imageData = await compressImageDataUrl(posterData.imageFile); } catch (e) { console.warn('Poster compress failed', e); }
+      }
+      const toInsert = { position: nextPos, image: imageData };
+      // Optionally include title/active if supplied
+      if (posterData.title) toInsert.title = posterData.title;
+      if (typeof posterData.active === 'boolean') toInsert.active = posterData.active;
       const { data, error } = await supabase.from('posters').insert(toInsert).select();
       if (error) throw error;
       const created = { ...data[0], image_url: data[0].image };
@@ -121,8 +128,13 @@ export const addPoster = async (posterData) => {
 export const updatePoster = async (id, posterData) => {
   if (supabase) {
     try {
-      const toUpdate = { ...posterData, image: posterData.image_url || posterData.image };
-      delete toUpdate.image_url;
+      let imageData = posterData.image_url || posterData.image || null;
+      if (posterData.imageFile) {
+        try { imageData = await compressImageDataUrl(posterData.imageFile); } catch (e) { console.warn('Poster compress failed', e); }
+      }
+      const toUpdate = { image: imageData };
+      if (posterData.title) toUpdate.title = posterData.title;
+      if (typeof posterData.active === 'boolean') toUpdate.active = posterData.active;
       const { data, error } = await supabase.from('posters').update(toUpdate).eq('id', id).select();
       if (error) throw error;
       const updated = { ...data[0], image_url: data[0].image };
