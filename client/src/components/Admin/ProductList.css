@@ -368,21 +368,26 @@
 }
 
 @media (max-width: 480px) {
-  .product-list-header {
-    padding: 20px;
+  /* Compact 3-column phone layout overrides */
+  .product-grid { 
+    grid-template-columns: repeat(3, 1fr) !important; 
+    gap: 8px !important; 
+    padding: 12px !important; 
   }
-  
-  .product-grid {
-    grid-template-columns: 1fr;
-    padding: 16px;
-  }
-  
-  .admin-product-info {
-    padding: 16px;
-  }
-  
-  .admin-product-actions {
-    flex-direction: column;
-    gap: 6px;
-  }
+  .admin-product-card { border-width:1px; border-radius:8px; }
+  .admin-product-image { height:90px; }
+  .admin-product-info { padding:10px; }
+  .admin-product-title { font-size:11px; margin-bottom:4px; }
+  .admin-product-price { font-size:12px; margin-bottom:6px; }
+  .admin-product-stock { gap:4px; margin-bottom:8px; }
+  .stock-text { font-size:10px; }
+  .admin-product-actions { flex-direction:column; gap:4px; }
+  .action-btn { padding:6px 4px; font-size:9px; letter-spacing:0; }
+}
+
+@media (max-width: 380px) {
+  .admin-product-image { height:80px; }
+  .admin-product-title { font-size:10px; }
+  .admin-product-price { font-size:11px; }
+  .action-btn { font-size:8px; padding:4px 3px; }
 }
