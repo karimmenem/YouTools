@@ -92,7 +92,7 @@
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: 36px;
   font-weight: 900;
-  color: #333333;
+  color: #ffffff; /* white text */
   text-shadow: 
     -2px -2px 0 #d32f2f,
     2px -2px 0 #d32f2f,
@@ -101,7 +101,7 @@
     -2px 0 0 #d32f2f,
     2px 0 0 #d32f2f,
     0 -2px 0 #d32f2f,
-    0 2px 0 #d32f2f;
+    0 2px 0 #d32f2f; /* red outline */
   letter-spacing: 1px;
   margin-right: 4px;
 }
@@ -110,24 +110,24 @@
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: 36px;
   font-weight: 900;
-  color: white;
-  background: #d32f2f;
-  padding: 4px 16px;
-  border-radius: 25px;
+  color: #111111; /* black text */
+  background: #d32f2f; /* solid red block */
+  padding: 4px 18px; /* adjust padding */
+  border-radius: 6px; /* rectangle corners */
   letter-spacing: 1px;
-  text-shadow: none;
+  text-shadow: none; /* remove previous shadow */
 }
 
 .logo-subtitle {
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: 14px;
   font-weight: 900;
-  color: #333333;
+  color: #ffffff; /* white subtitle */
   text-shadow: 
     -1px -1px 0 #d32f2f,
     1px -1px 0 #d32f2f,
     -1px 1px 0 #d32f2f,
-    1px 1px 0 #d32f2f;
+    1px 1px 0 #d32f2f; /* red outline */
   letter-spacing: 3px;
   margin-top: 2px;
   margin-left: 2px;

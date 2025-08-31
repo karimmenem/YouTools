@@ -3,6 +3,37 @@ import { useLanguage } from '../../context/LanguageContext';
 import { getBrands, addBrand, deleteBrand, updateBrand } from '../../services/brandService';
 import './BrandManagement.css';
 
+// Helper to compress image to target dimensions/quality under size threshold
+async function compressImage(file, options = {}) {
+  const { maxWidth = 400, maxHeight = 400, quality = 0.7, mimeType = 'image/webp', maxBytes = 60 * 1024 } = options;
+  const blobURL = URL.createObjectURL(file);
+  const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = blobURL; });
+  const canvas = document.createElement('canvas');
+  let { width, height } = img;
+  const ratio = Math.min(maxWidth / width, maxHeight / height, 1);
+  width = Math.round(width * ratio); height = Math.round(height * ratio);
+  canvas.width = width; canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, width, height);
+  URL.revokeObjectURL(blobURL);
+
+  // Try iterative reduction if needed
+  let q = quality;
+  let dataUrl = canvas.toDataURL(mimeType, q);
+  let attempts = 0;
+  while (dataUrl.length * 0.75 > maxBytes && q > 0.3 && attempts < 5) { // length*0.75 ~ bytes
+    q -= 0.1;
+    dataUrl = canvas.toDataURL(mimeType, q);
+    attempts++;
+  }
+  // Fallback to jpeg if still large & mimeType webp
+  if (dataUrl.length * 0.75 > maxBytes && mimeType === 'image/webp') {
+    q = Math.max(q - 0.1, 0.3);
+    dataUrl = canvas.toDataURL('image/jpeg', q);
+  }
+  return dataUrl;
+}
+
 const BrandManagement = () => {
   const { language } = useLanguage();
   const [brands, setBrands] = useState([]);
@@ -28,17 +59,21 @@ const BrandManagement = () => {
   };
 
   const handleAdd = async () => {
-    if (!newBrand.name || !imageFile) return;
+    if (!newBrand.name || !imagePreview) return; // use compressed preview presence instead of raw file
     const logoUrl = imagePreview;
-    // auto-generate slug from name
     const slug = newBrand.name.toLowerCase().replace(/\s+/g, '-');
     const res = await addBrand({ name: newBrand.name, slug, logo: logoUrl });
     if (res.success) {
       setMessage({ type: 'success', text: language === 'pt' ? 'Marca adicionada!' : 'Brand added!' });
       setNewBrand({ name: '' });
+      setImageFile(null); setImagePreview('');
       loadBrands();
     } else {
-      setMessage({ type: 'error', text: res.message });
+      let txt = res.message || '';
+      if (/quota|setItem/i.test(txt)) {
+        txt = language === 'pt' ? 'Limite de armazenamento local atingido. Remova marcas ou use imagens menores.' : 'Local storage quota reached. Remove some brands or use smaller images.';
+      }
+      setMessage({ type: 'error', text: txt });
     }
   };
 
@@ -67,7 +102,6 @@ const BrandManagement = () => {
   };
 
   const saveEdit = async (id) => {
-    // prepare updated data
     let logoUrl = editForm.logo;
     if (editFile) logoUrl = editPreview;
     const slug = editForm.name.toLowerCase().replace(/\s+/g, '-');
@@ -77,7 +111,11 @@ const BrandManagement = () => {
       cancelEdit();
       loadBrands();
     } else {
-      setMessage({ type: 'error', text: res.message });
+      let txt = res.message || '';
+      if (/quota|setItem/i.test(txt)) {
+        txt = language === 'pt' ? 'Limite de armazenamento local atingido. Use imagem menor.' : 'Local storage quota reached. Use a smaller image.';
+      }
+      setMessage({ type: 'error', text: txt });
     }
   };
 
@@ -101,13 +139,19 @@ const BrandManagement = () => {
         <input
           type="file"
           accept="image/*"
-          onChange={e => {
+          onChange={async e => {
             const file = e.target.files[0];
             if (file) {
               setImageFile(file);
-              const reader = new FileReader();
-              reader.onload = ev => setImagePreview(ev.target.result);
-              reader.readAsDataURL(file);
+              try {
+                const compressed = await compressImage(file);
+                setImagePreview(compressed);
+              } catch (err) {
+                console.warn('Compression failed, using original', err);
+                const reader = new FileReader();
+                reader.onload = ev => setImagePreview(ev.target.result);
+                reader.readAsDataURL(file);
+              }
             }
           }}
         />
@@ -134,13 +178,19 @@ const BrandManagement = () => {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={e => {
+                  onChange={async e => {
                     const file = e.target.files[0];
                     if (file) {
                       setEditFile(file);
-                      const reader = new FileReader();
-                      reader.onload = ev => setEditPreview(ev.target.result);
-                      reader.readAsDataURL(file);
+                      try {
+                        const compressed = await compressImage(file);
+                        setEditPreview(compressed);
+                      } catch (err) {
+                        console.warn('Compression failed, using original', err);
+                        const reader = new FileReader();
+                        reader.onload = ev => setEditPreview(ev.target.result);
+                        reader.readAsDataURL(file);
+                      }
                     }
                   }}
                 />

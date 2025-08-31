@@ -68,35 +68,42 @@
 .auth-logo .you-text {
   font-size: 32px;
   font-weight: 900;
-  color: #333333;
+  color: #ffffff; /* white */
   text-shadow: 
-    0 0 20px rgba(211, 47, 47, 0.5),
-    2px 2px 0 #d32f2f,
-    4px 4px 8px rgba(0, 0, 0, 0.1);
-  letter-spacing: 2px;
+    -2px -2px 0 #d32f2f, 
+    2px -2px 0 #d32f2f, 
+    -2px 2px 0 #d32f2f, 
+    2px 2px 0 #d32f2f, 
+    -2px 0 0 #d32f2f, 
+    2px 0 0 #d32f2f, 
+    0 -2px 0 #d32f2f, 
+    0 2px 0 #d32f2f;
 }
 
 .auth-logo .tools-text {
-  background: linear-gradient(145deg, #d32f2f 0%, #b71c1c 100%);
-  color: #ffffff;
+  background: #d32f2f; /* solid red */
+  color: #111111; /* black */
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 6px; /* rectangle */
   font-size: 32px;
   font-weight: 900;
   letter-spacing: 2px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  box-shadow: 
-    0 4px 12px rgba(211, 47, 47, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-shadow: none;
+  box-shadow: none;
 }
 
 .auth-subtitle {
-  color: #555555;
+  color: #ffffff; /* white subtitle */
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-top: 8px;
+  text-shadow: 
+    -1px -1px 0 #d32f2f, 
+    1px -1px 0 #d32f2f, 
+    -1px 1px 0 #d32f2f, 
+    1px 1px 0 #d32f2f;
 }
 
 .auth-title {
