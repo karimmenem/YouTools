@@ -110,7 +110,7 @@ const Products = () => {
           </p>
         </div>
 
-        <div className="products-grid">
+        <div className="products-grid products-grid-compact">
           {products.map(product => (
             <ProductCard 
               key={product.id} 

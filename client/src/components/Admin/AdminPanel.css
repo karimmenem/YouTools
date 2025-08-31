@@ -303,17 +303,73 @@
   }
 }
 
-@media (max-width: 480px) {
-  .admin-nav {
-    flex-direction: column;
-  }
-  
-  .nav-button {
-    min-width: auto;
+@media (max-width: 600px) {
+  .admin-panel {
+    padding: 12px 0;
   }
   
   .admin-header {
-    padding: 16px;
+    margin-bottom: 18px;
+    border-radius: 14px;
+    gap: 14px;
+  }
+  
+  .admin-user-info h1 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  
+  .user-welcome {
+    font-size: 14px;
+    gap: 8px;
+  }
+  
+  .logout-button {
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+  
+  .admin-content {
+    gap: 18px;
+  }
+  
+  .admin-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-radius: 12px;
+    padding: 10px 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.9);
+  }
+  
+  .nav-button {
+    padding: 12px 14px;
+    font-size: 12px;
+    min-width: 150px;
+    border-radius: 10px;
+  }
+  
+  .admin-main {
+    padding: 18px;
+    border-radius: 14px;
+  }
+  
+  .stat-card {
+    padding: 18px;
+  }
+  
+  .stat-info h3 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav-button {
+    min-width: 130px;
+    padding: 10px 12px;
+    font-size: 11px;
   }
   
   .admin-main {
@@ -321,8 +377,10 @@
   }
   
   .stat-card {
-    flex-direction: column;
-    text-align: center;
-    gap: 12px;
+    padding: 16px;
+  }
+  
+  .logout-button {
+    width: 100%;
   }
 }

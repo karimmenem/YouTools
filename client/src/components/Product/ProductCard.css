@@ -160,22 +160,11 @@
   }
 }
 
-@media (max-width: 480px) {
-  .product-card {
-    margin-top: 16px; /* Adjust spacing for smaller screens */
-    height: auto; /* Allow cards to size by content */
-    width: 100%; /* Full width for smaller screens */
-  }
-
-  .product-image-container {
-    height: 180px; /* Adjusted for smaller screens */
-  }
-
-  .product-title {
-    font-size: 12px; /* Smaller title for smaller screens */
-  }
-
-  .current-price {
-    font-size: 14px; /* Adjusted price size */
-  }
+@media (max-width: 640px){
+  .product-card { width:100%; margin-top:14px; }
 }
+
+/* 3-per-row container utility (apply where products rendered on home/brand pages) */
+.products-grid-compact { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+@media (max-width:520px){ .products-grid-compact { gap:12px; } }
+@media (max-width:420px){ .products-grid-compact { gap:10px; } }
