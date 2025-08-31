@@ -62,7 +62,7 @@ export const addProduct = async (product) => {
       return { success: true, data: data[0], all: all.data };
     } catch (e) { console.warn('Supabase addProduct fallback:', e.message); }
   }
-  try { const id = await db.products.add(productData); const data = await db.products.get(id); return { success: true, data }; } catch (error) { console.error('Error adding product to DB:', error); return { success: false, message: error.message }; }
+  try { const id = await db.products.add(product); const data = await db.products.get(id); return { success: true, data }; } catch (error) { console.error('Error adding product to DB:', error); return { success: false, message: error.message }; }
 };
 
 export const updateProduct = async (id, product) => {
@@ -74,7 +74,7 @@ export const updateProduct = async (id, product) => {
       return { success: true, data: data[0], all: all.data };
     } catch (e) { console.warn('Supabase updateProduct fallback:', e.message); }
   }
-  try { await db.products.update(id, productData); const data = await db.products.get(id); return { success: true, data }; } catch (error) { console.error('Error updating product in DB:', error); return { success: false, message: error.message }; }
+  try { await db.products.update(id, product); const data = await db.products.get(id); return { success: true, data }; } catch (error) { console.error('Error updating product in DB:', error); return { success: false, message: error.message }; }
 };
 
 export const deleteProduct = async (id) => {

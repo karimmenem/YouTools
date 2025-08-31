@@ -81,7 +81,7 @@ export const addPoster = async (posterData) => {
       const { data, error } = await supabase.from('posters').insert(toInsert).select();
       if (error) throw error;
       const created = data[0];
-      if (created.image && created.image.startsWith('data:')) await posterImageStore.setItem(created.id || created.title, created.image);
+      if (created.image && created.image.startsWith('data:')) savePoster(created.id || created.title, created.image);
       const all = await getPosters();
       return { success: true, data: created, all: all.data };
     } catch (e) { console.warn('Supabase addPoster fallback:', e.message); }
@@ -122,7 +122,7 @@ export const updatePoster = async (id, posterData) => {
       const { data, error } = await supabase.from('posters').update(posterData).eq('id', id).select();
       if (error) throw error;
       const updated = data[0];
-      if (updated.image && updated.image.startsWith('data:')) await posterImageStore.setItem(updated.id || updated.title, updated.image);
+      if (updated.image && updated.image.startsWith('data:')) savePoster(updated.id || updated.title, updated.image);
       const all = await getPosters();
       return { success: true, data: updated, all: all.data };
     } catch (e) { console.warn('Supabase updatePoster fallback:', e.message); }
