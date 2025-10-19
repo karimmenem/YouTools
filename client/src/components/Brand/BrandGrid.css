@@ -1,10 +1,8 @@
 .brand-grid {
   display: grid;
-  grid-template-columns: repeat(5,200px); /* Force exactly 3 per row on large screens */
+  grid-template-columns: repeat(6, 210px);
   gap: 24px;
-  padding: 40px 20px;
-  margin-top: 40px;
-  margin-bottom: 40px;
+  padding: 40px 40px;
 }
 
 /* Responsive: collapse to 2 then 1 column */
@@ -87,4 +85,3 @@
 .brand-logo {
   object-fit: cover;
 }
-

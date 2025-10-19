@@ -3,39 +3,122 @@
   color: #333333;
   margin-top: auto;
   border-top: 1px solid #e0e0e0;
+  width: 100%;
 }
 
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Base layout */
 .footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-  padding: 40px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 40px 80px;
+  gap: 40px;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
 }
 
 .footer-section h4 {
   margin-bottom: 15px;
   color: #d32f2f;
   font-weight: 600;
+  font-size: 1.1rem;
 }
 
 .footer-section p {
   margin-bottom: 8px;
   color: #555555;
   line-height: 1.5;
+  font-size: 0.95rem;
 }
 
 .footer-bottom {
   border-top: 1px solid #e0e0e0;
   padding: 20px 0;
   text-align: center;
-  color: #888888;
-  background: #ffffff;
+  color: #fff;
+  background: #d32f2f;
+  font-size: 0.9rem;
 }
 
+/* --- Responsive Design --- */
+
+/* Large tablets / small laptops */
+@media (max-width: 1024px) {
+  .footer-content {
+    padding: 40px 50px;
+    gap: 30px;
+  }
+  .footer-section h4 {
+    font-size: 1rem;
+  }
+}
+
+/* Tablets */
 @media (max-width: 768px) {
   .footer-content {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 30px 40px;
+    gap: 25px;
+  }
+
+  .footer-section {
+    max-width: 100%;
+  }
+
+  .footer-section h4 {
+    margin-bottom: 10px;
+  }
+}
+
+/* Phones */
+@media (max-width: 600px) {
+  .footer-content {
+    padding: 25px 20px;
     gap: 20px;
-    padding: 30px 0;
+  }
+
+  .footer-section h4 {
+    font-size: 1rem;
+  }
+
+  .footer-section p {
+    font-size: 0.9rem;
+  }
+
+  .footer-bottom {
+    padding: 15px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+  .footer-content {
+    padding: 20px 15px;
+    gap: 15px;
+  }
+
+  .footer-section h4 {
+    font-size: 0.95rem;
+  }
+
+  .footer-section p {
+    font-size: 0.85rem;
+  }
+
+  .footer-bottom {
+    font-size: 0.8rem;
   }
 }
