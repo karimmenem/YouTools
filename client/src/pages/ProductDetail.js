@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
-import '../styles/ProductDetail.css';
+import { useLanguage } from '../context/LanguageContext';
+import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const { language } = useLanguage();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -31,11 +33,26 @@ const ProductDetail = () => {
         <div className="product-detail-image">
           <img src={product.image_url || product.image || '/placeholder-product.jpg'} alt={product.name} onError={e => { e.target.src = '/placeholder-product.jpg'; }} />
         </div>
-        <div className="product-detail-info">
-          <div className="product-detail-brand">{product.brand}</div>
-          <div className="product-detail-name">{product.name}</div>
-          <div className="product-detail-price">R$ {product.price}</div>
-        </div>
+        <div className="product-detail-info-grid">
+  <div className="info-row">
+    <b>{language === 'pt' ? 'Marca:' : 'Brand:'}</b>
+    <span>{product.brand || '-'}</span>
+  </div>
+  <div className="info-row">
+    <b>{language === 'pt' ? 'Nome:' : 'Name:'}</b>
+    <span>{product.name}</span>
+  </div>
+  <div className="info-row">
+    <b>{language === 'pt' ? 'Preço:' : 'Price:'}</b>
+    <span>R$ {product.price}</span>
+  </div>
+  <div className="info-row">
+    <b>{language === 'pt' ? 'Descrição:' : 'Description:'}</b>
+    <span>{language === 'pt' ? 'Descrição do produto em breve.' : 'Product description coming soon.'}</span>
+  </div>
+</div>
+
+
       </div>
     </div>
   );
