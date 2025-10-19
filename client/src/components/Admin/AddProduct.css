@@ -45,14 +45,14 @@
 }
 
 .form-section {
-  background: #ffffff;
+  background: rgb(196, 8, 8);
   border: 2px solid rgba(211, 47, 47, 0.2);
   border-radius: 12px;
   padding: 24px;
 }
 
-.section-title {
-  color: #333333;
+.section-title {  
+  color: white;
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 20px;
@@ -76,6 +76,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 20px;
 }
 
 .form-label {
@@ -99,7 +100,7 @@
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 8px;
   background: #f8f8f8;
-  color: #333333;
+  color: rgb(196, 8, 8);
   font-size: 14px;
   transition: all 0.3s ease;
 }
@@ -112,6 +113,20 @@
   background: #ffffff;
 }
 
+.form-input .image-upload {
+ 
+  padding: 12px 16px;
+
+  border: 2px solid rgba(211, 47, 47, 0.3);
+  border-radius: 8px;
+  background: #f8f8f8;
+  color: rgb(196, 8, 8);
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+
+
 .form-textarea {
   min-height: 100px;
   resize: vertical;
@@ -123,9 +138,9 @@
   gap: 8px;
 }
 
-.input-with-button .form-input {
+/* .input-with-button .form-input {
   flex: 1;
-}
+} */
 
 .btn-generate {
   padding: 12px 16px;
@@ -377,22 +392,7 @@
   gap: 24px;
 }
 
-.form-section {
-  background: rgba(42, 42, 42, 0.5);
-  border: 2px solid rgba(211, 47, 47, 0.2);
-  border-radius: 12px;
-  padding: 24px;
-}
 
-.section-title {
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
 .form-row {
   display: grid;
@@ -405,11 +405,6 @@
   margin-bottom: 0;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 
 .form-label {
   color: #ffffff;
@@ -425,25 +420,7 @@
   color: #ff4444;
 }
 
-.form-input,
-.form-textarea,
-.form-select {
-  padding: 12px 16px;
-  border: 2px solid rgba(211, 47, 47, 0.3);
-  border-radius: 8px;
-  background: rgba(30, 30, 30, 0.8);
-  color: #ffffff;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
 
-.form-input:focus,
-.form-textarea:focus,
-.form-select:focus {
-  outline: none;
-  border-color: #d32f2f;
-  background: rgba(42, 42, 42, 0.8);
-}
 
 .form-textarea {
   min-height: 100px;
@@ -456,9 +433,7 @@
   gap: 8px;
 }
 
-.input-with-button .form-input {
-  flex: 1;
-}
+
 
 .btn-generate {
   padding: 12px 16px;
@@ -689,9 +664,7 @@
     padding: 0 16px;
   }
   
-  .form-section {
-    padding: 20px;
-  }
+
   
   .form-row {
     grid-template-columns: 1fr;

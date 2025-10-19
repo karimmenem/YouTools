@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="product-card">
-      <div className="product-image-container">
+      <div className="product-image-container" onClick={() => console.log(product)}>
         <img 
           src={product.image_url || product.image || '/placeholder-product.jpg'} 
           alt={product.name}
@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
             e.target.src = '/placeholder-product.jpg';
           }}
         />
-        {product.original_price && product.original_price > product.price && (
+        {/* {product.original_price && product.original_price > product.price && (
           <span className="discount-badge">
             -{calculateDiscount(product.original_price, product.price)}%
           </span>
@@ -33,22 +33,23 @@ const ProductCard = ({ product }) => {
           <span className="product-badge">
             {product.badge}
           </span>
-        )}
+        )} */}
       </div>
 
       <div className="product-info">
         <h3 className="product-title">{product.name}</h3>
-        <p className="product-code">Código: {product.code}</p>
+        {/* <p className="product-code">Código: {product.code}</p> */}
 
         <div className="product-pricing">
-          {product.original_price && product.original_price > product.price && (
+          {/* {product.original_price && product.original_price > product.price && (
             <span className="original-price">
               {formatPrice(product.original_price)}
             </span>
-          )}
-          <span className="current-price">
-            {formatPrice(product.price)}
-          </span>
+          )} */}
+          <div className="current-price">
+            <span className='span1'>Preço: </span>
+           <span className='span2'>{ formatPrice(product.price)}</span> 
+          </div>
         </div>
       </div>
     </div>

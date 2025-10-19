@@ -29,28 +29,35 @@
   font-size: 16px;
 }
 
-.top-right {
+/* .top-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: #b71c1c;
+} */
+
+.lang-admin-container {
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
 .language-toggle {
-  background: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-  padding: 4px 10px;
-  border-radius: 15px;
-  font-size: 12px;
+  padding: 20px 20px;
+  border-radius: 9px;
+  font-size: 15px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 5px;
-  transition: all 0.3s ease;
+  
 }
 
 .language-toggle:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #7b1111;
 }
 
 .language-toggle .icon {
@@ -58,12 +65,17 @@
 }
 
 .header-main {
-  padding: 15px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 50px;
+  padding: 25px 40px;
   background: #ffffff;
 }
 
 .header-content {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
 }
@@ -92,8 +104,8 @@
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: 36px;
   font-weight: 900;
-  color: #ffffff; /* white text */
-  text-shadow: 
+  color: black; /* white text */
+  /* text-shadow: 
     -2px -2px 0 #d32f2f,
     2px -2px 0 #d32f2f,
     -2px 2px 0 #d32f2f,
@@ -101,20 +113,20 @@
     -2px 0 0 #d32f2f,
     2px 0 0 #d32f2f,
     0 -2px 0 #d32f2f,
-    0 2px 0 #d32f2f; /* red outline */
+    0 2px 0 #d32f2f; red outline */
   letter-spacing: 1px;
   margin-right: 4px;
 }
 
 .tools-text {
   font-family: 'Arial Black', Arial, sans-serif;
-  font-size: 36px;
+  font-size: 30px;
   font-weight: 900;
-  color: #111111; /* black text */
+  color: white; /* black text */
   background: #d32f2f; /* solid red block */
-  padding: 4px 18px; /* adjust padding */
-  border-radius: 6px; /* rectangle corners */
-  letter-spacing: 1px;
+  padding: 4px 8px; /* adjust padding */
+  border-radius: 9px; /* rectangle corners */
+ 
   text-shadow: none; /* remove previous shadow */
 }
 
@@ -122,12 +134,12 @@
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: 14px;
   font-weight: 900;
-  color: #ffffff; /* white subtitle */
-  text-shadow: 
+  color: black; /* white subtitle */
+  /* text-shadow: 
     -1px -1px 0 #d32f2f,
     1px -1px 0 #d32f2f,
     -1px 1px 0 #d32f2f,
-    1px 1px 0 #d32f2f; /* red outline */
+    1px 1px 0 #d32f2f; red outline */
   letter-spacing: 3px;
   margin-top: 2px;
   margin-left: 2px;
@@ -135,16 +147,15 @@
 
 .header-actions {
   display: flex;
-  gap: 20px;
+  height: 60px;
 }
 
 .action-btn {
   position: relative;
-  background: none;
-  border: none;
+ 
   cursor: pointer;
-  padding: 8px;
-  border-radius: 4px;
+  padding: 20px;
+  border-radius: 9px;
   transition: background-color 0.3s;
   text-decoration: none;
   color: inherit;
@@ -159,7 +170,7 @@
 
 .action-btn .icon {
   font-size: 24px;
-  color: #333333;
+  color: white;
 }
 
 .badge {
@@ -207,10 +218,7 @@
   color: #d32f2f;
 }
 
-.nav-item:first-child {
-  color: #d32f2f;
-  font-weight: 600;
-}
+
 
 .admin-btn {
   background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;

@@ -135,7 +135,7 @@ const AddProduct = ({ onProductAdded }) => {
 
           <div className="form-group">
             <label className="form-label">{language === 'pt' ? 'Upload de Imagem' : 'Upload Image'}</label>
-            <input type="file" accept="image/*" onChange={handleImageUpload} disabled={loading} className="form-input" />
+            <input type="file" accept="image/*" onChange={handleImageUpload} disabled={loading} className="form-input upload-image" />
             {imagePreview && (
               <div className="image-preview" style={{ marginTop: '12px' }}>
                 <img src={imagePreview} alt="Preview" />

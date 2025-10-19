@@ -103,8 +103,9 @@
   border-radius: 0 0 20px 20px;
 }
 
+
 .product-title {
-  font-size: 14px; /* Balanced title size */
+  font-size: 28px; /* Balanced title size */
   font-weight: 700;
   color: #333333 !important;
   margin-bottom: 8px; /* Balanced margin */
@@ -115,9 +116,9 @@
 
 .product-pricing {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
-  margin-top: auto;
+
 }
 
 .original-price {
@@ -129,14 +130,27 @@
 }
 
 .current-price {
+  display: flex;
+  flex-direction: row;
+  gap:10px;
   font-size: 18px; /* Slightly larger price */
   font-weight: 900;
   color: #ff4500 !important;
-  text-shadow: 
-    0 0 20px rgba(255, 69, 0, 0.4);
+  
   letter-spacing: 0.6px;
   background: none !important;
-  -webkit-text-fill-color: #ff4500 !important;
+ 
+}
+
+.current-price .span1{
+ color: black;
+ 
+}
+
+.current-price .span2{
+  
+ 
+ 
 }
 
 /* Responsive adjustments */

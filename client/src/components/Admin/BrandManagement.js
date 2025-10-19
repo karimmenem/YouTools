@@ -130,7 +130,7 @@ const BrandManagement = () => {
 
   return (
     <div className="brand-management">
-      <h2 style={{ marginBottom: '1rem', color: '#fff' }}>{language === 'pt' ? 'Gerenciar Marcas' : 'Manage Brands'}</h2>
+      <h2 style={{ marginBottom: '1rem', color: 'black' }}>{language === 'pt' ? 'Gerenciar Marcas' : 'Manage Brands'}</h2>
       {message.text && (
         <div style={{ marginBottom: '1rem', color: message.type === 'success' ? '#4caf50' : '#f44336' }}>
           {message.text}
@@ -141,11 +141,13 @@ const BrandManagement = () => {
           type="text"
           placeholder={language === 'pt' ? 'Digite nome da marca' : 'Enter brand name'}
           value={newBrand.name}
+          style={{border: '1px solid #d32f2f', borderRadius: '6px', padding: '6px 10px'}}
           onChange={e => setNewBrand({ name: e.target.value })}
         />
         <input
           type="file"
           accept="image/*"
+          // style={{backgroundColor: '#d32f2f'}}
           onChange={async e => {
             const file = e.target.files[0];
             if (file) {
@@ -162,7 +164,7 @@ const BrandManagement = () => {
             }
           }}
         />
-        <button onClick={handleAdd} style={{ backgroundColor: '#388e3c', color: '#fff', borderRadius: '6px', padding: '6px 12px', marginLeft: 'auto' }}>
+        <button onClick={handleAdd} style={{     backgroundColor: '#d32f2f', color: '#fff', borderRadius: '6px', padding: '6px 12px', border: 'none', cursor: 'pointer' }}>
           {language === 'pt' ? 'Adicionar' : 'Add'}
         </button>
       </div>
@@ -205,7 +207,7 @@ const BrandManagement = () => {
               setTimeout(() => { if (newOrder) reorderBrands(newOrder); }, 0);
             }}
             data-id={b.id}
-            style={{ minHeight: '200px', paddingBottom: '16px', border: '1px dashed transparent' }}
+            style={{ minHeight: '200px', paddingBottom: '16px', border: '1px dashed #d32f2f' }}
             onDragEnter={e => { e.preventDefault(); e.currentTarget.style.borderColor = '#666'; }}
             onDragLeave={e => { e.currentTarget.style.borderColor = 'transparent'; }}
           >

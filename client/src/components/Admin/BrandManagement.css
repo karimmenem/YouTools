@@ -15,8 +15,10 @@
 
 .brand-list {
   display: grid;
+  border: 1px solid #d32f2f;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 24px;
+  padding: 30px;
 }
 
 /* Brand card */
@@ -30,10 +32,10 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.brand-item:hover {
+/* .brand-item:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+} */
 
 .brand-item img {
   width: 100%;

@@ -1,6 +1,6 @@
 .brand-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Force exactly 3 per row on large screens */
+  grid-template-columns: repeat(5,200px); /* Force exactly 3 per row on large screens */
   gap: 24px;
   padding: 40px 20px;
   margin-top: 40px;

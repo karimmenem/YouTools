@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { login } from '../../services/authService';
+import './Auth.css';
 
 const Login = ({ onLogin }) => {
   const { language } = useLanguage();
@@ -45,25 +46,21 @@ const Login = ({ onLogin }) => {
       <div className="auth-card">
         <div className="auth-header">
           <div className="auth-logo">
-            <span className="you-text">YOU</span>
-            <span className="tools-text">TOOLS</span>
+            <span className="auth-you-text">YOU</span>
+            <span className="auth-tools-text">TOOLS</span>
           </div>
-          <div className="auth-subtitle">
-            {language === 'pt' ? 'FERRAMENTAS E EQUIPAMENTOS' : 'TOOLS & EQUIPMENT'}
-          </div>
+         
           <h2 className="auth-title">
             {language === 'pt' ? 'Login Administrativo' : 'Admin Login'}
           </h2>
-          <p className="auth-description">
-            {language === 'pt' ? 'Acesse o painel administrativo' : 'Access the admin panel'}
-          </p>
+          
         </div>
 
         {error && <div className="error-message">{error}</div>}
         
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">{language === 'pt' ? 'Email' : 'Email'}</label>
+            <label className="auth-label">{language === 'pt' ? 'Email' : 'Email'}</label>
             <input
               className="form-input"
               type="email"
@@ -77,7 +74,7 @@ const Login = ({ onLogin }) => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">{language === 'pt' ? 'Senha' : 'Password'}</label>
+            <label className="auth-label">{language === 'pt' ? 'Senha' : 'Password'}</label>
             <input
               className="form-input"
               type="password"
