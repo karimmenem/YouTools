@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -15,7 +18,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="product-card">
-      <div className="product-image-container" onClick={() => console.log(product)}>
+      <div className="product-image-container" onClick={() => {navigate(`/produto/${product.id}`); console.log(product)}}>
         <img 
           src={product.image_url || product.image || '/placeholder-product.jpg'} 
           alt={product.name}

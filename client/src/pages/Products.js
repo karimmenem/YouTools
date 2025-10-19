@@ -101,7 +101,7 @@ const Products = () => {
     <div className="home">
       <div className="container">
         <div className="home-header">
-          <h1 className="page-title">{getCategoryTitle()}</h1>
+          <h1 className="page-title" style={{marginLeft: '90px'}}>{getCategoryTitle()}</h1>
           <p className="page-subtitle">
             {category 
               ? `Produtos profissionais da categoria ${getCategoryTitle().toLowerCase()}`

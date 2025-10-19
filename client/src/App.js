@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Products from './pages/Products';
 import BrandProducts from './pages/BrandProducts';
 import Auth from './pages/Auth';
+import ProductDetail from './pages/ProductDetail'; // Import ProductDetail component
 import './styles/App.css';
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
             <Route path="construcao-civil" element={<Products />} />
             <Route path="jardim-agricultura" element={<Products />} />
             <Route path=":brandSlug" element={<BrandProducts />} />
+            <Route path="produto/:id" element={<ProductDetail />} /> {/* Add route for product detail page */}
           </Route>
           <Route path="/admin/*" element={<Auth />} />
           <Route path="*" element={<Navigate to="/" replace />} />

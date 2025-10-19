@@ -194,6 +194,7 @@
 
 .nav-menu {
   display: flex;
+  justify-content: center;
   gap: 30px;
   padding: 12px 40px;
   overflow-x: auto;
