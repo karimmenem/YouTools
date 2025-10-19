@@ -1,6 +1,4 @@
 import { createServer, Model, Factory } from 'miragejs';
-import { brands as brandsData } from '../data/brands';
-import { posters as postersData } from '../data/posters';
 
 export function makeServer({ environment = 'development' } = {}) {
   let server = createServer({
@@ -17,21 +15,12 @@ export function makeServer({ environment = 'development' } = {}) {
 
       // Seed brands: production -> static dataset; development -> localStorage fallback
       let seedBrands = [];
-      if (environment === 'production') {
-        seedBrands = (brandsData && brandsData.length) ? brandsData : [];
-      } else {
-        try { const json = window.localStorage.getItem('brands'); seedBrands = json ? JSON.parse(json) : []; } catch { seedBrands = []; }
-        if (!seedBrands.length) seedBrands = brandsData;
-      }
+      // brandsData import removed
       seedBrands.forEach(brand => { server.create('brand', { id: brand.id, name: brand.name, slug: brand.slug, logo: brand.logo }); });
 
       // Seed posters: production -> static dataset; development -> localStorage fallback
       let seedPosters = [];
-      if (environment === 'production') {
-        seedPosters = (postersData && postersData.length) ? postersData : [];
-      } else {
-        try { const json = window.localStorage.getItem('posters'); seedPosters = json ? JSON.parse(json) : []; } catch { seedPosters = []; }
-      }
+      // postersData import removed
       seedPosters.forEach(poster => server.create('poster', poster));
     },
     routes() {

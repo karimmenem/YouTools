@@ -3,7 +3,9 @@
   min-height: 80vh;
 }
 
+/* HEADER */
 .admin-header {
+  position: relative;
   background: #ffffff;
   border: 2px solid rgba(211, 47, 47, 0.3);
   border-radius: 16px;
@@ -35,7 +37,6 @@
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 8px;
-  text-shadow: none;
 }
 
 .user-welcome {
@@ -81,12 +82,14 @@
   transform: translateY(-2px);
 }
 
+/* CONTENT AREA */
 .admin-content {
   display: flex;
   gap: 30px;
   align-items: flex-start;
 }
 
+/* SIDEBAR */
 .admin-nav {
   display: flex;
   flex-direction: column;
@@ -144,6 +147,7 @@
   flex: 1;
 }
 
+/* MAIN AREA */
 .admin-main {
   flex: 1;
   background: #ffffff;
@@ -155,13 +159,12 @@
     inset 0 1px 0 rgba(211, 47, 47, 0.1);
 }
 
-/* Dashboard Styles */
+/* DASHBOARD */
 .dashboard h2 {
   color: #333333;
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 30px;
-  text-shadow: none;
 }
 
 .stats-grid {
@@ -223,7 +226,7 @@
   letter-spacing: 0.5px;
 }
 
-/* View Main Site Link */
+/* VIEW MAIN SITE */
 .view-main-site {
   position: fixed;
   top: 20px;
@@ -251,101 +254,88 @@
   color: #ffffff;
 }
 
-/* Responsive Design */
+/* --- RESPONSIVE FIXES --- */
+
+/* ✅ Between 1024px and 768px — smooth layout collapse */
 @media (max-width: 1024px) {
   .admin-content {
     flex-direction: column;
   }
-  
+
   .admin-nav {
-    min-width: auto;
-    width: 100%;
     flex-direction: row;
+    justify-content: flex-start;
     overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+    min-width: unset;
     padding: 16px;
+    border-radius: 12px;
   }
-  
+
   .nav-button {
-    min-width: 200px;
-    flex-shrink: 0;
+    
+    text-align: center;
+  }
+
+  .admin-main {
+    width: 100%;
+  }
+
+  .admin-header {
+    justify-content: center;
+    text-align: center;
   }
 }
 
+/* ✅ Tablets and small screens */
 @media (max-width: 768px) {
-  .admin-panel {
-    padding: 20px 0;
-  }
-  
   .admin-header {
-    padding: 20px;
     flex-direction: column;
     text-align: center;
+    gap: 12px;
+    padding: 20px;
   }
-  
+
   .admin-user-info h1 {
-    font-size: 24px;
+    font-size: 22px;
   }
-  
+
+  .admin-nav {
+    gap: 10px;
+    padding: 12px;
+  }
+
   .admin-main {
     padding: 20px;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
-  
-  .view-main-site {
-    position: relative;
-    top: auto;
-    right: auto;
-    margin-bottom: 20px;
-    align-self: center;
-  }
 }
 
-@media (max-width: 600px) {
-  /* Compact overhaul for small phones */
-  .admin-header, .admin-nav, .admin-main { border-width:1px; }
-  .admin-header { padding:12px 14px; gap:10px; }
-  .admin-user-info h1 { font-size:18px; }
-  .user-welcome { font-size:12px; gap:6px; }
-  .admin-badge { font-size:10px; padding:2px 8px; }
-  .logout-button { padding:8px 14px; font-size:11px; border-width:1px; }
-  .admin-content { gap:14px; }
-  .admin-nav { padding:8px 6px; gap:6px; border-radius:10px; }
-  .nav-button { padding:10px 12px; font-size:11px; gap:8px; min-width:140px; border-radius:9px; }
-  .nav-icon { font-size:16px; width:20px; }
-  .admin-main { padding:16px; border-radius:12px; }
-  .dashboard h2 { font-size:20px; margin-bottom:16px; }
-  .stat-card { padding:14px; border-width:1px; }
-  .stat-icon { font-size:26px; width:40px; }
-  .stat-info h3 { font-size:20px; text-shadow:none; }
-  
-  .product-list-header { padding:14px 16px; }
-  .product-list-title { font-size:16px; margin-bottom:8px; }
-}
-
+/* ✅ Compact phones */
 @media (max-width: 480px) {
-  .admin-panel { padding:8px 0; }
-  .admin-header { padding:10px 12px; margin-bottom:12px; border-width:1px; }
-  .admin-user-info h1 { font-size:16px; }
-  .user-welcome { font-size:11px; }
-  .logout-button { padding:6px 10px; font-size:10px; }
-  .admin-nav { padding:6px 4px; gap:4px; }
-  .nav-button { padding:8px 10px; font-size:10px; min-width:110px; }
-  .nav-icon { font-size:14px; width:18px; }
-  .admin-main { padding:12px; }
-  .dashboard h2 { font-size:18px; margin-bottom:12px; }
-  .stat-card { padding:12px; }
-  .stat-icon { font-size:24px; width:34px; }
-  .stat-info h3 { font-size:18px; }
-}
-
-@media (max-width: 380px) {
-  .admin-user-info h1 { font-size:14px; }
-  .nav-button { padding:6px 8px; font-size:9px; min-width:100px; }
-  .logout-button { font-size:9px; padding:6px 8px; }
-  .admin-main { padding:10px; }
-  .stat-card { padding:10px; }
-  .stat-info h3 { font-size:16px; }
+  .admin-header {
+    padding: 12px;
+  }
+  .admin-user-info h1 {
+    font-size: 18px;
+  }
+  .user-welcome {
+    font-size: 12px;
+  }
+  .logout-button {
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+  .nav-button {
+    min-width: 120px;
+    font-size: 10px;
+    padding: 8px 10px;
+  }
+  .stat-info h3 {
+    font-size: 18px;
+  }
 }

@@ -1,16 +1,21 @@
+/* ---------- BRAND GRID ---------- */
 .brand-grid {
   display: grid;
-  grid-template-columns: repeat(6, 210px);
+  grid-template-columns: repeat(6, 1fr);
   gap: 24px;
-  padding: 40px 40px;
+  padding: 40px;
+  justify-content: center;
 }
 
-/* Responsive: collapse to 2 then 1 column */
+/* Responsive: collapse progressively */
 @media (max-width: 1100px) {
   .brand-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 36px;
   }
 }
+
 @media (max-width: 820px) {
   .brand-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -18,53 +23,48 @@
     padding: 32px 16px;
   }
 }
+
 @media (max-width: 640px) {
   .brand-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 14px;
     padding: 28px 14px;
   }
 }
-@media (max-width: 520px) {
-  .brand-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    padding: 24px 12px;
-  }
-}
+
 @media (max-width: 420px) {
   .brand-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 12px;
     padding: 22px 10px;
   }
 }
 
+/* ---------- BRAND CARD ---------- */
 .brand-card {
   display: flex;
   align-items: center;
   justify-content: center;
   aspect-ratio: 1 / 1;
   border-radius: 16px;
-  background-color: #ffffff; /* Clean white background */
-  border: 1px solid #e0e0e0; /* Subtle border */
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
   text-decoration: none;
-  padding: 0; /* Remove inner padding so image can occupy full area */
+  padding: 0;
   box-sizing: border-box;
 }
 
 .brand-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .brand-logo {
-  display: block; /* Remove default inline spacing */
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Fill the square; may crop if aspect ratios differ */
+  object-fit: contain; /* keeps full logo visible */
   transition: transform 0.3s ease;
 }
 
@@ -72,16 +72,15 @@
   transform: scale(1.05);
 }
 
-/* shrink card visuals */
-.brand-card {
-  aspect-ratio: 1 / 1;
-  border-radius: 14px;
-}
+/* Slightly smaller radius on smaller screens */
 @media (max-width: 640px) {
   .brand-card {
     border-radius: 12px;
   }
 }
-.brand-logo {
-  object-fit: cover;
+
+@media (max-width: 420px) {
+  .brand-card {
+    border-radius: 10px;
+  }
 }
