@@ -8,8 +8,6 @@ import './Layout.css';
 const Layout = () => {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
-  
-  console.log('Layout rendering, current path:', location.pathname, 'isAdminPage:', isAdminPage);
 
   return (
     <div className="layout">

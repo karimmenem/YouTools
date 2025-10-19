@@ -98,19 +98,12 @@ export const deleteProduct = async (id) => {
 export const getCategories = async () => {
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('categories').select('id,name,slug');
+      const { data, error } = await supabase.from('categories').select('id,name,created_at');
       if (error) throw error;
       return { success: true, data: data || [], remote: true };
     } catch (e) { console.warn('Supabase categories fallback:', e.message); }
   }
-  try {
-    const response = await fetch(`${API_BASE}/categories`, { headers:{'Accept':'application/json'} });
-    const data = await handleResponse(response);
-    return { success: true, data: data.categories || data };
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    return { success: true, data: [], fallback:true };
-  }
+  return { success: true, data: [], fallback:true };
 };
 
 export const refreshProducts = async () => { return await getProducts(); };

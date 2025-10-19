@@ -42,11 +42,8 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="produtos" element={<Products />} />
-            <Route path="ferramentas-manuais" element={<Products />} />
-            <Route path="maquinas-eletricas" element={<Products />} />
-            <Route path="movimentacao-carga" element={<Products />} />
-            <Route path="construcao-civil" element={<Products />} />
-            <Route path="jardim-agricultura" element={<Products />} />
+            <Route path="produtos/:categoryId" element={<Products />} />
+            
             <Route path=":brandSlug" element={<BrandProducts />} />
             <Route path="produto/:id" element={<ProductDetail />} /> {/* Add route for product detail page */}
           </Route>

@@ -33,7 +33,7 @@
 /* Compact single-line marquee (current implementation) */
 .brand-marquee { position:relative; overflow:hidden; padding:18px 0; background:linear-gradient(120deg,#ffffff,#f7f7f7); }
 .brand-marquee:hover .marquee-track { animation-play-state:paused; }
-.brand-marquee.single { padding:18px 0; }
+.brand-marquee.single { margin:18px 0; }
 .brand-marquee.single::before,.brand-marquee.single::after { content:""; position:absolute; top:0; bottom:0; width:70px; z-index:2; pointer-events:none; }
 .brand-marquee.single::before { left:0; background:linear-gradient(to right,#ffffff,rgba(255,255,255,0)); }
 .brand-marquee.single::after { right:0; background:linear-gradient(to left,#ffffff,rgba(255,255,255,0)); }
@@ -42,8 +42,30 @@
 @keyframes marquee-single { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
 
 /* Brand chip (slider miniature) */
-.brand-chip-mini { flex:0 0 auto; display:flex; align-items:center; justify-content:center; height:62px; min-width:118px; padding:10px 20px; background:#fff; border:1px solid #e6e6e6; border-radius:18px; box-shadow:0 3px 10px rgba(0,0,0,.04); transition:transform .35s,box-shadow .35s,filter .4s; }
-.brand-chip-mini img { max-height:42px; max-width:140px; opacity:.85; transition:filter .45s,opacity .45s,transform .45s; }
+.brand-chip-mini {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 62px;
+  min-width: 118px;
+  padding: 0; /* remove inner padding so img fits fully */
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 18px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.04);
+  overflow: hidden; /* hide any overflow */
+  transition: transform .35s, box-shadow .35s, filter .4s;
+}
+
+.brand-chip-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fills container completely */
+  display: block;
+}
+
+
 .brand-chip-mini:hover { transform:translateY(-5px); box-shadow:0 10px 28px -6px rgba(0,0,0,.12); }
 /* .brand-chip-mini:hover img { filter:grayscale(0%) brightness(1) contrast(1.05); opacity:1; transform:scale(1.06); } */
 

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import ProductCard from '../components/Product/ProductCard';
 import { getProducts, getCategories } from '../services/productService';
 import { useLanguage } from '../context/LanguageContext';
@@ -10,33 +10,31 @@ const Products = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const location = useLocation();
-  const { t } = useLanguage();
 
-  // Get category from URL path
-  const getCurrentCategory = () => {
-    const path = location.pathname.replace('/', '');
-    return path === 'produtos' ? null : path;
-  };
+  const { categoryId } = useParams(); // ✅ get category from URL (e.g., /4)
+  const { t } = useLanguage();
 
   useEffect(() => {
     loadData();
   }, []);
 
-  // Update products when path or products change
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filterProductsByCategory = useCallback((categoryId) => {
+    const filtered = allProducts.filter(
+      (product) => String(product.category) === String(categoryId)
+    );
+    setProducts(filtered);
+  }, [allProducts]);
+
   useEffect(() => {
-    const category = getCurrentCategory();
-    if (category && allProducts.length > 0) {
-      filterProductsByCategory(category);
+    if (categoryId && allProducts.length > 0) {
+      filterProductsByCategory(categoryId);
     } else if (allProducts.length > 0) {
       setProducts(allProducts);
     }
-  }, [location.pathname, allProducts]);
+  }, [categoryId, allProducts, filterProductsByCategory]);
 
   const loadData = async () => {
     try {
-      // Load products and categories
       const [productsResponse, categoriesResponse] = await Promise.all([
         getProducts(),
         getCategories()
@@ -56,30 +54,15 @@ const Products = () => {
     }
   };
 
-  const filterProductsByCategory = (categorySlug) => {
-    const filtered = allProducts.filter(product => product.category === categorySlug);
-    setProducts(filtered);
-    
-    // Find category name for display
-    const categoryData = categories.find(cat => cat.slug === categorySlug);
+  const getCategoryObject = () => {
+    if (!categoryId) return null;
+    return categories.find((cat) => String(cat.id) === String(categoryId));
   };
 
   const getCategoryTitle = () => {
-    const category = getCurrentCategory();
-    
-    if (!category) {
-      return t('allProducts') || 'Todos os Produtos';
-    }
-    
-    const categoryNames = {
-      'ferramentas-manuais': t('manualTools') || 'Ferramentas Manuais',
-      'maquinas-eletricas': t('electricMachines') || 'Máquinas Elétricas',
-      'movimentacao-carga': t('cargoMovement') || 'Movimentação de Carga',
-      'construcao-civil': t('civilConstruction') || 'Construção Civil',
-      'jardim-agricultura': t('gardenAgriculture') || 'Jardim e Agricultura'
-    };
-    
-    return categoryNames[category] || category;
+    const categoryObj = getCategoryObject();
+    if (categoryObj) return categoryObj.name;
+    return t('allProducts') || 'Todos os Produtos';
   };
 
   if (loading) {
@@ -95,44 +78,39 @@ const Products = () => {
     );
   }
 
-  const category = getCurrentCategory();
-
   return (
     <div className="home">
       <div className="container">
         <div className="home-header">
-          <h1 className="page-title" style={{marginLeft: '90px'}}>{getCategoryTitle()}</h1>
-          <p className="page-subtitle">
-            {category 
-              ? `Produtos profissionais da categoria ${getCategoryTitle().toLowerCase()}`
-              : 'Explore toda nossa linha de ferramentas e equipamentos profissionais'
-            }
-          </p>
+          <h1 className="page-title" style={{ marginLeft: '90px' }}>
+            {getCategoryTitle()}
+          </h1>
+          
         </div>
 
         <div className="products-grid products-grid-compact">
-          {products.map(product => (
-            <ProductCard 
-              key={product.id} 
-              product={product}
-            />
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
 
         {products.length === 0 && (
-          <div className="empty-state">
-            <div className="empty-icon">🔧</div>
+          <div className="empty-state" style={{
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center'
+}}>
+            <div className="empty-icon" >🔧</div>
             <h3>
-              {category 
+              {categoryId
                 ? `Nenhum produto encontrado na categoria ${getCategoryTitle()}`
-                : 'Nenhum produto disponível no momento'
-              }
+                : 'Nenhum produto disponível no momento'}
             </h3>
             <p>
-              {category 
+              {categoryId
                 ? 'Estamos trabalhando para adicionar mais produtos nesta categoria.'
-                : 'Verifique novamente em breve!'
-              }
+                : 'Verifique novamente em breve!'}
             </p>
           </div>
         )}

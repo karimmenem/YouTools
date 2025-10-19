@@ -2,15 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { addProduct } from '../../services/productService';
 import { getBrands } from '../../services/brandService';
+import { getCategories } from '../../services/categoryService';
 import './AddProduct.css';
 
 const AddProduct = ({ onProductAdded }) => {
   const { language } = useLanguage();
   const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     brand: '',
+    category: '',
     image_url: ''
   });
   const [imageFile, setImageFile] = useState(null);
@@ -23,6 +26,11 @@ const AddProduct = ({ onProductAdded }) => {
     (async () => {
       const res = await getBrands();
       if (res.success) setBrands(res.data);
+    })();
+    // load available categories
+    (async () => {
+      const res = await getCategories();
+      if (res.success) setCategories(res.data);
     })();
   }, []);
 
@@ -49,7 +57,7 @@ const AddProduct = ({ onProductAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.brand || !formData.price) return;
+    if (!formData.name || !formData.brand || !formData.price || !formData.category) return;
     setLoading(true);
     setMessage({ type: '', text: '' });
 
@@ -58,6 +66,7 @@ const AddProduct = ({ onProductAdded }) => {
         name: formData.name,
         price: parseFloat(formData.price),
         brand: formData.brand,
+        category: formData.category,
         image_url: imageFile ? imagePreview : formData.image_url
       };
 
@@ -74,6 +83,7 @@ const AddProduct = ({ onProductAdded }) => {
           name: '',
           price: '',
           brand: '',
+          category: '',
           image_url: ''
         });
         setImageFile(null);
@@ -126,6 +136,14 @@ const AddProduct = ({ onProductAdded }) => {
               <label className="form-label required">{language === 'pt' ? 'Preço' : 'Price'} (R$)</label>
               <input type="number" name="price" value={formData.price} onChange={handleChange} className="form-input" step="0.01" min="0" required disabled={loading} placeholder="0.00" />
             </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label required">{language === 'pt' ? 'Categoria' : 'Category'}</label>
+            <select name="category" value={formData.category} onChange={handleChange} className="form-select" required disabled={loading}>
+              <option value="">{language === 'pt' ? 'Selecione' : 'Select'}</option>
+              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
           </div>
 
           <div className="form-group">

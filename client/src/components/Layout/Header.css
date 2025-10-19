@@ -195,7 +195,7 @@
 .nav-menu {
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 60px;
   padding: 12px 40px;
   overflow-x: auto;
 }
@@ -203,7 +203,7 @@
 .nav-item {
   color: #333333;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 19px;
   font-weight: 500;
   white-space: nowrap;
   padding: 8px 0;

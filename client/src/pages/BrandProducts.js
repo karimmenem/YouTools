@@ -54,14 +54,17 @@ const BrandProducts = () => {
   return (
     <div className="home">
       <div className="container">
-        <h1>{brand ? brand.name : brandSlug}</h1>
+        <div style={{paddingLeft: '40px'}}>
+            <h1>{brand ? brand.name : brandSlug}</h1>
+        </div>
+        
         <div className="products-grid">
           {products.map(product => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
         {products.length === 0 && (
-          <div className="empty-state">
+          <div className="empty-state" style={{ display: 'flex', justifyContent: 'center' ,textAlign: 'center', marginTop: '2rem' }}>
             <h3>No products found for {brand ? brand.name : brandSlug}</h3>
           </div>
         )}

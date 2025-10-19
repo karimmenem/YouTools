@@ -12,13 +12,9 @@ const ProductCard = ({ product }) => {
     }).format(price);
   };
 
-  const calculateDiscount = (originalPrice, salePrice) => {
-    return Math.round(((originalPrice - salePrice) / originalPrice) * 100);
-  };
-
   return (
     <div className="product-card">
-      <div className="product-image-container" onClick={() => {navigate(`/produto/${product.id}`); console.log(product)}}>
+      <div className="product-image-container" onClick={() => {navigate(`/produto/${product.id}`)}}>
         <img 
           src={product.image_url || product.image || '/placeholder-product.jpg'} 
           alt={product.name}
