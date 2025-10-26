@@ -33,12 +33,12 @@
 /* Compact single-line marquee (current implementation) */
 .brand-marquee { position:relative; overflow:hidden; padding:18px 0; background:linear-gradient(120deg,#ffffff,#f7f7f7); }
 .brand-marquee:hover .marquee-track { animation-play-state:paused; }
-.brand-marquee.single { margin:200px 0px 20px 0; }
+.brand-marquee.single { margin:200px 0px 20px 0; position: relative; top: 0; z-index: 0; /* keep below header (header uses z-index:1000) */ }
 .brand-marquee.single::before,.brand-marquee.single::after { content:""; position:absolute; top:0; bottom:0; width:70px; z-index:2; pointer-events:none; }
 .brand-marquee.single::before { left:0; background:linear-gradient(to right,#ffffff,rgba(255,255,255,0)); }
 .brand-marquee.single::after { right:0; background:linear-gradient(to left,#ffffff,rgba(255,255,255,0)); }
-.brand-marquee-inner { width:100%; }
-.marquee-track.single { display:flex; align-items:center; gap:42px; width:max-content; height:78px; padding:0 8px; animation: marquee-single 32s linear infinite; }
+.brand-marquee-inner { width:100%; position: relative; z-index: 0; }
+.marquee-track.single { display:flex; align-items:center; gap:42px; width:max-content; height:78px; padding:0 8px; animation: marquee-single 32s linear infinite; position: relative; z-index: 0; }
 @keyframes marquee-single { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
 
 /* Brand chip (slider miniature) */
@@ -117,3 +117,21 @@ body.dark .brand-marquee::after { background:linear-gradient(to left,#1b1b1b,rgb
 body.dark .brand-chip-mini { background:#242424;border-color:#333;box-shadow:0 4px 18px -4px rgba(0,0,0,.6); }
 body.dark .brand-chip-mini img { filter:grayscale(95%) brightness(.85); }
 body.dark .brand-chip-mini:hover img { filter:grayscale(0%) brightness(1.1); }
+
+/* Fix: ensure the brand slider does not overlap other page content while scrolling
+   Animated/transformed elements can create their own stacking contexts and unexpectedly
+   sit above nearby content. Force a low stacking level for the marquee and its children. */
+.brand-marquee,
+.brand-showcase,
+.brand-marquee-inner,
+.marquee-track,
+.brand-chip,
+.brand-chip-mini {
+  position: relative;
+  z-index: 0;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* If another section needs to appear above the slider, give it a higher z-index
+   via its own stylesheet (e.g. .product-grid { position: relative; z-index: 1; }). */

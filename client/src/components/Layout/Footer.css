@@ -63,62 +63,113 @@
   }
 }
 
-/* Tablets */
-@media (max-width: 768px) {
+/* Tablets & large phones: compact two-column layout to reduce vertical stacking */
+@media (max-width: 767px) {
   .footer-content {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 30px 40px;
-    gap: 25px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 18px;
+    padding: 20px 24px;
+    align-items: start;
+    text-align: left;
   }
 
   .footer-section {
-    max-width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
   }
 
   .footer-section h4 {
-    margin-bottom: 10px;
-  }
-}
-
-/* Phones */
-@media (max-width: 600px) {
-  .footer-content {
-    padding: 25px 20px;
-    gap: 20px;
-  }
-
-  .footer-section h4 {
+    margin-bottom: 8px;
     font-size: 1rem;
   }
 
   .footer-section p {
-    font-size: 0.9rem;
+    margin-bottom: 6px;
+    color: #555555;
+    line-height: 1.4;
+    font-size: 0.92rem;
   }
 
   .footer-bottom {
-    padding: 15px 10px;
-    font-size: 0.85rem;
+    border-top: 1px solid #e0e0e0;
+    padding: 14px 10px;
+    text-align: center;
+    color: #fff;
+    background: #d32f2f;
+    font-size: 0.9rem;
+  }
+}
+
+/* Small phones: single column but compact spacing */
+@media (max-width: 480px) {
+  /* Use a compact two-column layout to reduce stacking height on narrow screens */
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 10px;
+    padding: 8px 12px;
+    text-align: left;
+    align-items: start;
+  }
+
+  /* Hide the YouTools description on very small screens to save vertical space.
+     Keep Customer Service and Contact visible. */
+  .footer-content .footer-section:first-child {
+    display: none;
+  }
+
+  .footer-section {
+    padding: 6px 4px;
+    max-width: none;
+  }
+
+  .footer-section h4 {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+
+  .footer-section p {
+    font-size: 0.82rem;
+    margin-bottom: 4px;
+    line-height: 1.25;
+  }
+
+  .footer-bottom {
+    padding: 8px 6px;
+    font-size: 0.78rem;
+  }
+
+  /* Reduce overall footer vertical footprint */
+  .footer {
+    padding-bottom: 0;
   }
 }
 
 /* Small phones */
 @media (max-width: 400px) {
   .footer-content {
-    padding: 20px 15px;
-    gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  /* ensure YouTools description hidden here as well */
+  .footer-content .footer-section:first-child {
+    display: none;
   }
 
   .footer-section h4 {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
 
   .footer-section p {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .footer-bottom {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    padding: 6px 4px;
   }
 }
