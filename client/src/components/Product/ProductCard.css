@@ -217,7 +217,7 @@
 }
 
 /* Small phones - tighter fit */
-@media (max-width: 420px) {
+@media (max-width: 480px) {
   .products-grid-compact {
     grid-template-columns: repeat(2, 200px);
     gap: 14px !important;
@@ -228,3 +228,4 @@
     height: 320px !important;
   }
 }
+

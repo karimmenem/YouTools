@@ -33,7 +33,7 @@
 /* Compact single-line marquee (current implementation) */
 .brand-marquee { position:relative; overflow:hidden; padding:18px 0; background:linear-gradient(120deg,#ffffff,#f7f7f7); }
 .brand-marquee:hover .marquee-track { animation-play-state:paused; }
-.brand-marquee.single { margin:18px 0; }
+.brand-marquee.single { margin:200px 0px 20px 0; }
 .brand-marquee.single::before,.brand-marquee.single::after { content:""; position:absolute; top:0; bottom:0; width:70px; z-index:2; pointer-events:none; }
 .brand-marquee.single::before { left:0; background:linear-gradient(to right,#ffffff,rgba(255,255,255,0)); }
 .brand-marquee.single::after { right:0; background:linear-gradient(to left,#ffffff,rgba(255,255,255,0)); }

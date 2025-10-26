@@ -11,6 +11,12 @@ const Header = () => {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith("/admin");
   const [categories, setCategories] = useState([]);
+  // show/hide header on scroll: hide when scrolling down, show on scroll up,
+  // then auto-hide again after the user stops scrolling
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = React.useRef(typeof window !== 'undefined' ? window.scrollY : 0);
+  const scrollTimer = React.useRef(null);
+
   useEffect(() => {
     // load dynamic categories
     (async () => {
@@ -19,8 +25,44 @@ const Header = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    // initialize lastScrollY
+    lastScrollY.current = typeof window !== 'undefined' ? window.scrollY : 0;
+
+    const onScroll = () => {
+      const current = window.scrollY;
+      // clear any existing stop-scroll timer
+      if (scrollTimer.current) {
+        clearTimeout(scrollTimer.current);
+        scrollTimer.current = null;
+      }
+
+      // if at very top, always show
+      if (current <= 10) {
+        setHidden(false);
+      } else if (current > lastScrollY.current && current > 50) {
+        // user scrolled down -> hide header
+        setHidden(true);
+      } else if (current < lastScrollY.current) {
+        // user scrolled up -> show header and then auto-hide after pause
+        setHidden(false);
+        scrollTimer.current = setTimeout(() => {
+          setHidden(true);
+        }, 1200);
+      }
+
+      lastScrollY.current = current;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (scrollTimer.current) clearTimeout(scrollTimer.current);
+    };
+  }, []);
+
   return (
-    <header className="header">
+    <header className={`header ${hidden ? 'header--hidden' : ''}`}>
       {/* Top bar with contact info */}
 
       {/* Main header */}
