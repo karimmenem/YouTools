@@ -133,7 +133,7 @@ const AddProduct = ({ onProductAdded }) => {
               <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required disabled={loading} placeholder={language === 'pt' ? 'Ex: Furadeira' : 'e.g. Drill'} />
             </div>
             <div className="form-group">
-              <label className="form-label required">{language === 'pt' ? 'Preço' : 'Price'} (R$)</label>
+              <label className="form-label required">{language === 'pt' ? 'Preço' : 'Price'} ($)</label>
               <input type="number" name="price" value={formData.price} onChange={handleChange} className="form-input" step="0.01" min="0" required disabled={loading} placeholder="0.00" />
             </div>
           </div>

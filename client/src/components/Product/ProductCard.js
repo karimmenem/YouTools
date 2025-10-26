@@ -5,12 +5,12 @@ import './ProductCard.css';
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(price);
-  };
+ const formatPrice = (price) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(price);
+};
 
   return (
     <div className="product-card">
