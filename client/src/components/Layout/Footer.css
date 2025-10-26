@@ -52,6 +52,39 @@
   font-size: 0.9rem;
 }
 
+/* New: inner wrapper to align copyright and button */
+.footer-bottom-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.footer-bottom-inner p {
+  margin: 0;
+  color: #fff;
+}
+
+.about-btn {
+  background: white;
+  color: #d32f2f !important;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(211,47,47,0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.about-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(211,47,47,0.28);
+  opacity: 0.95;
+}
+
 /* --- Responsive Design --- */
 
 /* Large tablets / small laptops */
@@ -102,6 +135,13 @@
     background: #d32f2f;
     font-size: 0.9rem;
   }
+
+  .footer-bottom-inner {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    text-align: center;
+  }
 }
 
 /* Small phones: single column but compact spacing */
@@ -146,6 +186,10 @@
   /* Reduce overall footer vertical footprint */
   .footer {
     padding-bottom: 0;
+  }
+
+  .footer-bottom-inner {
+    padding: 6px 8px;
   }
 }
 

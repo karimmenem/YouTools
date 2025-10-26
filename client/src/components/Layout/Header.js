@@ -19,15 +19,14 @@ const Header = () => {
   const [products, setProducts] = useState([]);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
-  const searchRef = useRef(null);
-  const searchButtonRef = useRef(null); // ✅ new ref for search icon button
+  const searchContainerRef = useRef(null);
 
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(typeof window !== "undefined" ? window.scrollY : 0);
   const scrollTimer = useRef(null);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
-  const [showSearch, setShowSearch] = useState(window.innerWidth > 767);
+  const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -57,7 +56,9 @@ const Header = () => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 767;
       setIsMobile(mobile);
-      if (!mobile) setShowSearch(true);
+      if (!mobile) {
+        setShowSearch(false); // Reset search on desktop
+      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -91,23 +92,27 @@ const Header = () => {
     return () => clearTimeout(id);
   }, [query, products, brands, categories]);
 
-  // ✅ FIX: prevent the search from closing when clicking the icon
+  // Handle clicks outside search container
   useEffect(() => {
-    const onDocClick = (e) => {
-      // ignore clicks on the search button or search box
-      if (
-        searchRef.current?.contains(e.target) ||
-        searchButtonRef.current?.contains(e.target)
-      ) {
-        return;
+    if (!isMobile || !showSearch) return;
+
+    const handleClickOutside = (e) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
+        setShowSearch(false);
+        setResults([]);
       }
-      setResults([]);
-      if (isMobile) setShowSearch(false); // also close mobile search only when clicked outside
     };
 
-    document.addEventListener("click", onDocClick);
-    return () => document.removeEventListener("click", onDocClick);
-  }, [isMobile]);
+    // Small delay to prevent the same click that opens search from closing it
+    const timer = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMobile, showSearch]);
 
   const onSelect = (item) => {
     if (!item) return;
@@ -117,6 +122,7 @@ const Header = () => {
     else if (item.type === "category") navigate(`/produtos/${item.data.id}`);
     setQuery("");
     setResults([]);
+    setShowSearch(false);
   };
 
   useEffect(() => {
@@ -149,6 +155,10 @@ const Header = () => {
 
   const placeholder = language === "pt" ? "Pesquisar..." : "Search...";
 
+  const handleSearchToggle = () => {
+    setShowSearch((prev) => !prev);
+  };
+
   return (
     <header className={`header ${hidden ? "header--hidden" : ""}`}>
       <div className="header-main">
@@ -165,25 +175,20 @@ const Header = () => {
         </div>
 
         <div
-          className="search-container"
-          ref={searchRef}
+          className={`search-container ${showSearch ? "search-active" : ""}`}
+          ref={searchContainerRef}
           style={{ gap: "30px" }}
         >
           {isMobile && (
             <button
-              ref={searchButtonRef}
               className="search-icon-btn"
-              onMouseDown={(e) => e.stopPropagation()}
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowSearch((prev) => !prev);
-              }}
+              onClick={handleSearchToggle}
             >
               <FiSearch size={20} />
             </button>
           )}
 
-          {showSearch && (
+          {(showSearch || !isMobile) && (
             <input
               className={`search-input ${isMobile ? "mobile" : ""}`}
               value={query}
@@ -194,7 +199,7 @@ const Header = () => {
             />
           )}
 
-          {results?.length > 0 && (
+          {results?.length > 0 && (showSearch || !isMobile) && (
             <div className="search-results">
               {results.map((r, idx) => (
                 <div
@@ -236,6 +241,31 @@ const Header = () => {
             </div>
           )}
 
+          {!isMobile && (
+            <div className="lang-admin-container">
+              <div className="top-right">
+                <button className="language-toggle" onClick={toggleLanguage}>
+                  <FiGlobe className="icon" />
+                  <span>{language === "pt" ? "EN" : "PT"}</span>
+                </button>
+              </div>
+
+              {!isAdminPage && (
+                <div className="header-actions">
+                  <Link to="/admin" className="action-btn admin-btn">
+                    <BiUser className="icon" />
+                    <span className="admin-text">{t("admin")}</span>
+                  </Link>
+                </div>
+              )}
+
+
+              
+            </div>
+          )}
+        </div>
+
+        {isMobile && (
           <div className="lang-admin-container">
             <div className="top-right">
               <button className="language-toggle" onClick={toggleLanguage}>
@@ -243,17 +273,8 @@ const Header = () => {
                 <span>{language === "pt" ? "EN" : "PT"}</span>
               </button>
             </div>
-
-            {!isAdminPage && (
-              <div className="header-actions">
-                <Link to="/admin" className="action-btn admin-btn">
-                  <BiUser className="icon" />
-                  <span className="admin-text">{t("admin")}</span>
-                </Link>
-              </div>
-            )}
           </div>
-        </div>
+        )}
       </div>
 
       {!isAdminPage && (

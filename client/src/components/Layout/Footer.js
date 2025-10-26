@@ -31,7 +31,10 @@ const Footer = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2025 YouTools. {t('allRightsReserved')}</p>
+          <div className="footer-bottom-inner">
+            <p>&copy; 2025 YouTools. {t('allRightsReserved')}</p>
+            <Link to="/about" className="about-btn" aria-label={t('about') || 'About'}>{t('about') || 'About'}</Link>
+          </div>
         </div>
       </div>
     </footer>
