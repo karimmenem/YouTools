@@ -82,7 +82,7 @@ const Products = () => {
     <div className="home">
       <div className="container">
         <div className="home-header">
-          <h1 className="page-title" style={{ marginLeft: '90px' }}>
+          <h1 className="page-title" style={{ marginLeft: '50px' }}>
             {getCategoryTitle()}
           </h1>
           

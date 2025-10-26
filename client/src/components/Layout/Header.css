@@ -242,6 +242,47 @@
   font-weight: 600;
 }
 
+
+
+@media (max-width: 1000px) {
+  .header-top {
+    display: none;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* Mobile logo adjustments */
+  .you-text {
+    font-size: 28px;
+  }
+  
+  .tools-text {
+    font-size: 28px;
+    padding: 3px 12px;
+  }
+  
+  .logo-subtitle {
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+  
+  .nav-menu {
+    gap: 15px;
+    padding: 10px 0;
+    justify-content: flex-start;
+  }
+  
+  .nav-item {
+    font-size: 18px;
+  }
+}
+
+
+
+
 @media (max-width: 768px) {
   .header-top {
     display: none;
@@ -273,7 +314,7 @@
   }
   
   .nav-item {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 

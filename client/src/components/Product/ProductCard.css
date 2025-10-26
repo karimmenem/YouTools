@@ -11,7 +11,7 @@
   border: 2px solid rgba(220, 220, 220, 0.5) !important; /* Light grey border */
   border-radius: 20px; /* Softer corners */
   padding: 0;
-  box-shadow: 
+  box-shadow:
     0 10px 40px rgba(0, 0, 0, 0.1),
     0 5px 20px rgba(0, 0, 0, 0.05);
   transition: all 0.5s ease-in-out;
@@ -29,9 +29,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(255, 0, 0, 0.05) 0%, 
-    transparent 50%, 
+  background: linear-gradient(135deg,
+    rgba(255, 0, 0, 0.05) 0%,
+    transparent 50%,
     rgba(255, 0, 0, 0.05) 100%) !important;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -42,7 +42,7 @@
 .product-card:hover {
   transform: translateY(-10px) scale(1.05);
   border-color: rgba(255, 69, 0, 0.8) !important;
-  box-shadow: 
+  box-shadow:
     0 20px 50px rgba(0, 0, 0, 0.15),
     0 10px 30px rgba(255, 69, 0, 0.2);
 }
@@ -87,7 +87,7 @@
   font-size: 14px;
   font-weight: 800;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  box-shadow: 
+  box-shadow:
     0 6px 16px rgba(255, 69, 0, 0.4),
     0 3px 6px rgba(0, 0, 0, 0.2);
   transition: all 0.4s ease;
@@ -103,7 +103,6 @@
   border-radius: 0 0 20px 20px;
 }
 
-
 .product-title {
   font-size: 28px; /* Balanced title size */
   font-weight: 700;
@@ -118,7 +117,6 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
-
 }
 
 .original-price {
@@ -132,79 +130,101 @@
 .current-price {
   display: flex;
   flex-direction: row;
-  gap:10px;
+  gap: 10px;
   font-size: 18px; /* Slightly larger price */
   font-weight: 900;
   color: #ff4500 !important;
-  
   letter-spacing: 0.6px;
   background: none !important;
- 
 }
 
-.current-price .span1{
- color: black;
- 
+.current-price .span1 {
+  color: black;
 }
 
-.current-price .span2{
-  
- 
- 
+/* Base grid - 3 cards per row */
+.products-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(5, 240px);
+  gap: 24px;
+  /* justify-content: center; */
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+  .products-grid-compact {
+    grid-template-columns: repeat(4, 240px);
+    gap: 20px;
+
+  }
+
   .product-card {
-    margin-top: 20px; /* Adjust spacing for smaller screens */
-    height: auto; /* Allow cards to size by content */
-    width: 100%; /* Full width for smaller screens */
+    width: 240px !important;
+    height: 360px !important;
+  }
+}
+@media (max-width: 1200px) {
+  .products-grid-compact {
+    grid-template-columns: repeat(4, 200px);
+    gap: 20px;
+   
   }
 
-  .product-image-container {
-    height: 200px; /* Adjusted for smaller screens */
-  }
-
-  .product-title {
-    font-size: 13px; /* Smaller title for smaller screens */
-  }
-
-  .current-price {
-    font-size: 16px; /* Adjusted price size */
+  .product-card {
+    width: 200px !important;
+    height: 330px !important;
   }
 }
 
-@media (max-width: 640px){
-  .product-card { width:100%; margin-top:14px; }
+@media (max-width: 920px) {
+  .products-grid-compact {
+    grid-template-columns: repeat(3, auto);
+    gap: 20px;
+   
+  }
+
+  .product-card {
+    width: 200px !important;
+    height: 300px !important;
+  }
 }
 
+/* Under 768px - keep same shape (no width/height change) */
+@media (max-width: 768px) {
+  .products-grid-compact {
+    grid-template-columns: repeat(2, 240px);
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .product-card {
+    width: 240px !important;
+    height: 360px !important;
+  }
+}
+
+/* Under 600px - show 2 cards per row */
 @media (max-width: 600px) {
-  /* Force truly compact 3-up layout */
-  .products-grid-compact .product-card { 
-    width:100% !important; 
-    height:auto !important; 
-    margin-top:10px; 
-    border-radius:14px; 
-    border-width:1px !important;
+  .products-grid-compact {
+    grid-template-columns: repeat(2, 200px);
+    gap: 20px !important;
+    justify-content: center;
   }
-  .products-grid-compact .product-image-container { 
-    height:110px !important; 
-    border-radius:14px 14px 0 0; 
+
+  .product-card {
+    width: 200px !important;
+    height: 360px !important;
   }
-  .products-grid-compact .product-info { padding:8px 8px 10px; }
-  .products-grid-compact .product-title { font-size:11px; margin-bottom:4px; line-height:1.3; }
-  .products-grid-compact .current-price { font-size:13px; letter-spacing:.2px; }
-  .products-grid-compact .original-price { font-size:10px; }
-  .products-grid-compact .discount-badge { top:6px; right:6px; padding:4px 6px; font-size:10px; border-radius:10px; }
-  .products-grid-compact { gap:8px !important; }
-}
-@media (max-width: 420px){
-  .products-grid-compact .product-image-container { height:100px !important; }
-  .products-grid-compact .product-title { font-size:10px; }
-  .products-grid-compact .current-price { font-size:12px; }
 }
 
-/* 3-per-row container utility (apply where products rendered on home/brand pages) */
-.products-grid-compact { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-@media (max-width:520px){ .products-grid-compact { gap:12px; } }
-@media (max-width:420px){ .products-grid-compact { gap:10px; } }
+/* Small phones - tighter fit */
+@media (max-width: 420px) {
+  .products-grid-compact {
+    grid-template-columns: repeat(2, 200px);
+    gap: 14px !important;
+  }
+
+  .product-card {
+    width: 200px !important;
+    height: 320px !important;
+  }
+}

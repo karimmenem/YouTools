@@ -1,7 +1,6 @@
 .home {
- 
-  min-height: 80vh;
-  background: 
+  min-height: 100vh;
+  background:
     radial-gradient(circle at 20% 80%, rgba(211, 47, 47, 0.05) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(211, 47, 47, 0.05) 0%, transparent 50%),
     #ffffff;
@@ -13,7 +12,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: 
+  background-image:
     radial-gradient(circle at 25% 25%, rgba(211, 47, 47, 0.02) 1px, transparent 1px),
     radial-gradient(circle at 75% 75%, rgba(211, 47, 47, 0.02) 1px, transparent 1px);
   background-size: 50px 50px;
@@ -21,11 +20,11 @@
   opacity: 0.3;
 }
 
+/* ===== HEADER ===== */
 .products-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* margin-bottom: 40px; */
   flex-wrap: wrap;
   gap: 20px;
   position: relative;
@@ -33,14 +32,12 @@
 }
 
 .products-header h1 {
-  color: #333333;
+  color: #333;
   font-size: 36px;
   font-weight: 900;
-  text-shadow: 
-    0 0 20px rgba(211, 47, 47, 0.2),
-    0 4px 8px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 0 20px rgba(211, 47, 47, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
   letter-spacing: 1px;
-  background: linear-gradient(135deg, #333333 0%, #555555 100%);
+  background: linear-gradient(135deg, #333 0%, #555 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -58,6 +55,7 @@
   border-radius: 2px;
 }
 
+/* ===== FILTERS ===== */
 .products-info {
   display: flex;
   align-items: center;
@@ -70,7 +68,7 @@
 }
 
 .product-count {
-  color: #333333;
+  color: #333;
   font-size: 15px;
   font-weight: 600;
 }
@@ -84,7 +82,7 @@
 
 .sort-container label {
   font-size: 14px;
-  color: #555555;
+  color: #555;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -96,8 +94,8 @@
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
-  background: #ffffff;
-  color: #333333;
+  background: #fff;
+  color: #333;
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 160px;
@@ -106,15 +104,16 @@
 .sort-select:focus {
   outline: none;
   border-color: #d32f2f;
-  box-shadow: 
+  box-shadow:
     0 0 0 3px rgba(211, 47, 47, 0.2),
     0 4px 12px rgba(211, 47, 47, 0.3);
   background: #f8f8f8;
 }
 
+/* ===== GRID LAYOUT ===== */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(5, 250px);
+  grid-template-columns: repeat(5, 270px);
   gap: 32px;
   margin-bottom: 60px;
   position: relative;
@@ -122,7 +121,130 @@
   padding: 20px 60px;
 }
 
-/* Loading / Empty states */
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Desktops & large tablets */
+@media (max-width: 1200px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 28px;
+    padding: 20px 40px;
+  }
+  .products-header h1 {
+    font-size: 32px;
+  }
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+  .home {
+    padding: 24px 16px;
+  }
+  .products-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .products-header h1 {
+    font-size: 28px;
+  }
+  .products-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    padding: 10px 20px;
+  }
+}
+
+/* Large phones / small tablets */
+@media (max-width: 600px) {
+  .home {
+    padding: 20px 12px;
+  }
+  .products-header h1 {
+    font-size: 26px;
+  }
+  .products-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    /* padding: 14px; */
+  }
+  .products-grid {
+    height: 200px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .home {
+    padding: 16px 8px;
+  }
+  .products-header h1 {
+    font-size: 24px;
+  }
+  .sort-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .products-grid {
+    grid-template-columns: 1fr; /* Single column layout */
+    gap: 20px;
+    padding: 0 16px;
+  }
+  .product-card {
+    width: 100% !important;
+    max-width: 340px;
+    margin: 0 auto;
+    height: auto;
+  }
+  .product-image-container {
+    height: 200px;
+  }
+  .product-title {
+    font-size: 16px;
+  }
+  .current-price {
+    font-size: 18px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+  .products-header h1 {
+    font-size: 22px;
+  }
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 10px;
+  }
+  .product-card {
+    max-width: 320px;
+  }
+  .product-image-container {
+    height: 180px;
+  }
+  .product-title {
+    font-size: 15px;
+  }
+  .current-price {
+    font-size: 16px;
+  }
+}
+
+/* Ultra small devices */
+@media (max-width: 360px) {
+  .products-header h1 {
+    font-size: 20px;
+  }
+  .products-grid {
+    padding: 0 6px;
+  }
+}
+
+/* ===== EMPTY & LOADING STATES ===== */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -135,7 +257,7 @@
 }
 
 .loading-container p {
-  color: #333333;
+  color: #333;
   font-size: 18px;
   font-weight: 600;
 }
@@ -151,113 +273,15 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ====== Responsive Enhancements ====== */
-
-/* Medium screens - tablets */
-@media (max-width: 1024px) {
-  .home {
-    padding: 24px 16px;
-  }
-
-  .products-header h1 {
-    font-size: 32px;
-    margin-left: 30px;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 28px;
+  to {
+    transform: rotate(360deg);
   }
 }
 
-/* Small tablets / large phones */
-@media (max-width: 768px) {
-  .products-header {
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 30px;
-    text-align: center;
-  }
-
-  .products-header h1 {
-    font-size: 28px;
-  }
-
-  .products-info {
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 16px;
-    gap: 16px;
-  }
-
-  .sort-container {
-    justify-content: center;
-  }
-
-  .sort-select {
-    min-width: 140px;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 24px;
-    padding: 0 10px;
-  }
-}
-
-/* Mobile screens */
-@media (max-width: 480px) {
-  .home {
-    padding: 16px 8px;
-  }
-
-  .products-header h1 {
-    font-size: 24px;
-  }
-
-  .products-info {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 14px;
-  }
-
-  .sort-container {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 18px;
-  }
-}
-
-/* Ultra small devices */
-@media (max-width: 360px) {
-  .products-header h1 {
-    font-size: 22px;
-  }
-
-  .products-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .sort-select {
-    width: 100%;
-  }
-}
-
-/* Empty state */
 .no-products {
   text-align: center;
   padding: 60px 20px;
-  color: #888888;
+  color: #888;
   font-size: 18px;
   font-weight: 600;
 }

@@ -70,11 +70,33 @@
 /* .brand-chip-mini:hover img { filter:grayscale(0%) brightness(1) contrast(1.05); opacity:1; transform:scale(1.06); } */
 
 /* Responsive adjustments for current single track */
-@media (max-width:900px){ .marquee-track.single { gap:34px; height:70px; } .brand-chip-mini{height:54px;min-width:108px;padding:7px 16px;} .brand-chip-mini img{max-height:36px;} }
-@media (max-width:800px){ .marquee-track.single { animation-duration:30s; } .brand-chip-mini{height:50px;min-width:105px;padding:8px 16px;border-radius:14px;} .brand-chip-mini img{max-height:34px;} }
-@media (max-width:600px){ .marquee-track.single { gap:28px; height:62px; } .brand-chip-mini{height:48px;min-width:96px;padding:6px 14px;} .brand-chip-mini img{max-height:30px;} }
-@media (max-width:520px){ .marquee-track.single { animation-duration:28s; gap:24px; height:56px; } .brand-chip-mini{height:44px;min-width:92px;padding:7px 14px;} .brand-chip-mini img{max-height:30px;} }
-@media (max-width:480px){ .brand-marquee.single { padding:6px 0; } .brand-marquee.single .marquee-track.single { animation-duration:26s; gap:20px; height:50px; } .brand-chip-mini{height:46px;min-width:90px;padding:6px 12px;border-radius:14px;} .brand-chip-mini img{max-height:28px;} }
+@media (max-width:900px){ .marquee-track.single { gap:34px; height:70px; } .brand-chip-mini{} .brand-chip-mini img{width: 100%;} }
+@media (max-width:800px){ .marquee-track.single { animation-duration:30s; } .brand-chip-mini{} .brand-chip-mini img{  height: 100%;} }
+@media (max-width:600px){ .marquee-track.single { gap:28px; height:62px; } .brand-chip-mini{} .brand-chip-mini img{  object-fit: cover; /* fills container completely */} }
+@media (max-width:520px){ .marquee-track.single { animation-duration:28s; gap:24px; height:56px; } .brand-chip-mini{} .brand-chip-mini img{  display: block;} }
+@media (max-width:480px){ .brand-marquee.single { padding:6px 0; } .brand-marquee.single .marquee-track.single { animation-duration:26s; gap:20px; height:50px; } .brand-chip-mini{} .brand-chip-mini img{width: 100%;
+  height: 100%;
+  object-fit: cover; /* fills container completely */
+  display: block;} }
+@media (max-width:400px){
+  .brand-marquee.single {
+    padding: 4px 0;
+  }
+  .marquee-track.single {
+    animation-duration: 24s;
+    gap: 16px;
+    height: 44px;
+  }
+  .brand-chip-mini {
+    
+  }
+  .brand-chip-mini img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
 
 /* Respect user reduced motion preference */
 @media (prefers-reduced-motion: reduce){ .brand-marquee.single .marquee-track.single { animation-duration:1ms; animation-iteration-count:1; transform:none !important; } }
