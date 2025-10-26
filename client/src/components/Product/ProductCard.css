@@ -224,8 +224,44 @@
   }
 
   .product-card {
-    width: 200px !important;
-    height: 320px !important;
+    width: 190px !important;
+    height: 220px !important;
+  }
+
+  .product-title{
+    font-size: 14px;
+  }
+
+  .current-price{
+    font-size: 12px;
+  }
+
+  .product-info{
+    font-size: 2px;
   }
 }
 
+
+@media (max-width: 390px) {
+  .products-grid-compact {
+    grid-template-columns: 1fr;
+    gap: 14px !important;
+  }
+
+  .product-card {
+    width: 190px !important;
+    height: 220px !important;
+  }
+
+  .product-title{
+    font-size: 14px;
+  }
+
+  .current-price{
+    font-size: 12px;
+  }
+
+  .product-info{
+    font-size: 2px;
+  }
+}

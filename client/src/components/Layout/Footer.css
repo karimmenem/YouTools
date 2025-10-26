@@ -4,6 +4,8 @@
   margin-top: auto;
   border-top: 1px solid #e0e0e0;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .container {
@@ -150,7 +152,7 @@
 /* Small phones */
 @media (max-width: 400px) {
   .footer-content {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     padding: 8px 10px;
     gap: 6px;
   }

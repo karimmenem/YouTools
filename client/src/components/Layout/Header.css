@@ -1,3 +1,7 @@
+:root {
+  --header-height: 150px;
+}
+
 .header {
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -259,6 +263,10 @@
 
 
 @media (max-width: 1000px) {
+  :root {
+    --header-height: 140px;
+  }
+
   .header-top {
     display: none;
   }
@@ -302,6 +310,10 @@
 
 
 @media (max-width: 768px) {
+  :root {
+    --header-height: 130px;
+  }
+
   .header-top {
     display: none;
   }
@@ -338,6 +350,10 @@
 }
 
 @media (max-width: 480px) {
+  :root {
+    --header-height: 120px;
+  }
+
   .you-text {
     font-size: 24px;
   }
@@ -352,4 +368,3 @@
     letter-spacing: 1px;
   }
 }
-

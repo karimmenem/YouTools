@@ -72,24 +72,45 @@
 /* Responsive adjustments for current single track */
 @media (max-width:900px){ .marquee-track.single { gap:34px; height:70px; } .brand-chip-mini{} .brand-chip-mini img{width: 100%;} }
 @media (max-width:800px){ .marquee-track.single { animation-duration:30s; } .brand-chip-mini{} .brand-chip-mini img{  height: 100%;} }
-@media (max-width:600px){ .marquee-track.single { gap:28px; height:62px; } .brand-chip-mini{} .brand-chip-mini img{  object-fit: cover; /* fills container completely */} }
-@media (max-width:520px){ .marquee-track.single { animation-duration:28s; gap:24px; height:56px; } .brand-chip-mini{} .brand-chip-mini img{  display: block;} }
-@media (max-width:480px){ .brand-marquee.single { padding:6px 0; } .brand-marquee.single .marquee-track.single { animation-duration:26s; gap:20px; height:50px; } .brand-chip-mini{} .brand-chip-mini img{width: 100%;
-  height: 100%;
-  object-fit: cover; /* fills container completely */
-  display: block;} }
-@media (max-width:400px){
+@media (max-width: 600px) {
   .brand-marquee.single {
-    padding: 4px 0;
+    display: none;
   }
   .marquee-track.single {
-    animation-duration: 24s;
-    gap: 16px;
-    height: 44px;
+    display: none;
   }
-  .brand-chip-mini {
-    
+  .brand-chip-mini {}
+  .brand-chip-mini img {
+    object-fit: cover; /* fills container completely */
   }
+}
+
+@media (max-width: 520px) {
+  .brand-marquee.single {
+    display: none;
+  }
+  .marquee-track.single {
+    animation-duration: 28s;
+    gap: 24px;
+    height: 56px;
+  }
+  .brand-chip-mini {}
+  .brand-chip-mini img {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-marquee.single {
+    display: none;
+    padding: 6px 0;
+  }
+  .brand-marquee.single .marquee-track.single {
+    animation-duration: 26s;
+    gap: 20px;
+    height: 50px;
+  }
+  .brand-chip-mini {}
   .brand-chip-mini img {
     width: 100%;
     height: 100%;
@@ -97,6 +118,26 @@
     display: block;
   }
 }
+
+@media (max-width: 400px) {
+  .brand-marquee.single {
+    display: none;
+    padding: 4px 0;
+  }
+  .marquee-track.single {
+    animation-duration: 24s;
+    gap: 16px;
+    height: 44px;
+  }
+  .brand-chip-mini {}
+  .brand-chip-mini img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
 
 /* Respect user reduced motion preference */
 @media (prefers-reduced-motion: reduce){ .brand-marquee.single .marquee-track.single { animation-duration:1ms; animation-iteration-count:1; transform:none !important; } }
@@ -128,7 +169,7 @@ body.dark .brand-chip-mini:hover img { filter:grayscale(0%) brightness(1.1); }
 .brand-chip,
 .brand-chip-mini {
   position: relative;
-  z-index: 0;
+  z-index: 1;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }

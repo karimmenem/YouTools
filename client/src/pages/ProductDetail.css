@@ -59,6 +59,8 @@
     align-items: center;
     padding: 24px 12px;
     gap: 24px;
+    /* ensure content is pushed below the fixed header on small screens */
+
   }
 
   .product-detail-image img {
@@ -79,5 +81,13 @@
 
   .info-row b {
     min-width: auto;
+  }
+}
+
+/* Extra small screens: slightly smaller offset */
+@media (max-width: 400px) {
+  .product-detail-container {
+    
+    padding: 18px 10px;
   }
 }

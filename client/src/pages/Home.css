@@ -1,9 +1,7 @@
 .home {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 20% 80%, rgba(211, 47, 47, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(211, 47, 47, 0.05) 0%, transparent 50%),
-    #ffffff;
+
+  background: #fff;
   position: relative;
   overflow-x: hidden;
 }
@@ -138,7 +136,11 @@
 /* Tablets */
 @media (max-width: 900px) {
   .home {
-    padding: 24px 16px;
+   
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 24px;
+    margin-bottom: 40px;
   }
   .products-header {
     flex-direction: column;
@@ -160,7 +162,10 @@
 /* Large phones / small tablets */
 @media (max-width: 600px) {
   .home {
-    padding: 20px 12px;
+    padding-top: var(--header-height, 130px);
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
   }
   .products-header h1 {
     font-size: 26px;
@@ -179,7 +184,10 @@
 /* Mobile phones */
 @media (max-width: 480px) {
   .home {
-    padding: 16px 8px;
+    padding-top: var(--header-height, 120px);
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 16px;
   }
   .products-header h1 {
     font-size: 24px;
