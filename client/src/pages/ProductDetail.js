@@ -62,7 +62,7 @@ const category = categories.find(cat => String(cat.id) === String(product?.categ
   </div>
   <div className="info-row">
     <b>{language === 'pt' ? 'Preço:' : 'Price:'}</b>
-    <span>R$ {product.price}</span>
+    <span>$ {product.price}</span>
   </div>
   <div className="info-row">
     <b>{language === 'pt' ? 'Descrição:' : 'Description:'}</b>
