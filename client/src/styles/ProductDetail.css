@@ -76,7 +76,7 @@
     align-items: center;
     padding: 24px 8px;
     gap: 24px;
-    margin-top: 120px;
+    margin-top: 120px !important;
   }
   .product-detail-image img {
     width: 160px;

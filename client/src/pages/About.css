@@ -1,0 +1,154 @@
+.about-page {
+  padding: 24px 0;
+}
+
+/* YouTools Logo Styles */
+.youtools-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo-main {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.you-text {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: black; /* white text */
+  /* text-shadow: 
+    -2px -2px 0 #d32f2f,
+    2px -2px 0 #d32f2f,
+    -2px 2px 0 #d32f2f,
+    2px 2px 0 #d32f2f,
+    -2px 0 0 #d32f2f,
+    2px 0 0 #d32f2f,
+    0 -2px 0 #d32f2f,
+    0 2px 0 #d32f2f; red outline */
+  letter-spacing: 1px;
+  margin-right: 4px;
+}
+
+.tools-text {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  color: white; /* black text */
+  background: #d32f2f; /* solid red block */
+  padding: 4px 8px; /* adjust padding */
+  border-radius: 9px; /* rectangle corners */
+ 
+  text-shadow: none; /* remove previous shadow */
+}
+
+.logo-subtitle {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  color: black; /* white subtitle */
+  /* text-shadow: 
+    -1px -1px 0 #d32f2f,
+    1px -1px 0 #d32f2f,
+    -1px 1px 0 #d32f2f,
+    1px 1px 0 #d32f2f; red outline */
+  letter-spacing: 3px;
+  margin-top: 2px;
+  margin-left: 2px;
+}
+
+.about-content h1 {
+  margin-bottom: 8px;
+}
+
+.company-desc {
+  margin-bottom: 16px;
+  color: #444;
+}
+
+.info-columns {
+  display: flex;
+  gap: 100px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  justify-content: center;
+  margin-top: 60px;
+  margin-bottom: 60px;
+}
+
+.info-block h4 {
+  margin-bottom: 6px;
+}
+
+.about-content a {
+  text-decoration: none;
+  color: inherit;
+}
+.map-section {
+  margin-top: 12px;
+}
+
+.map-placeholder {
+  background: #fafafa;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.map-area iframe {
+  border-radius: 4px;
+}
+
+.about-content {
+  text-align: center;
+  
+}
+
+
+
+.map-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-area-map iframe {
+  width: 100%;
+}
+
+.map-wrapper iframe {
+  position: relative;
+  z-index: -1;
+}
+
+/* Hide brand marquee on About page */
+.about-page .brand-marquee,
+.about-page .brand-marquee-inner {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Also hide brand slider globally when About page is active (body.page-about) */
+body.page-about .brand-marquee,
+body.page-about .brand-showcase,
+body.page-about .brand-marquee-inner,
+body.page-about .marquee-track,
+body.page-about .brand-chip,
+body.page-about .brand-chip-mini {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+body.page-about .brand-marquee::before,
+body.page-about .brand-marquee::after {
+  display: none !important;
+}
+
+

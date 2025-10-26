@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 import { useLanguage } from '../context/LanguageContext';
+import { getCategories } from '../services/categoryService';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -9,6 +10,7 @@ const ProductDetail = () => {
   const { language } = useLanguage();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -24,6 +26,18 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
+  useEffect(() => {
+
+    // load available categories
+    (async () => {
+      const res = await getCategories();
+      if (res.success) setCategories(res.data);
+    })();
+
+  }, []);
+
+const category = categories.find(cat => String(cat.id) === String(product?.category));
+
   if (loading) return <div>Carregando...</div>;
   if (!product) return <div>Produto não encontrado.</div>;
 
@@ -37,6 +51,10 @@ const ProductDetail = () => {
   <div className="info-row">
     <b>{language === 'pt' ? 'Marca:' : 'Brand:'}</b>
     <span>{product.brand || '-'}</span>
+  </div>
+  <div className="info-row">
+    <b>{language === 'pt' ? 'Categoria:' : 'Category:'}</b>
+    <span>{category.name || (typeof product.category === 'string' ? product.category : '-')}</span>
   </div>
   <div className="info-row">
     <b>{language === 'pt' ? 'Nome:' : 'Name:'}</b>

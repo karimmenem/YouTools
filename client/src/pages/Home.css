@@ -119,6 +119,14 @@
   padding: 20px 60px;
 }
 
+
+@media (max-width: 1500) {
+  .products-grid {
+    grid-template-columns: repeat(4, 300px);
+
+  }
+  
+}
 /* ===== RESPONSIVE BREAKPOINTS ===== */
 
 /* Desktops & large tablets */

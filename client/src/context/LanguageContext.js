@@ -8,6 +8,8 @@ export const translations = {
   pt: {
     // Header
     customerService: 'Central de Atendimento',
+    about: 'Sobre',
+    ourLocation: 'Nossa Localização',
     freeShipping: '🚚 Frete Grátis para Todo Brasil',
     admin: 'Admin',
     allCategories: '📋 Todas as Categorias',
@@ -36,13 +38,17 @@ export const translations = {
     // Footer
     companyDescription: 'Sua loja especializada em ferramentas e equipamentos de qualidade.',
     customerServiceTitle: 'Atendimento',
-    mondayFriday: 'Segunda a Sexta: 8h às 18h',
-    saturday: 'Sábado: 8h às 12h',
+    // Updated opening times: Mon–Sat 7:00–17:00, Sunday 7:00–12:00
+    mondayFriday: 'Segunda a Sábado: 7h às 17h',
+    saturday: 'Domingo: 7h às 12h',
+    location: 'Localização',
     allRightsReserved: 'Todos os direitos reservados.'
   },
   en: {
     // Header
     customerService: 'Customer Service',
+    about: 'About',
+    ourLocation: 'Our Location',
     freeShipping: '�� Free Shipping Nationwide',
     admin: 'Admin',
     allCategories: '📋 All Categories',
@@ -71,8 +77,9 @@ export const translations = {
     // Footer
     companyDescription: 'Your specialized store for quality tools and equipment.',
     customerServiceTitle: 'Customer Service',
-    mondayFriday: 'Monday to Friday: 8am to 6pm',
-    saturday: 'Saturday: 8am to 12pm',
+    // Updated opening times: Mon–Sat 7:00–17:00, Sunday 7:00–12:00
+    mondayFriday: 'Mon–Sat: 7am to 5pm',
+    saturday: 'Sunday: 7am to 12pm',
     allRightsReserved: 'All rights reserved.'
   }
 };

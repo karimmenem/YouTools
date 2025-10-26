@@ -65,6 +65,9 @@ const Products = () => {
     return t('allProducts') || 'Todos os Produtos';
   };
 
+  // set fixed height for the home section only when there are no products
+  const homeStyle = products.length === 0 ? { height: '200px' } : undefined;
+
   if (loading) {
     return (
       <div className="home">
@@ -79,7 +82,7 @@ const Products = () => {
   }
 
   return (
-    <div className="home">
+    <div className="home" style={homeStyle}>
       <div className="container">
         <div className="home-header">
           <h1 className="page-title" style={{ marginLeft: '50px' }}>
@@ -88,11 +91,11 @@ const Products = () => {
           
         </div>
 
-        <div className="products-grid products-grid-compact">
+        {products.length>0 ? (<div className="products-grid products-grid-compact">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
-        </div>
+        </div>): null}
 
         {products.length === 0 && (
           <div className="empty-state" style={{

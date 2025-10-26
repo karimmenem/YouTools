@@ -7,6 +7,7 @@ import Products from './pages/Products';
 import BrandProducts from './pages/BrandProducts';
 import Auth from './pages/Auth';
 import ProductDetail from './pages/ProductDetail'; // Import ProductDetail component
+import About from './pages/About';
 import './styles/App.css';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
             
             <Route path=":brandSlug" element={<BrandProducts />} />
             <Route path="produto/:id" element={<ProductDetail />} /> {/* Add route for product detail page */}
+            <Route path="about" element={<About />} />
           </Route>
           <Route path="/admin/*" element={<Auth />} />
           <Route path="*" element={<Navigate to="/" replace />} />
