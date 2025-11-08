@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
-import { getProducts, updateProduct, deleteProduct } from '../../services/productService';
+import { getProducts, deleteProduct } from '../../services/productService';
+import EditProductModal from './EditProductModal';
 import './ProductList.css';
 
 const ProductList = ({ onStatsUpdate }) => {
@@ -8,7 +9,6 @@ const ProductList = ({ onStatsUpdate }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [editFormData, setEditFormData] = useState({});
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
@@ -54,29 +54,19 @@ const ProductList = ({ onStatsUpdate }) => {
     } catch { setMessage({ type: 'error', text: language === 'pt' ? 'Erro de conexão' : 'Connection error' }); }
   };
 
-    const toggleStock = async (id, inStock) => {
-    try {
-      const res = await updateProduct(id, { in_stock: !inStock });
-      if (res.success) { loadProducts(); setMessage({ type: 'success', text: language === 'pt' ? 'Estoque atualizado!' : 'Stock updated!' }); }
-    } catch { setMessage({ type: 'error', text: language === 'pt' ? 'Erro' : 'Error' }); }
+  const startEdit = (product) => {
+    setEditingProduct(product);
   };
 
-  const startEdit = (p) => {
-    setEditingProduct(p.id);
-    setEditFormData({ name: p.name, price: p.price, description: p.description || '' });
-  };
-  const cancelEdit = () => { setEditingProduct(null); setEditFormData({}); };
-  const saveEdit = async (id) => {
-    try {
-      const res = await updateProduct(id, { ...editFormData, price: parseFloat(editFormData.price) });
-      if (res.success) { setMessage({ type: 'success', text: language === 'pt' ? 'Atualizado!' : 'Updated!' }); cancelEdit(); loadProducts(); }
-      else setMessage({ type: 'error', text: res.message || (language === 'pt' ? 'Falha ao atualizar' : 'Update failed') });
-    } catch { setMessage({ type: 'error', text: language === 'pt' ? 'Erro de conexão' : 'Connection error' }); }
+  const closeEdit = () => {
+    setEditingProduct(null);
   };
 
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditFormData(prev => ({ ...prev, [name]: value }));
+  const handleUpdate = () => {
+    loadProducts();
+    if (onStatsUpdate) onStatsUpdate();
+    setMessage({ type: 'success', text: language === 'pt' ? 'Produto atualizado!' : 'Product updated!' });
+    setTimeout(() => setMessage({ type: '', text: '' }), 3000);
   };
 
   if (loading) return <div className="loading" style={{ color: '#fff', textAlign: 'center', marginTop: '2rem' }}>{language === 'pt' ? 'Carregando...' : 'Loading...'}</div>;
@@ -97,32 +87,26 @@ const ProductList = ({ onStatsUpdate }) => {
           <div key={p.id} className="admin-product-card">
             <div className="admin-product-image">{p.image_url ? <img src={p.image_url} alt={p.name} /> : <div style={{ color:'#666', fontSize:'48px' }}>📦</div>}</div>
             <div className="admin-product-info">
-              {editingProduct === p.id ? (
-                <div className="edit-form" style={{ display:'flex', flexDirection:'column', gap:'10px' }}>
-                  <input className="form-input" name="name" value={editFormData.name} onChange={handleEditChange} />
-                  <input className="form-input" type="number" step="0.01" name="price" value={editFormData.price} onChange={handleEditChange} />
-                  <textarea className="form-textarea" name="description" value={editFormData.description} onChange={handleEditChange} />
-                  <div className="admin-product-actions">
-                    <button onClick={() => saveEdit(p.id)} className="action-btn btn-edit">{language === 'pt' ? 'Salvar' : 'Save'}</button>
-                    <button onClick={cancelEdit} className="action-btn btn-delete" style={{ background:'#757575', backgroundImage:'none' }}>{language === 'pt' ? 'Cancelar' : 'Cancel'}</button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <h3 style={{ color: '#d32f2f' }}>{p.name}</h3>
-                  <p style={{ color:'#ccc' }}>{p.description}</p>
-                  <p style={{ color:'#fff', fontWeight:'bold' }}>{p.price != null ? `$${p.price.toFixed(2)}` : 'N/A'}</p>
-                  <div className="admin-product-actions">
-                    <button onClick={() => startEdit(p)} className="action-btn btn-edit">{language === 'pt' ? 'Editar' : 'Edit'}</button>
-                    <button onClick={() => deleteProductHandler(p.id)} className="action-btn btn-delete">{language === 'pt' ? 'Excluir' : 'Delete'}</button>
-                    <button onClick={() => toggleStock(p.id, p.in_stock)} className="action-btn btn-toggle">{p.in_stock ? (language === 'pt' ? 'Desativar' : 'Disable') : (language === 'pt' ? 'Ativar' : 'Enable')}</button>
-                  </div>
-                </>
-              )}
+              <h3 style={{ color: '#d32f2f' }}>{p.name}</h3>
+              <p style={{ color:'#ccc' }}>{p.description}</p>
+              <p style={{ color:'#fff', fontWeight:'bold' }}>{p.price != null ? `$${p.price.toFixed(2)}` : 'N/A'}</p>
+              <div className="admin-product-actions">
+                <button onClick={() => startEdit(p)} className="action-btn btn-edit">{language === 'pt' ? 'Editar' : 'Edit'}</button>
+                <button onClick={() => deleteProductHandler(p.id)} className="action-btn btn-delete">{language === 'pt' ? 'Excluir' : 'Delete'}</button>
+              </div>
             </div>
           </div>
         ))}
       </div>
+
+      {editingProduct && (
+        <EditProductModal
+          product={editingProduct}
+          isOpen={!!editingProduct}
+          onClose={closeEdit}
+          onUpdate={handleUpdate}
+        />
+      )}
 
       {products.length === 0 && (
         <div className="empty-state">
