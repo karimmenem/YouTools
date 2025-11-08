@@ -16,8 +16,8 @@ const AddProduct = ({ onProductAdded }) => {
     category: '',
     image_url: ''
   });
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
 
@@ -42,17 +42,44 @@ const AddProduct = ({ onProductAdded }) => {
   };
 
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      
-      // Create preview
+    const files = Array.from(e.target.files);
+    const remainingSlots = 5 - imagePreviews.length;
+    const filesToAdd = files.slice(0, remainingSlots);
+    
+    if (filesToAdd.length === 0) {
+      setMessage({
+        type: 'error',
+        text: language === 'pt' ? 'Máximo de 5 imagens permitidas' : 'Maximum 5 images allowed'
+      });
+      return;
+    }
+    
+    if (files.length > remainingSlots) {
+      setMessage({
+        type: 'error',
+        text: language === 'pt' 
+          ? `Apenas ${remainingSlots} imagem(ns) adicionada(s). Máximo de 5 imagens permitidas.`
+          : `Only ${remainingSlots} image(s) added. Maximum 5 images allowed.`
+      });
+    }
+    
+    filesToAdd.forEach(file => {
       const reader = new FileReader();
       reader.onload = (ev) => {
-        setImagePreview(ev.target.result);
+        setImagePreviews(prev => [...prev, ev.target.result]);
+        setImageFiles(prev => [...prev, file]);
       };
       reader.readAsDataURL(file);
-    }
+    });
+    
+    // Reset input
+    e.target.value = '';
+  };
+
+  const removeImage = (index) => {
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    if (message.text) setMessage({ type: '', text: '' });
   };
 
   const handleSubmit = async (e) => {
@@ -62,12 +89,21 @@ const AddProduct = ({ onProductAdded }) => {
     setMessage({ type: '', text: '' });
 
     try {
+      // Build images array: uploaded files take precedence, then image_url if provided
+      let images = [];
+      if (imagePreviews.length > 0) {
+        images = imagePreviews;
+      } else if (formData.image_url) {
+        images = [formData.image_url];
+      }
+
       const productData = {
         name: formData.name,
         price: parseFloat(formData.price),
         brand: formData.brand,
         category: formData.category,
-        image_url: imageFile ? imagePreview : formData.image_url
+        images: images.length > 0 ? images : undefined,
+        image_url: images.length > 0 ? images[0] : formData.image_url || undefined
       };
 
       const response = await addProduct(productData);
@@ -86,8 +122,8 @@ const AddProduct = ({ onProductAdded }) => {
           category: '',
           image_url: ''
         });
-        setImageFile(null);
-        setImagePreview('');
+        setImageFiles([]);
+        setImagePreviews([]);
         
         if (onProductAdded) onProductAdded();
       } else {
@@ -148,17 +184,58 @@ const AddProduct = ({ onProductAdded }) => {
 
           <div className="form-group">
             <label className="form-label">{language === 'pt' ? 'URL da Imagem (opcional)' : 'Image URL (optional)'}</label>
-            <input type="text" name="image_url" value={formData.image_url} onChange={handleChange} className="form-input" placeholder="https://..." disabled={!!imageFile || loading} />
+            <input 
+              type="text" 
+              name="image_url" 
+              value={formData.image_url} 
+              onChange={handleChange} 
+              className="form-input" 
+              placeholder="https://..." 
+              disabled={imagePreviews.length > 0 || loading} 
+            />
+            {imagePreviews.length > 0 && (
+              <p style={{ color: '#888', fontSize: '12px', marginTop: '4px' }}>
+                {language === 'pt' ? 'URL desabilitada quando há uploads de imagens' : 'URL disabled when images are uploaded'}
+              </p>
+            )}
           </div>
 
           <div className="form-group">
-            <label className="form-label">{language === 'pt' ? 'Upload de Imagem' : 'Upload Image'}</label>
-            <input type="file" accept="image/*" onChange={handleImageUpload} disabled={loading} className="form-input upload-image" />
-            {imagePreview && (
-              <div className="image-preview" style={{ marginTop: '12px' }}>
-                <img src={imagePreview} alt="Preview" />
-                <button type="button" className="remove-image-btn" onClick={() => { setImageFile(null); setImagePreview(''); }}>×</button>
+            <label className="form-label">
+              {language === 'pt' ? 'Upload de Imagens' : 'Upload Images'} 
+              <span style={{ fontSize: '12px', fontWeight: 'normal', marginLeft: '8px' }}>
+                ({language === 'pt' ? 'Máximo 5' : 'Max 5'})
+              </span>
+            </label>
+            <input 
+              type="file" 
+              accept="image/*" 
+              multiple 
+              onChange={handleImageUpload} 
+              disabled={loading || imagePreviews.length >= 5} 
+              className="form-input upload-image" 
+            />
+            {imagePreviews.length > 0 && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '12px', marginTop: '12px' }}>
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="image-preview" style={{ position: 'relative' }}>
+                    <img src={preview} alt={`Preview ${index + 1}`} style={{ width: '100%', height: '120px', objectFit: 'cover' }} />
+                    <button 
+                      type="button" 
+                      className="remove-image-btn" 
+                      onClick={() => removeImage(index)}
+                      style={{ position: 'absolute', top: '4px', right: '4px' }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
               </div>
+            )}
+            {imagePreviews.length >= 5 && (
+              <p style={{ color: '#d32f2f', fontSize: '12px', marginTop: '4px' }}>
+                {language === 'pt' ? 'Limite máximo de 5 imagens atingido' : 'Maximum limit of 5 images reached'}
+              </p>
             )}
           </div>
         </div>

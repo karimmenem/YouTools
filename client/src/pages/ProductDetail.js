@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { supabase } from '../services/supabaseClient';
 import { useLanguage } from '../context/LanguageContext';
 import { getCategories } from '../services/categoryService';
+import { getProductById } from '../services/productService';
+import ImageGallery from '../components/Product/ImageGallery';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -10,42 +11,77 @@ const ProductDetail = () => {
   const { language } = useLanguage();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-    const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   useEffect(() => {
     async function fetchProduct() {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single();
-      setProduct(data);
-      setLoading(false);
+      try {
+        const response = await getProductById(id);
+        if (response.success) {
+          setProduct(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchProduct();
   }, [id]);
 
   useEffect(() => {
-
     // load available categories
     (async () => {
       const res = await getCategories();
-      if (res.success) setCategories(res.data);
+      if (res.success) setCategories(res.data || []);
     })();
-
   }, []);
-
-const category = categories.find(cat => String(cat.id) === String(product?.category));
 
   if (loading) return <div>Carregando...</div>;
   if (!product) return <div>Produto não encontrado.</div>;
 
+  // Compute category only after product is loaded
+  const category = product?.category 
+    ? categories.find(cat => cat && String(cat.id) === String(product.category))
+    : null;
+
+  // Get all images for the product
+  const productImages = product?.images && Array.isArray(product.images) && product.images.length > 0
+    ? product.images
+    : product?.image_url || product?.image
+      ? [product.image_url || product.image]
+      : [];
+
+  const hasMultipleImages = productImages.length > 1;
+
+  const handleImageClick = () => {
+    if (productImages.length > 0) {
+      setIsGalleryOpen(true);
+    }
+  };
+
   return (
     <div className="container">
       <div className="product-detail-container">
-        <div className="product-detail-image">
-          <img src={product.image_url || product.image || '/placeholder-product.jpg'} alt={product.name} onError={e => { e.target.src = '/placeholder-product.jpg'; }} />
+        <div className="product-detail-image" style={{ position: 'relative' }}>
+          <img 
+            src={productImages[0] || '/placeholder-product.jpg'} 
+            alt={product?.name} 
+            onError={e => { e.target.src = '/placeholder-product.jpg'; }}
+            onClick={handleImageClick}
+            style={{ cursor: productImages.length > 0 ? 'pointer' : 'default' }}
+          />
+          {hasMultipleImages && (
+            <div 
+              className="multiple-images-indicator"
+              onClick={handleImageClick}
+            >
+              <span>📷</span>
+              <span>{productImages.length} {language === 'pt' ? 'imagens' : 'images'}</span>
+            </div>
+          )}
         </div>
         <div className="product-detail-info-grid">
   <div className="info-row">
@@ -54,15 +90,15 @@ const category = categories.find(cat => String(cat.id) === String(product?.categ
   </div>
   <div className="info-row">
     <b>{language === 'pt' ? 'Categoria:' : 'Category:'}</b>
-    <span>{category.name || (typeof product.category === 'string' ? product.category : '-')}</span>
+    <span>{category?.name || (product?.category ? String(product.category) : '-')}</span>
   </div>
   <div className="info-row">
     <b>{language === 'pt' ? 'Nome:' : 'Name:'}</b>
-    <span>{product.name}</span>
+    <span>{product?.name || '-'}</span>
   </div>
   <div className="info-row">
     <b>{language === 'pt' ? 'Preço:' : 'Price:'}</b>
-    <span>$ {product.price}</span>
+    <span>$ {product?.price != null ? product.price : '0.00'}</span>
   </div>
   <div className="info-row">
     <b>{language === 'pt' ? 'Descrição:' : 'Description:'}</b>
@@ -72,6 +108,13 @@ const category = categories.find(cat => String(cat.id) === String(product?.categ
 
 
       </div>
+      
+      <ImageGallery
+        images={productImages}
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+        initialIndex={0}
+      />
     </div>
   );
 };

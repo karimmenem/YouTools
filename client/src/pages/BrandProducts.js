@@ -3,9 +3,11 @@ import { useParams } from 'react-router-dom';
 import ProductCard from '../components/Product/ProductCard';
 import { getProducts } from '../services/productService';
 import './Home.css';
+import { useLanguage } from '../context/LanguageContext';
 
 const BrandProducts = () => {
   const { brandSlug } = useParams();
+  const { language } = useLanguage();
   const [products, setProducts] = useState([]);
   const [brand, setBrand] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ const BrandProducts = () => {
     return (
       <div className="home">
         <div className="container">
-          <p>Loading products for {brand?.name || brandSlug}...</p>
+          <p>{language === 'pt' ? `Carregando produtos para ${brand?.name || brandSlug}...` : `Loading products for ${brand?.name || brandSlug}...`}</p>
         </div>
       </div>
     );
@@ -65,7 +67,7 @@ const BrandProducts = () => {
         </div>
         {products.length === 0 && (
           <div className="empty-state" style={{ display: 'flex', justifyContent: 'center' ,textAlign: 'center', marginTop: '2rem' }}>
-            <h3>No products found for {brand ? brand.name : brandSlug}</h3>
+            <h3 className="empty-state-title">{language === 'pt' ? `Nenhum produto encontrado para ${brand ? brand.name : brandSlug}` : `No products found for ${brand ? brand.name : brandSlug}`}</h3>
           </div>
         )}
       </div>

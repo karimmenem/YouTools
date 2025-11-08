@@ -71,3 +71,9 @@ create policy "Anon full categories" on public.categories for all using (true) w
 insert into public.categories(name) values ('Power Tools') on conflict do nothing;
 insert into public.categories(name) values ('Hand Tools') on conflict do nothing;
 insert into public.categories(name) values ('Accessories') on conflict do nothing;
+
+-- MIGRATION: Add images field to products table for multiple images support
+-- Run this migration to add support for multiple images (up to 5)
+alter table public.products add column if not exists images jsonb;
+-- Note: The 'image' field is kept for backward compatibility
+-- Products can have either 'image' (single) or 'images' (array) or both

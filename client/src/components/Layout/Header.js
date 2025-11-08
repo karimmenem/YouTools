@@ -169,7 +169,7 @@ const Header = () => {
                 <span className="you-text">YOU</span>
                 <span className="tools-text">TOOLS</span>
               </div>
-              <div className="logo-subtitle">FERRAMIENTAS</div>
+              <div className="logo-subtitle">FERRAMENTAS</div>
             </div>
           </Link>
         </div>
@@ -177,12 +177,12 @@ const Header = () => {
         <div
           className={`search-container ${showSearch ? "search-active" : ""}`}
           ref={searchContainerRef}
-          style={{ gap: "30px" }}
         >
           {isMobile && (
             <button
               className="search-icon-btn"
               onClick={handleSearchToggle}
+              aria-label={placeholder}
             >
               <FiSearch size={20} />
             </button>

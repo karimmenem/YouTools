@@ -17,12 +17,29 @@ const ProductList = ({ onStatsUpdate }) => {
 
   const loadProducts = async () => {
     try {
-      const response = await getProducts();
+      setLoading(true);
+      // Clear cache to force fresh fetch
+      const response = await getProducts(false); // Bypass cache for admin panel
+      console.log('ProductList - getProducts response:', response);
+      
       if (response.success) {
-        setProducts(response.data);
+        console.log(`ProductList - Loaded ${response.data?.length || 0} products`);
+        setProducts(response.data || []);
+      } else {
+        console.error('ProductList - Failed to load products:', response.message);
+        setMessage({ 
+          type: 'error', 
+          text: response.message || (language === 'pt' ? 'Erro ao carregar produtos' : 'Error loading products') 
+        });
+        setProducts([]);
       }
     } catch (e) {
       console.error('Error loading products', e);
+      setMessage({ 
+        type: 'error', 
+        text: language === 'pt' ? 'Erro ao carregar produtos' : 'Error loading products' 
+      });
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -37,7 +54,7 @@ const ProductList = ({ onStatsUpdate }) => {
     } catch { setMessage({ type: 'error', text: language === 'pt' ? 'Erro de conexão' : 'Connection error' }); }
   };
 
-  const toggleStock = async (id, inStock) => {
+    const toggleStock = async (id, inStock) => {
     try {
       const res = await updateProduct(id, { in_stock: !inStock });
       if (res.success) { loadProducts(); setMessage({ type: 'success', text: language === 'pt' ? 'Estoque atualizado!' : 'Stock updated!' }); }

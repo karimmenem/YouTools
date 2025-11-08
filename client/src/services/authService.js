@@ -6,7 +6,7 @@ const ADMIN_USERS = [
   {
     id: 1,
     username: 'Kamal@youtools.com',
-    password: 'Kamal123',
+    password: 'You999404004',
     first_name: 'Kamal',
     last_name: 'YouTools',
     is_admin: true

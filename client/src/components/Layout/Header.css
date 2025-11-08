@@ -246,6 +246,7 @@
 .search-input {
   width: 100%;
   padding: 10px 14px;
+  margin-right: 10px;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
   font-size: 15px;
@@ -315,6 +316,9 @@
   justify-content: center;
   padding: 6px;
   font-size: 20px;
+  width: auto;
+  min-width: auto;
+  flex-shrink: 0;
 }
 
 /* Responsive adjustments */
@@ -366,6 +370,15 @@
   }
 }
 
+/* Ensure search container doesn't push elements on tablet */
+@media (max-width: 900px) and (min-width: 768px) {
+  .search-container {
+    flex: 0 1 auto;
+    max-width: 300px;
+    margin: 0 10px;
+  }
+}
+
 @media (max-width: 768px) {
   :root {
     --header-height: 130px;
@@ -391,9 +404,22 @@
     display: none;
   }
   
+  .header-main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 16px;
+  }
+  
   .header-content {
-    flex-direction: column;
-    gap: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
   }
   
   .nav-menu {
@@ -407,42 +433,74 @@
   }
 
   .lang-admin-container {
+    display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+  
+  /* Ensure search doesn't take space on mobile - icon only */
+  .search-container {
+    flex: none !important;
+    width: auto !important;
+    margin: 0 !important;
+    max-width: none !important;
+    min-width: auto !important;
+    order: 1;
+  }
+  
+  .lang-admin-container {
+    order: 2;
+    flex-shrink: 0;
   }
 }
 
-/* Mobile Search Behavior */
+/* Mobile Search Behavior - Override for screens 767px and below */
 @media (max-width: 767px) {
+  /* Remove flex spacing - search icon should not push other elements */
   .search-container {
     position: relative;
-    flex: none;
-    
-    margin: 0;
-    max-width: none;
+    flex: none !important;
+    width: auto !important;
+    margin: 0 !important;
+    max-width: none !important;
+    min-width: auto !important;
   }
 
-  .search-container .search-active{
-    width: 30px !important;
+  .search-container.search-active {
+    flex: none !important;
+    width: auto !important;
   }
 
+  /* Mobile search input - fixed position with max z-index */
   .search-input.mobile {
-    position: absolute;
-    top: 110%;
-    left: 0;
-    width: 200px;
-    padding: 8px 10px;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    z-index: 1300;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    position: fixed !important;
+    top: 80px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 32px) !important;
+    max-width: 400px !important;
+    padding: 12px 14px !important;
+    background: white !important;
+    border: 2px solid #d32f2f !important;
+    border-radius: 8px !important;
+    z-index: 99999 !important; /* Maximum z-index to appear above everything */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25) !important;
   }
 
-
+  /* Mobile search results - fixed position with max z-index */
   .search-results {
-    top: calc(110% + 50px);
-    left: 0;
-    width: 200px;
+    position: fixed !important;
+    top: 140px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 32px) !important;
+    max-width: 400px !important;
+    max-height: 60vh !important;
+    z-index: 99999 !important; /* Maximum z-index to appear above everything */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25) !important;
   }
 }
 
@@ -464,14 +522,34 @@
     font-size: 10px;
     letter-spacing: 1px;
   }
+
+  .language-toggle{
+    width: 25px;
+    height: 25px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .search-container{
+    margin-left: 10px;
+  }
+
+  .language-toggle svg{
+    display: none;
+
+  }
 }
 
 @media (max-width: 400px) {
   .search-input.mobile {
-    width: 160px;
+    width: calc(100vw - 24px);
+    max-width: none;
   }
   
   .search-results {
-    width: 160px;
+    width: calc(100vw - 24px);
+    max-width: none;
   }
 }

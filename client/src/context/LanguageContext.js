@@ -34,6 +34,7 @@ export const translations = {
     loadingProducts: 'Carregando produtos...',
     contact: 'Entrar em Contato',
     viewDetails: 'Ver Detalhes',
+    noProductsFound: 'Nenhum produto encontrado para {name}',
     
     // Footer
     companyDescription: 'Sua loja especializada em ferramentas e equipamentos de qualidade.',
@@ -73,6 +74,7 @@ export const translations = {
     loadingProducts: 'Loading products...',
     contact: 'Contact Us',
     viewDetails: 'View Details',
+    noProductsFound: 'No products found for {name}',
     
     // Footer
     companyDescription: 'Your specialized store for quality tools and equipment.',
@@ -91,8 +93,15 @@ export const LanguageProvider = ({ children }) => {
     setLanguage(prev => prev === 'pt' ? 'en' : 'pt');
   };
 
-  const t = (key) => {
-    return translations[language][key] || key;
+  const t = (key, params) => {
+    let str = translations[language][key] || key;
+    if (params && typeof str === 'string') {
+      Object.keys(params).forEach(k => {
+        const re = new RegExp(`\\{${k}\\}`, 'g');
+        str = str.replace(re, params[k]);
+      });
+    }
+    return str;
   };
 
   return (

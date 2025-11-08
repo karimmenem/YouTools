@@ -19,7 +19,7 @@ const About = () => {
                 <span className="you-text">YOU</span>
                 <span className="tools-text">TOOLS</span>
               </div>
-              <div className="logo-subtitle">FERRAMIENTAS</div>
+              <div className="logo-subtitle">FERRAMENTAS</div>
             </div>
         <p className="company-desc">{t('companyDescription')}</p>
 
