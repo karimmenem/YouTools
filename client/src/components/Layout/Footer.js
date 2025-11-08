@@ -13,7 +13,15 @@ const Footer = () => {
           <div className="footer-section">
             <h4>YouTools</h4>
             <p>{t('companyDescription')}</p>
-              <p>Paraguai — Salto del Guaíra</p>
+            <a
+              href="https://www.google.com/maps/place/24%C2%B003'32.6%22S+54%C2%B018'25.8%22W/@-24.059061,-54.3097309,796m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d-24.059061!4d-54.307156?entry=ttu&g_ep=EgoyMDI1MTEwNC4xIKXMDSoASAFQAw%3D%3D"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Paraguai — Salto del Guaíra
+            </a>
+
+
 
           </div>
           <div className="footer-section">
@@ -31,9 +39,9 @@ const Footer = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          <div className="footer-bottom-inner">
+          <div className="footer-bottom-inner" style={{display: 'flex',justifyContent: 'center' ,textAlign: 'center', width: '100%' }}>
             <p>&copy; 2025 YouTools. {t('allRightsReserved')}</p>
-            <Link to="/about" className="about-btn" aria-label={t('about') || 'About'}>{t('about') || 'About'}</Link>
+            
           </div>
         </div>
       </div>
