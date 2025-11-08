@@ -10,6 +10,7 @@ const Products = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
 
   const { categoryId } = useParams(); // ✅ get category from URL (e.g., /4)
   const { t } = useLanguage();
@@ -34,22 +35,31 @@ const Products = () => {
   }, [categoryId, allProducts, filterProductsByCategory]);
 
   const loadData = async () => {
+    setLoading(true);
+    setFetchError(null);
     try {
       const [productsResponse, categoriesResponse] = await Promise.all([
         getProducts(),
         getCategories()
       ]);
 
+      // Only set loading to false when we have a definitive result
       if (productsResponse.success) {
-        setAllProducts(productsResponse.data);
+        setAllProducts(productsResponse.data || []);
+      } else {
+        // If fetch failed, set error but keep loading state
+        setFetchError(productsResponse.message || 'Failed to load products');
+        console.error('Failed to load products:', productsResponse);
       }
 
       if (categoriesResponse.success) {
-        setCategories(categoriesResponse.data);
+        setCategories(categoriesResponse.data || []);
       }
     } catch (error) {
       console.error('Error loading data:', error);
+      setFetchError(error.message || 'Error loading products');
     } finally {
+      // Only set loading to false after fetch completes (success or failure)
       setLoading(false);
     }
   };
@@ -81,6 +91,29 @@ const Products = () => {
     );
   }
 
+  // Show error if fetch failed
+  if (fetchError) {
+    return (
+      <div className="home">
+        <div className="container">
+          <div className="empty-state" style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <div className="empty-icon">⚠️</div>
+            <h3>Erro ao carregar produtos</h3>
+            <p>{fetchError}</p>
+            <button onClick={loadData} style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer' }}>
+              Tentar novamente
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="home" style={homeStyle}>
       <div className="container">
@@ -97,7 +130,7 @@ const Products = () => {
           ))}
         </div>): null}
 
-        {products.length === 0 && (
+        {!loading && products.length === 0 && (
           <div className="empty-state" style={{
   display: 'flex',
   flexDirection: 'column',

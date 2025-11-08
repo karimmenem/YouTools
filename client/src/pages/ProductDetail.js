@@ -11,20 +11,28 @@ const ProductDetail = () => {
   const { language } = useLanguage();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
   const [categories, setCategories] = useState([]);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   useEffect(() => {
     async function fetchProduct() {
       setLoading(true);
+      setFetchError(null);
       try {
         const response = await getProductById(id);
         if (response.success) {
           setProduct(response.data);
+        } else {
+          // If fetch failed, set error but keep loading state
+          setFetchError(response.message || 'Failed to load product');
+          console.error('Failed to load product:', response);
         }
       } catch (error) {
         console.error('Error fetching product:', error);
+        setFetchError(error.message || 'Error loading product');
       } finally {
+        // Only set loading to false after fetch completes (success or failure)
         setLoading(false);
       }
     }
@@ -39,8 +47,45 @@ const ProductDetail = () => {
     })();
   }, []);
 
-  if (loading) return <div>Carregando...</div>;
-  if (!product) return <div>Produto não encontrado.</div>;
+  if (loading) {
+    return (
+      <div className="container">
+        <div className="loading-state" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+          <div className="loading-spinner"></div>
+          <p>{language === 'pt' ? 'Carregando produto...' : 'Loading product...'}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if fetch failed
+  if (fetchError) {
+    return (
+      <div className="container">
+        <div className="empty-state" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <div className="empty-icon">⚠️</div>
+          <h3>{language === 'pt' ? 'Erro ao carregar produto' : 'Error loading product'}</h3>
+          <p>{fetchError}</p>
+          <button onClick={() => window.location.reload()} style={{ marginTop: '20px', padding: '10px 20px', cursor: 'pointer' }}>
+            {language === 'pt' ? 'Tentar novamente' : 'Try again'}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Only show "not found" if fetch completed successfully but no product was returned
+  if (!product) {
+    return (
+      <div className="container">
+        <div className="empty-state" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <div className="empty-icon">🔧</div>
+          <h3>{language === 'pt' ? 'Produto não encontrado' : 'Product not found'}</h3>
+          <p>{language === 'pt' ? 'O produto que você está procurando não existe.' : 'The product you are looking for does not exist.'}</p>
+        </div>
+      </div>
+    );
+  }
 
   // Compute category only after product is loaded
   const category = product?.category 
