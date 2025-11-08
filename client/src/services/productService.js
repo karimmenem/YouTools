@@ -1,5 +1,4 @@
-// Product service using IndexedDB (Dexie) and Supabase
-import db from '../db';
+// Product service using Supabase only
 import { supabase } from './supabaseClient';
 import { productCache, withTimeout } from './productCache';
 const API_BASE = '/api';
@@ -113,24 +112,26 @@ export const getProducts = async (useCache = true) => {
         console.log(`✅ Fetched ${normalized.length} products from Supabase`);
         return { success: true, data: normalized, remote: true };
       } catch (e) { 
-        console.error('Supabase getProducts failed:', e);
+        console.error('❌ Supabase getProducts failed:', e);
         console.error('Error message:', e.message);
         console.error('Error code:', e.code);
-        // Don't fall through silently - return error so user knows
-        // But also try IndexedDB as fallback
+        // Return error - Supabase only, no fallback
+        return { 
+          success: false, 
+          message: e.message || 'Failed to fetch products from database',
+          error: e,
+          data: [] 
+        };
       }
     }
     
-    // IndexedDB fallback
-    try { 
-      const data = await db.products.toArray(); 
-      const normalized = data.map(normalizeProductImages);
-      console.log(`⚠️ Using IndexedDB fallback: ${normalized.length} products`);
-      return { success: true, data: normalized, fallback: true }; 
-    } catch (error) { 
-      console.error('Error reading products from DB:', error); 
-      return { success: false, message: error.message, data: [] }; 
-    }
+    // No Supabase configured
+    console.error('❌ Supabase is not configured');
+    return { 
+      success: false, 
+      message: 'Database not configured. Please check your environment variables.',
+      data: [] 
+    };
   });
 };
 
@@ -256,14 +257,13 @@ export const addProduct = async (product) => {
       productCache.clear();
       const all = await getProducts(false);
       return { success: true, data: created, all: all.data };
-    } catch (e) { console.warn('Supabase addProduct fallback:', e.message); }
+    } catch (e) { 
+      console.error('❌ Supabase addProduct failed:', e);
+      return { success: false, message: e.message || 'Failed to add product' };
+    }
   }
-  try { 
-    const id = await db.products.add(product); 
-    const data = await db.products.get(id); 
-    const normalized = normalizeProductImages(data);
-    return { success: true, data: normalized }; 
-  } catch (error) { console.error('Error adding product to DB:', error); return { success: false, message: error.message }; }
+  // No Supabase configured
+  return { success: false, message: 'Database not configured' };
 };
 
 export const updateProduct = async (id, product) => {
@@ -294,14 +294,13 @@ export const updateProduct = async (id, product) => {
       productCache.clear();
       const all = await getProducts(false);
       return { success: true, data: updated, all: all.data };
-    } catch (e) { console.warn('Supabase updateProduct fallback:', e.message); }
+    } catch (e) { 
+      console.error('❌ Supabase updateProduct failed:', e);
+      return { success: false, message: e.message || 'Failed to update product' };
+    }
   }
-  try { 
-    await db.products.update(id, product); 
-    const data = await db.products.get(id); 
-    const normalized = normalizeProductImages(data);
-    return { success: true, data: normalized }; 
-  } catch (error) { console.error('Error updating product in DB:', error); return { success: false, message: error.message }; }
+  // No Supabase configured
+  return { success: false, message: 'Database not configured' };
 };
 
 export const deleteProduct = async (id) => {
@@ -314,16 +313,13 @@ export const deleteProduct = async (id) => {
       productCache.clear();
       const all = await getProducts(false);
       return { success: true, data: all.data };
-    } catch (e) { console.warn('Supabase deleteProduct fallback:', e.message); }
+    } catch (e) { 
+      console.error('❌ Supabase deleteProduct failed:', e);
+      return { success: false, message: e.message || 'Failed to delete product' };
+    }
   }
-  try { 
-    await db.products.delete(id); 
-    productCache.clear();
-    return { success: true, message: 'Product deleted successfully' }; 
-  } catch (error) { 
-    console.error('Error deleting product from DB:', error); 
-    return { success: false, message: error.message }; 
-  }
+  // No Supabase configured
+  return { success: false, message: 'Database not configured' };
 };
 
 export const getCategories = async () => {
