@@ -147,7 +147,7 @@ const ProductDetail = () => {
   </div>
   <div className="info-row">
     <b>{language === 'pt' ? 'Descrição:' : 'Description:'}</b>
-    <span>{language === 'pt' ? 'Descrição do produto em breve.' : 'Product description coming soon.'}</span>
+    <span>{product?.description ? product?.description : "Empty"}</span>
   </div>
 </div>
 
