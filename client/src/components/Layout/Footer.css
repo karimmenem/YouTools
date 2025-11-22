@@ -1,11 +1,12 @@
 .footer {
   background: #f8f8f8;
   color: #333333;
-  margin-top: auto;
+  margin-top: auto; /* Keep this */
   border-top: 1px solid #e0e0e0;
   width: 100%;
-  position: relative;
+  position: relative; /* Make sure it's relative, not fixed */
   z-index: 1;
+  flex-shrink: 0; /* Add this to prevent shrinking */
 }
 
 .container {
@@ -87,7 +88,7 @@
 
 /* New: inner wrapper to align copyright and button */
 .footer-bottom-inner {
-  max-width: 1400px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 8px 20px;
   display: flex;

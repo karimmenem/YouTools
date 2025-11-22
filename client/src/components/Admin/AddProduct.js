@@ -14,7 +14,8 @@ const AddProduct = ({ onProductAdded }) => {
     price: '',
     brand: '',
     category: '',
-    image_url: ''
+    image_url: '',
+    description: ''   // NEW FIELD
   });
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -22,12 +23,11 @@ const AddProduct = ({ onProductAdded }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // load available brands
     (async () => {
       const res = await getBrands();
       if (res.success) setBrands(res.data);
     })();
-    // load available categories
+
     (async () => {
       const res = await getCategories();
       if (res.success) setCategories(res.data);
@@ -45,7 +45,7 @@ const AddProduct = ({ onProductAdded }) => {
     const files = Array.from(e.target.files);
     const remainingSlots = 5 - imagePreviews.length;
     const filesToAdd = files.slice(0, remainingSlots);
-    
+
     if (filesToAdd.length === 0) {
       setMessage({
         type: 'error',
@@ -53,16 +53,16 @@ const AddProduct = ({ onProductAdded }) => {
       });
       return;
     }
-    
+
     if (files.length > remainingSlots) {
       setMessage({
         type: 'error',
-        text: language === 'pt' 
+        text: language === 'pt'
           ? `Apenas ${remainingSlots} imagem(ns) adicionada(s). Máximo de 5 imagens permitidas.`
           : `Only ${remainingSlots} image(s) added. Maximum 5 images allowed.`
       });
     }
-    
+
     filesToAdd.forEach(file => {
       const reader = new FileReader();
       reader.onload = (ev) => {
@@ -71,8 +71,7 @@ const AddProduct = ({ onProductAdded }) => {
       };
       reader.readAsDataURL(file);
     });
-    
-    // Reset input
+
     e.target.value = '';
   };
 
@@ -89,7 +88,6 @@ const AddProduct = ({ onProductAdded }) => {
     setMessage({ type: '', text: '' });
 
     try {
-      // Build images array: uploaded files take precedence, then image_url if provided
       let images = [];
       if (imagePreviews.length > 0) {
         images = imagePreviews;
@@ -102,6 +100,7 @@ const AddProduct = ({ onProductAdded }) => {
         price: parseFloat(formData.price),
         brand: formData.brand,
         category: formData.category,
+        description: formData.description, // NEW FIELD INCLUDED
         images: images.length > 0 ? images : undefined,
         image_url: images.length > 0 ? images[0] : formData.image_url || undefined
       };
@@ -113,18 +112,19 @@ const AddProduct = ({ onProductAdded }) => {
           type: 'success',
           text: language === 'pt' ? 'Produto adicionado!' : 'Product added!'
         });
-        
-        // Reset form
+
         setFormData({
           name: '',
           price: '',
           brand: '',
           category: '',
-          image_url: ''
+          image_url: '',
+          description: '' // reset
         });
+
         setImageFiles([]);
         setImagePreviews([]);
-        
+
         if (onProductAdded) onProductAdded();
       } else {
         setMessage({
@@ -156,6 +156,7 @@ const AddProduct = ({ onProductAdded }) => {
       <form onSubmit={handleSubmit} className="product-form" noValidate>
         <div className="form-section">
           <h3 className="section-title">{language === 'pt' ? 'Detalhes' : 'Details'}</h3>
+
           <div className="form-row">
             <div className="form-group">
               <label className="form-label required">{language === 'pt' ? 'Marca' : 'Brand'}</label>
@@ -164,10 +165,12 @@ const AddProduct = ({ onProductAdded }) => {
                 {brands.map(b => <option key={b.id} value={b.slug}>{b.name}</option>)}
               </select>
             </div>
+
             <div className="form-group">
               <label className="form-label required">{language === 'pt' ? 'Nome do Produto' : 'Product Name'}</label>
               <input type="text" name="name" value={formData.name} onChange={handleChange} className="form-input" required disabled={loading} placeholder={language === 'pt' ? 'Ex: Furadeira' : 'e.g. Drill'} />
             </div>
+
             <div className="form-group">
               <label className="form-label required">{language === 'pt' ? 'Preço' : 'Price'} ($)</label>
               <input type="number" name="price" value={formData.price} onChange={handleChange} className="form-input" step="0.01" min="0" required disabled={loading} placeholder="0.00" />
@@ -182,8 +185,26 @@ const AddProduct = ({ onProductAdded }) => {
             </select>
           </div>
 
+          {/* ---------------------- NEW DESCRIPTION FIELD ---------------------- */}
           <div className="form-group">
-            <label className="form-label">{language === 'pt' ? 'URL da Imagem (opcional)' : 'Image URL (optional)'}</label>
+            <label className="form-label">{language === 'pt' ? 'Descrição' : 'Description'}</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              className="form-input"
+              rows="4"
+              placeholder={language === 'pt' ? 'Descrição do produto...' : 'Product description...'}
+              disabled={loading}
+              style={{ resize: "vertical", minHeight: "90px" }}
+            ></textarea>
+          </div>
+          {/* ------------------------------------------------------------------- */}
+
+          <div className="form-group">
+            <label className="form-label">
+              {language === 'pt' ? 'URL da Imagem (opcional)' : 'Image URL (optional)'}
+            </label>
             <input 
               type="text" 
               name="image_url" 
@@ -215,6 +236,7 @@ const AddProduct = ({ onProductAdded }) => {
               disabled={loading || imagePreviews.length >= 5} 
               className="form-input upload-image" 
             />
+
             {imagePreviews.length > 0 && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '12px', marginTop: '12px' }}>
                 {imagePreviews.map((preview, index) => (
@@ -232,6 +254,7 @@ const AddProduct = ({ onProductAdded }) => {
                 ))}
               </div>
             )}
+
             {imagePreviews.length >= 5 && (
               <p style={{ color: '#d32f2f', fontSize: '12px', marginTop: '4px' }}>
                 {language === 'pt' ? 'Limite máximo de 5 imagens atingido' : 'Maximum limit of 5 images reached'}

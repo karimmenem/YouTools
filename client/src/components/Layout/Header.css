@@ -5,7 +5,7 @@
 .header {
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  /* position: fixed; */
   top: 0;
   z-index: 1000;
   overflow: hidden;
@@ -78,9 +78,18 @@
   background: #ffffff;
 }
 
+.navigation {
+  background: #f8f8f8;
+  border-top: 1px solid #e0e0e0;
+  width: 100%;
+  overflow-x: auto; /* Allow horizontal scroll if needed */
+  overflow-y: hidden;
+}
+
 .navigation .container {
   padding: 0 12px;
   max-width: 100%;
+  width: 100%;
 }
 
 .header-content {
@@ -182,16 +191,43 @@
 }
 
 .navigation {
-  background: #f8f8f8;
-  border-top: 1px solid #e0e0e0;
+  overflow-x: clip;
 }
 
 .nav-menu {
   display: flex;
-  justify-content: center;
   gap: 60px;
   padding: 12px 40px;
+
   overflow-x: auto;
+  overflow-y: hidden;
+
+  width: 100%;      /* FORCE width to viewport – prevents expanding */
+  max-width: 100%;  /* Extra safety */
+
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-menu > * {
+  flex-shrink: 0;   /* Keep items from shrinking, but allow scroll */
+}
+
+/* Hide scrollbar but keep functionality */
+.nav-menu::-webkit-scrollbar {
+  height: 4px;
+}
+
+.nav-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav-menu::-webkit-scrollbar-thumb {
+  background: rgba(211, 47, 47, 0.3);
+  border-radius: 4px;
+}
+
+.nav-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(211, 47, 47, 0.5);
 }
 
 .nav-item {
@@ -202,6 +238,7 @@
   white-space: nowrap;
   padding: 8px 0;
   transition: color 0.3s;
+  flex-shrink: 0; /* Prevent items from shrinking */
 }
 
 .nav-item.active {
@@ -353,8 +390,9 @@
   
   .nav-menu {
     gap: 15px;
-    padding: 10px 0;
-    justify-content: center;
+    padding: 10px 20px;
+    justify-content: flex-start; /* Align left for easier scrolling */
+    width: 100%; /* Take full width on smaller screens */
   }
   
   .nav-item {
@@ -424,13 +462,15 @@
   }
   
   .nav-menu {
-    gap: 15px;
-    padding: 10px 0;
-    justify-content: start;
+    gap: 12px;
+    padding: 10px 16px;
+    justify-content: flex-start;
+    width: 100%;
   }
   
   .nav-item {
     font-size: 14px;
+    padding: 6px 0;
   }
 
   .lang-admin-container {
@@ -539,7 +579,17 @@
 
   .language-toggle svg{
     display: none;
-
+  }
+  
+  .nav-menu {
+    gap: 10px;
+    padding: 8px 12px;
+    width: 100%;
+  }
+  
+  .nav-item {
+    font-size: 13px;
+    padding: 6px 0;
   }
 }
 
@@ -552,5 +602,14 @@
   .search-results {
     width: calc(100vw - 24px);
     max-width: none;
+  }
+  
+  .nav-menu {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  
+  .nav-item {
+    font-size: 12px;
   }
 }

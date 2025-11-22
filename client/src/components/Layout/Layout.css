@@ -2,9 +2,66 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .main-content {
-  flex: 1;
-  padding: 0;
+  flex: 1 0 auto;
+  /* Header (150px) + BrandSlider (114px with padding) = ~264px */
+  padding-top: 264px;
+  padding-bottom: 0;
+  width: 100%;
+  min-height: calc(100vh - 264px);
+  position: relative;
+  z-index: 1; /* CRITICAL: Below header (1000) and slider (999) */
+  background: #fff; /* Ensure solid background so nothing shows through */
+}
+
+/* Ensure footer stays at bottom */
+footer {
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1000px) {
+  .main-content {
+    /* Header (140px) + BrandSlider (~114px) = 254px */
+    padding-top: 254px;
+    min-height: calc(100vh - 254px);
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    /* Header (130px) + BrandSlider (~114px) = 244px */
+    padding-top: 244px;
+    min-height: calc(100vh - 244px);
+  }
+}
+
+/* CRITICAL: When BrandSlider is hidden on mobile (below 600px), only account for header */
+@media (max-width: 600px) {
+  .main-content {
+    /* Only header height - brand slider is display:none */
+    padding-top: 160px;
+    min-height: calc(100vh - 160px);
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    /* Header is ~120px at this breakpoint */
+    padding-top: 150px;
+    min-height: calc(100vh - 150px);
+  }
+}
+
+@media (max-width: 400px) {
+  .main-content {
+    padding-top: 140px;
+    min-height: calc(100vh - 140px);
+  }
 }
