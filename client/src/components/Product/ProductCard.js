@@ -5,12 +5,12 @@ import './ProductCard.css';
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
 
- const formatPrice = (price) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  }).format(price);
-};
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(price);
+  };
 
   return (
     <div className="product-card">
@@ -23,32 +23,20 @@ const ProductCard = ({ product }) => {
             e.target.src = '/placeholder-product.jpg';
           }}
         />
-        {/* {product.original_price && product.original_price > product.price && (
-          <span className="discount-badge">
-            -{calculateDiscount(product.original_price, product.price)}%
-          </span>
-        )}
-        {product.badge && (
-          <span className="product-badge">
-            {product.badge}
-          </span>
-        )} */}
       </div>
 
       <div className="product-info">
         <h3 className="product-title">{product.name}</h3>
-        {/* <p className="product-code">Código: {product.code}</p> */}
-
+        
         <div className="product-pricing">
-          {/* {product.original_price && product.original_price > product.price && (
+          {product.original_price && product.original_price > product.price && (
             <span className="original-price">
               {formatPrice(product.original_price)}
             </span>
-          )} */}
-          <div className="current-price">
-            <span className='span1'>Preço: </span>
-           <span className='span2'>{ formatPrice(product.price)}</span> 
-          </div>
+          )}
+          <span className="current-price">
+            {formatPrice(product.price)}
+          </span>
         </div>
       </div>
     </div>
