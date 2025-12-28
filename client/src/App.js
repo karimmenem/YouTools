@@ -13,6 +13,8 @@ import './styles/App.css';
 
 import { LoadingProvider, useLoading } from './context/LoadingContext';
 import GlobalLoading from './components/Loading/GlobalLoading';
+import ScrollToTop from './components/ScrollToTop';
+import { HelmetProvider } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 
 function RouteChangeHandler({ children }) {
@@ -38,28 +40,31 @@ function App() {
   }, []);
 
   return (
-    <LoadingProvider>
-      <LanguageProvider>
-        <div className="App">
-          <GlobalLoading />
-          <RouteChangeHandler>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="produtos" element={<Products />} />
-                <Route path="produtos/:categorySlug" element={<Products />} />
+    <HelmetProvider>
+      <LoadingProvider>
+        <LanguageProvider>
+          <div className="App">
+            <GlobalLoading />
+            <RouteChangeHandler>
+              <ScrollToTop />
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<Home />} />
+                  <Route path="produtos" element={<Products />} />
+                  <Route path="produtos/:categorySlug" element={<Products />} />
 
-                <Route path=":brandSlug" element={<BrandProducts />} />
-                <Route path="produto/:productSlug" element={<ProductDetail />} /> {/* Add route for product detail page */}
-                <Route path="about" element={<About />} />
-              </Route>
-              <Route path="/admin/*" element={<Auth />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </RouteChangeHandler>
-        </div>
-      </LanguageProvider>
-    </LoadingProvider>
+                  <Route path=":brandSlug" element={<BrandProducts />} />
+                  <Route path="produto/:productSlug" element={<ProductDetail />} /> {/* Add route for product detail page */}
+                  <Route path="about" element={<About />} />
+                </Route>
+                <Route path="/admin/*" element={<Auth />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </RouteChangeHandler>
+          </div>
+        </LanguageProvider>
+      </LoadingProvider>
+    </HelmetProvider>
   );
 }
 

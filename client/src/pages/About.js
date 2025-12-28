@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import SEO from '../components/SEO';
 import { useLoading } from '../context/LoadingContext';
 import { useLanguage } from '../context/LanguageContext';
 import './About.css';
@@ -16,6 +17,10 @@ const About = () => {
 
   return (
     <div className="about-page container" style={{ marginTop: '220px' }}>
+      <SEO
+        title={t('aboutUs') || 'Sobre Nós'}
+        description={t('companyDescription') || 'Saiba mais sobre a YouTools.'}
+      />
       <div className="about-content">
         <div className="youtools-logo" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
           <div className="logo-main">

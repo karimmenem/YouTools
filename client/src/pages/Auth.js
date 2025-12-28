@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SEO from '../components/SEO';
 import Login from '../components/Auth/Login';
 import SignUp from '../components/Auth/SignUp';
 import AdminPanel from '../components/Admin/AdminPanel';
@@ -41,10 +42,10 @@ const Auth = () => {
   // If user is logged in but not admin, show message
   if (user && !user.is_admin) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         minHeight: '80vh',
         flexDirection: 'column',
         gap: '2rem',
@@ -52,18 +53,18 @@ const Auth = () => {
         padding: '2rem'
       }}>
         <h2 style={{ color: '#d32f2f' }}>
-          {language === 'pt' 
-            ? `Bem-vindo, ${user.first_name}!` 
+          {language === 'pt'
+            ? `Bem-vindo, ${user.first_name}!`
             : `Welcome, ${user.first_name}!`
           }
         </h2>
         <p style={{ color: '#666', fontSize: '1.2rem' }}>
-          {language === 'pt' 
-            ? 'Você está logado como usuário regular. Somente administradores podem acessar o painel administrativo.' 
+          {language === 'pt'
+            ? 'Você está logado como usuário regular. Somente administradores podem acessar o painel administrativo.'
             : 'You are logged in as a regular user. Only administrators can access the admin panel.'
           }
         </p>
-        <button 
+        <button
           onClick={handleLogout}
           style={{
             background: 'linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%)',
@@ -85,6 +86,7 @@ const Auth = () => {
   // Show login/signup forms with back link
   return (
     <div style={{ position: 'relative', minHeight: '100vh', background: '#ffffff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <SEO title="Login / Cadastro" description="Entre ou cadastre-se na YouTools." />
       <Link
         to="/"
         style={{

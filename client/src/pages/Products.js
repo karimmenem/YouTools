@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import SEO from '../components/SEO';
 
 import { useParams } from 'react-router-dom';
 import { getIdFromSlug } from '../utils/slugUtils';
@@ -17,7 +18,7 @@ const Products = () => {
 
   const { categorySlug } = useParams(); // ✅ get category slug from URL
   const categoryId = getIdFromSlug(categorySlug);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { hideLoading } = useLoading();
 
   useEffect(() => {
@@ -113,6 +114,10 @@ const Products = () => {
 
   return (
     <div className="home" style={homeStyle}>
+      <SEO
+        title={getCategoryTitle()}
+        description={language === 'pt' ? `Explore nossa seleção de ${getCategoryTitle()}` : `Explore our selection of ${getCategoryTitle()}`}
+      />
       <div className="container">
         <div className="home-header">
           <h1 className="page-title" style={{ marginLeft: '50px' }}>

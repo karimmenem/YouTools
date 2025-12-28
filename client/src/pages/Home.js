@@ -6,6 +6,8 @@ import './Home.css';
 
 import { useLoading } from '../context/LoadingContext';
 
+import SEO from '../components/SEO';
+
 const Home = () => {
   const { hideLoading } = useLoading();
   const [loadedComponents, setLoadedComponents] = React.useState({
@@ -27,6 +29,10 @@ const Home = () => {
 
   return (
     <div className="home">
+      <SEO
+        title="Início"
+        description="A YouTools é sua parceira ideal em ferramentas e equipamentos industriais. Encontre as melhores marcas e preços."
+      />
       <div className="container">
         {/* Billboard section */}
         <BrandRail onLoad={() => handleLoad('rail')} />

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import SEO from '../components/SEO';
 import { useParams } from 'react-router-dom';
 import { getIdFromSlug } from '../utils/slugUtils';
 import { useLanguage } from '../context/LanguageContext';
@@ -107,6 +108,13 @@ const ProductDetail = () => {
 
   return (
     <div className="container">
+      {product && (
+        <SEO
+          title={product.name}
+          description={product.description}
+          image={productImages[0]}
+        />
+      )}
       <div className="product-detail-container">
         <div className="product-detail-image" style={{ position: 'relative' }}>
           <img

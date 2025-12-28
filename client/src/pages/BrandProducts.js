@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SEO from '../components/SEO';
 
 import { useParams } from 'react-router-dom';
 import ProductCard from '../components/Product/ProductCard';
@@ -80,6 +81,10 @@ const BrandProducts = () => {
 
   return (
     <div className="home">
+      <SEO
+        title={brand ? brand.name : brandSlug}
+        description={language === 'pt' ? `Produtos da marca ${brand ? brand.name : brandSlug}` : `Products from ${brand ? brand.name : brandSlug}`}
+      />
       <div className="container">
         <div style={{ paddingLeft: '40px' }}>
           <h1>{brand ? brand.name : brandSlug}</h1>
