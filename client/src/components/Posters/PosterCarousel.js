@@ -4,7 +4,7 @@ import './PosterCarousel.css';
 
 const SLIDE_INTERVAL = 5000; // ms
 
-const PosterCarousel = () => {
+const PosterCarousel = ({ onLoad }) => {
   const [posters, setPosters] = useState([]);
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -13,9 +13,12 @@ const PosterCarousel = () => {
   useEffect(() => {
     (async () => {
       const res = await getPosters();
-      if (res.success) setPosters(res.data);
+      if (res.success) {
+        setPosters(res.data);
+        if (onLoad) onLoad();
+      }
     })();
-  }, []);
+  }, [onLoad]);
 
   // Auto advance
   useEffect(() => {

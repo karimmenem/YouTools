@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
 import { useParams } from 'react-router-dom';
+import { getIdFromSlug } from '../utils/slugUtils';
 import ProductCard from '../components/Product/ProductCard';
 import { getProducts, getCategories } from '../services/productService';
 import { useLanguage } from '../context/LanguageContext';
+import { useLoading } from '../context/LoadingContext';
 import './Home.css'; // Reuse the same styles
 
 const Products = () => {
@@ -12,8 +15,10 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
 
-  const { categoryId } = useParams(); // ✅ get category from URL (e.g., /4)
+  const { categorySlug } = useParams(); // ✅ get category slug from URL
+  const categoryId = getIdFromSlug(categorySlug);
   const { t } = useLanguage();
+  const { hideLoading } = useLoading();
 
   useEffect(() => {
     loadData();
@@ -61,6 +66,7 @@ const Products = () => {
     } finally {
       // Only set loading to false after fetch completes (success or failure)
       setLoading(false);
+      hideLoading();
     }
   };
 
@@ -79,16 +85,7 @@ const Products = () => {
   const homeStyle = products.length === 0 ? { height: '200px' } : undefined;
 
   if (loading) {
-    return (
-      <div className="home">
-        <div className="container">
-          <div className="loading-state">
-            <div className="loading-spinner"></div>
-            <p>Carregando produtos...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <div className="home" style={{ minHeight: '60vh' }}></div>;
   }
 
   // Show error if fetch failed
@@ -121,22 +118,22 @@ const Products = () => {
           <h1 className="page-title" style={{ marginLeft: '50px' }}>
             {getCategoryTitle()}
           </h1>
-          
+
         </div>
 
-        {products.length>0 ? (<div className="products-grid products-grid-compact">
+        {products.length > 0 ? (<div className="products-grid products-grid-compact">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
-        </div>): null}
+        </div>) : null}
 
         {!loading && products.length === 0 && (
           <div className="empty-state" style={{
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center'
-}}>
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
             <div className="empty-icon" >🔧</div>
             <h3>
               {categoryId

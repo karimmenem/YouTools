@@ -3,9 +3,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getCategories } from "../../services/categoryService";
 import { getBrands } from "../../services/brandService";
 import { getProducts } from "../../services/productService";
-import { FiGlobe, FiSearch } from "react-icons/fi";
+import { FiGlobe, FiSearch, FiMenu, FiX } from "react-icons/fi";
 import { BiUser } from "react-icons/bi";
 import { useLanguage } from "../../context/LanguageContext";
+import { createSlug } from "../../utils/slugUtils";
 import "./Header.css";
 
 const Header = () => {
@@ -25,7 +26,7 @@ const Header = () => {
   const lastScrollY = useRef(typeof window !== "undefined" ? window.scrollY : 0);
   const scrollTimer = useRef(null);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
   const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
@@ -41,11 +42,11 @@ const Header = () => {
       try {
         const b = await getBrands();
         if (mounted && b?.success) setBrands(b.data || []);
-      } catch {}
+      } catch { }
       try {
         const p = await getProducts();
         if (mounted && p?.success) setProducts(p.data || []);
-      } catch {}
+      } catch { }
     })();
     return () => {
       mounted = false;
@@ -54,7 +55,7 @@ const Header = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth <= 767;
+      const mobile = window.innerWidth <= 1024;
       setIsMobile(mobile);
       if (!mobile) {
         setShowSearch(false); // Reset search on desktop
@@ -116,10 +117,10 @@ const Header = () => {
 
   const onSelect = (item) => {
     if (!item) return;
-    if (item.type === "product") navigate(`/produto/${item.data.id}`);
+    if (item.type === "product") navigate(`/produto/${createSlug(item.data.name, item.data.id)}`);
     else if (item.type === "brand")
       navigate(`/${item.data.slug || item.data.id}`);
-    else if (item.type === "category") navigate(`/produtos/${item.data.id}`);
+    else if (item.type === "category") navigate(`/produtos/${createSlug(item.data.name, item.data.id)}`);
     setQuery("");
     setResults([]);
     setShowSearch(false);
@@ -159,10 +160,18 @@ const Header = () => {
     setShowSearch((prev) => !prev);
   };
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location]);
+
   return (
     <header className={`header ${hidden ? "header--hidden" : ""}`}>
       <div className="header-main">
-        <div>
+        {/* Left: Logo */}
+        <div className="header-left">
           <Link to="/" className="logo">
             <div className="youtools-logo">
               <div className="logo-main">
@@ -174,134 +183,143 @@ const Header = () => {
           </Link>
         </div>
 
-        <div
-          className={`search-container ${showSearch ? "search-active" : ""}`}
-          ref={searchContainerRef}
-        >
-          {isMobile && (
+        {/* Center: Navigation (Desktop Only) */}
+        {!isMobile && !isAdminPage && (
+          <nav className="desktop-nav">
+            <Link
+              to="/"
+              className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
+            >
+              {language === "pt" ? "Início" : "Home"}
+            </Link>
+            {categories.map((c) => (
+              <Link
+                key={c.id}
+                to={`/produtos/${createSlug(c.name, c.id)}`}
+                className={`nav-item ${location.pathname === `/produtos/${createSlug(c.name, c.id)}`
+                  ? "active"
+                  : ""
+                  }`}
+              >
+                {c.name}
+              </Link>
+            ))}
+          </nav>
+        )}
+
+        {/* Right: Actions (Search, Lang, Admin, Menu) */}
+        <div className="header-right">
+
+          {/* Search Toggle */}
+          <div className="search-wrapper" ref={searchContainerRef}>
             <button
-              className="search-icon-btn"
-              onClick={handleSearchToggle}
+              className={`action-btn-circle ${showSearch ? "active" : ""}`}
+              onClick={() => setShowSearch(!showSearch)}
               aria-label={placeholder}
             >
               <FiSearch size={20} />
             </button>
-          )}
 
-          {(showSearch || !isMobile) && (
-            <input
-              className={`search-input ${isMobile ? "mobile" : ""}`}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={placeholder}
-              aria-label="search"
-              autoFocus={isMobile && showSearch}
-            />
-          )}
-
-          {results?.length > 0 && (showSearch || !isMobile) && (
-            <div className="search-results">
-              {results.map((r, idx) => (
-                <div
-                  className="search-item"
-                  key={`${r.type}-${r.data.id || r.data.slug || idx}`}
-                  onClick={() => onSelect(r)}
-                >
-                  {r.data.image || r.data.logo ? (
-                    <img
-                      src={r.data.image || r.data.logo}
-                      alt={r.data.name}
-                      onError={(e) => {
-                        e.target.src = "/placeholder-product.jpg";
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 46,
-                        height: 46,
-                        background: "#f0f0f0",
-                        borderRadius: 6,
-                      }}
-                    />
-                  )}
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div style={{ fontSize: 14, fontWeight: 600 }}>
-                      {r.data.name || r.data.slug || r.data.title}
-                    </div>
-                    {r.type === "product" && r.data.brand && (
-                      <div style={{ fontSize: 12, color: "#666" }}>
-                        {r.data.brand}
+            {/* Absolute Search Input (Desktop & Mobile) */}
+            {showSearch && (
+              <div className="search-popup">
+                <input
+                  className="search-input-popup"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={placeholder}
+                  autoFocus
+                />
+                {results?.length > 0 && (
+                  <div className="search-results-popup">
+                    {results.map((r, idx) => (
+                      <div
+                        className="search-item"
+                        key={`${r.type}-${r.data.id || r.data.slug || idx}`}
+                        onClick={() => onSelect(r)}
+                      >
+                        {r.data.image || r.data.logo ? (
+                          <img
+                            src={r.data.image || r.data.logo}
+                            alt={r.data.name}
+                            onError={(e) => {
+                              e.target.src = "/placeholder-product.jpg";
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width: 32,
+                              height: 32,
+                              background: "#f0f0f0",
+                              borderRadius: 4,
+                            }}
+                          />
+                        )}
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                          <span className="search-title">{r.data.name || r.data.slug || r.data.title}</span>
+                          {r.type === "product" && r.data.brand && (
+                            <span className="search-subtitle">{r.data.brand}</span>
+                          )}
+                        </div>
                       </div>
-                    )}
+                    ))}
                   </div>
-                  <div className="kind">{r.type}</div>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Language Toggle (Icon) */}
+          <button className="action-btn-circle" onClick={toggleLanguage} title="Switch Language">
+            <FiGlobe size={20} />
+            <span className="lang-indicator">{language === "pt" ? "PT" : "EN"}</span>
+          </button>
+
+          {/* Admin Button (Icon) */}
+          {!isMobile && !isAdminPage && (
+            <Link to="/admin" className="action-btn-circle admin-circle" title={t("admin")}>
+              <BiUser size={22} />
+            </Link>
           )}
 
-          {!isMobile && (
-            <div className="lang-admin-container">
-              <div className="top-right">
-                <button className="language-toggle" onClick={toggleLanguage}>
-                  <FiGlobe className="icon" />
-                  <span>{language === "pt" ? "EN" : "PT"}</span>
-                </button>
-              </div>
-
-              {!isAdminPage && (
-                <div className="header-actions">
-                  <Link to="/admin" className="action-btn admin-btn">
-                    <BiUser className="icon" />
-                    <span className="admin-text">{t("admin")}</span>
-                  </Link>
-                </div>
-              )}
-
-
-              
-            </div>
+          {/* Mobile Menu Toggle */}
+          {isMobile && !isAdminPage && (
+            <button
+              className="action-btn-circle menu-toggle"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Menu"
+            >
+              {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+            </button>
           )}
         </div>
-
-        {isMobile && (
-          <div className="lang-admin-container">
-            <div className="top-right">
-              <button className="language-toggle" onClick={toggleLanguage}>
-                <FiGlobe className="icon" />
-                <span>{language === "pt" ? "EN" : "PT"}</span>
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
-      {!isAdminPage && (
-        <nav className="navigation">
-          <div className="container">
-            <div className="nav-menu">
-              <Link
-                to="/"
-                className={`nav-item ${
-                  location.pathname === "/" ? "active" : ""
+      {/* Mobile Navigation Drawer */}
+      {isMobile && menuOpen && (
+        <nav className="mobile-nav">
+          <Link
+            to="/"
+            className={`mobile-nav-item ${location.pathname === "/" ? "active" : ""}`}
+            onClick={() => setMenuOpen(false)}
+          >
+            {language === "pt" ? "Início" : "Home"}
+          </Link>
+          {categories.map((c) => (
+            <Link
+              key={c.id}
+              to={`/produtos/${createSlug(c.name, c.id)}`}
+              className={`mobile-nav-item ${location.pathname === `/produtos/${createSlug(c.name, c.id)}`
+                ? "active"
+                : ""
                 }`}
-              >
-                {language === "pt" ? "Início" : "Home"}
-              </Link>
-              {categories.map((c) => (
-                <Link
-                  key={c.id}
-                  to={`/produtos/${c.id}`}
-                  className={`nav-item ${
-                    location.pathname === `/produtos/${c.id}` ? "active" : ""
-                  }`}
-                >
-                  {c.name}
-                </Link>
-              ))}
-            </div>
-          </div>
+              onClick={() => setMenuOpen(false)}
+            >
+              {c.name}
+            </Link>
+          ))}
+
         </nav>
       )}
     </header>

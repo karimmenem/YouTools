@@ -9,10 +9,11 @@ const BrandSlider = () => {
     let mounted = true;
     (async () => {
       const res = await getBrands();
-      if (mounted && res.success){ 
+      if (mounted && res.success) {
         setBrands(res.data || [])
-        
-      ;};
+
+          ;
+      };
     })();
     return () => { mounted = false; };
   }, []);
@@ -32,12 +33,13 @@ const BrandSlider = () => {
     <section className="brand-marquee single" aria-label="Brands">
       <div className="brand-marquee-inner">
         <div className="marquee-track single">
-          {loop.map((b, i) => {if(b.position !== 10) return (
-            
-            <div key={`${b.id || b.slug}-${i}`} className="brand-chip-mini" title={b.name} onClick={() =>  console.log(brands) }>
-              <img loading="lazy" src={b.logo} alt={b.name} onError={e => { e.currentTarget.style.visibility='hidden'; }} />
-            </div>
-          )})}
+          {loop
+            .filter(b => b.position !== 10)
+            .map((b, i) => (
+              <div key={`${b.id || b.slug}-${i}`} className="brand-chip-mini" title={b.name} onClick={() => console.log(brands)}>
+                <img loading="lazy" src={b.logo} alt={b.name} onError={e => { e.currentTarget.style.visibility = 'hidden'; }} />
+              </div>
+            ))}
         </div>
       </div>
     </section>

@@ -3,17 +3,20 @@ import { Link } from 'react-router-dom';
 import './BrandGrid.css';
 import { getBrands } from '../../services/brandService';
 
-const BrandGrid = () => {
+const BrandGrid = ({ onLoad }) => {
   const [brands, setBrands] = useState([]);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       const res = await getBrands();
-      if (mounted && res.success) setBrands(res.data);
+      if (mounted && res.success) {
+        setBrands(res.data);
+        if (onLoad) onLoad();
+      }
     })();
     return () => { mounted = false; };
-  }, []);
+  }, [onLoad]);
 
   return (
     <div className="brand-grid">

@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { getIdFromSlug } from '../utils/slugUtils';
 import { useLanguage } from '../context/LanguageContext';
+import { useLoading } from '../context/LoadingContext';
 import { getCategories } from '../services/categoryService';
 import { getProductById } from '../services/productService';
 import ImageGallery from '../components/Product/ImageGallery';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
-  const { id } = useParams();
+  const { productSlug } = useParams();
+  const id = getIdFromSlug(productSlug);
   const { language } = useLanguage();
+  const { hideLoading } = useLoading();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
@@ -34,6 +38,7 @@ const ProductDetail = () => {
       } finally {
         // Only set loading to false after fetch completes (success or failure)
         setLoading(false);
+        hideLoading();
       }
     }
     fetchProduct();
@@ -48,14 +53,7 @@ const ProductDetail = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="container">
-        <div className="loading-state" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
-          <div className="loading-spinner"></div>
-          <p>{language === 'pt' ? 'Carregando produto...' : 'Loading product...'}</p>
-        </div>
-      </div>
-    );
+    return <div className="container" style={{ minHeight: '60vh' }}></div>;
   }
 
   // Show error if fetch failed
@@ -88,7 +86,7 @@ const ProductDetail = () => {
   }
 
   // Compute category only after product is loaded
-  const category = product?.category 
+  const category = product?.category
     ? categories.find(cat => cat && String(cat.id) === String(product.category))
     : null;
 
@@ -111,15 +109,15 @@ const ProductDetail = () => {
     <div className="container">
       <div className="product-detail-container">
         <div className="product-detail-image" style={{ position: 'relative' }}>
-          <img 
-            src={productImages[0] || '/placeholder-product.jpg'} 
-            alt={product?.name} 
+          <img
+            src={productImages[0] || '/placeholder-product.jpg'}
+            alt={product?.name}
             onError={e => { e.target.src = '/placeholder-product.jpg'; }}
             onClick={handleImageClick}
             style={{ cursor: productImages.length > 0 ? 'pointer' : 'default' }}
           />
           {hasMultipleImages && (
-            <div 
+            <div
               className="multiple-images-indicator"
               onClick={handleImageClick}
             >
@@ -129,31 +127,31 @@ const ProductDetail = () => {
           )}
         </div>
         <div className="product-detail-info-grid">
-  <div className="info-row">
-    <b>{language === 'pt' ? 'Marca:' : 'Brand:'}</b>
-    <span>{product.brand || '-'}</span>
-  </div>
-  <div className="info-row">
-    <b>{language === 'pt' ? 'Categoria:' : 'Category:'}</b>
-    <span>{category?.name || (product?.category ? String(product.category) : '-')}</span>
-  </div>
-  <div className="info-row">
-    <b>{language === 'pt' ? 'Nome:' : 'Name:'}</b>
-    <span>{product?.name || '-'}</span>
-  </div>
-  <div className="info-row">
-    <b>{language === 'pt' ? 'Preço:' : 'Price:'}</b>
-    <span>$ {product?.price != null ? product.price : '0.00'}</span>
-  </div>
-  <div className="info-row">
-    <b>{language === 'pt' ? 'Descrição:' : 'Description:'}</b>
-    <span>{product?.description ? product?.description : "Empty"}</span>
-  </div>
-</div>
+          <div className="info-row">
+            <b>{language === 'pt' ? 'Marca:' : 'Brand:'}</b>
+            <span>{product.brand || '-'}</span>
+          </div>
+          <div className="info-row">
+            <b>{language === 'pt' ? 'Categoria:' : 'Category:'}</b>
+            <span>{category?.name || (product?.category ? String(product.category) : '-')}</span>
+          </div>
+          <div className="info-row">
+            <b>{language === 'pt' ? 'Nome:' : 'Name:'}</b>
+            <span>{product?.name || '-'}</span>
+          </div>
+          <div className="info-row">
+            <b>{language === 'pt' ? 'Preço:' : 'Price:'}</b>
+            <span>$ {product?.price != null ? product.price : '0.00'}</span>
+          </div>
+          <div className="info-row">
+            <b>{language === 'pt' ? 'Descrição:' : 'Description:'}</b>
+            <span>{product?.description ? product?.description : "Empty"}</span>
+          </div>
+        </div>
 
 
       </div>
-      
+
       <ImageGallery
         images={productImages}
         isOpen={isGalleryOpen}

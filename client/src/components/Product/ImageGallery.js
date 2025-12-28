@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import './ImageGallery.css';
 
@@ -13,13 +14,13 @@ const ImageGallery = ({ images, isOpen, onClose, initialIndex = 0 }) => {
   }, [initialIndex, isOpen]);
 
   const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1
     );
   };
 
   const goToNext = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
@@ -31,11 +32,11 @@ const ImageGallery = ({ images, isOpen, onClose, initialIndex = 0 }) => {
       if (e.key === 'Escape') {
         onClose();
       } else if (e.key === 'ArrowLeft') {
-        setCurrentIndex((prevIndex) => 
+        setCurrentIndex((prevIndex) =>
           prevIndex === 0 ? images.length - 1 : prevIndex - 1
         );
       } else if (e.key === 'ArrowRight') {
-        setCurrentIndex((prevIndex) => 
+        setCurrentIndex((prevIndex) =>
           prevIndex === images.length - 1 ? 0 : prevIndex + 1
         );
       }
@@ -87,11 +88,11 @@ const ImageGallery = ({ images, isOpen, onClose, initialIndex = 0 }) => {
     }
   };
 
-  return (
+  return ReactDOM.createPortal(
     <div className="image-gallery-modal" onClick={handleBackdropClick}>
       <div className="image-gallery-container">
-        <button 
-          className="image-gallery-close" 
+        <button
+          className="image-gallery-close"
           onClick={onClose}
           aria-label={language === 'pt' ? 'Fechar' : 'Close'}
         >
@@ -100,15 +101,15 @@ const ImageGallery = ({ images, isOpen, onClose, initialIndex = 0 }) => {
 
         {images.length > 1 && (
           <>
-            <button 
-              className="image-gallery-nav image-gallery-prev" 
+            <button
+              className="image-gallery-nav image-gallery-prev"
               onClick={goToPrevious}
               aria-label={language === 'pt' ? 'Imagem anterior' : 'Previous image'}
             >
               ‹
             </button>
-            <button 
-              className="image-gallery-nav image-gallery-next" 
+            <button
+              className="image-gallery-nav image-gallery-next"
               onClick={goToNext}
               aria-label={language === 'pt' ? 'Próxima imagem' : 'Next image'}
             >
@@ -117,20 +118,20 @@ const ImageGallery = ({ images, isOpen, onClose, initialIndex = 0 }) => {
           </>
         )}
 
-        <div 
+        <div
           className="image-gallery-content"
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
-          <div 
+          <div
             className="image-gallery-slider"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {images.map((image, index) => (
               <div key={index} className="image-gallery-slide">
-                <img 
-                  src={image || '/placeholder-product.jpg'} 
+                <img
+                  src={image || '/placeholder-product.jpg'}
                   alt={`${language === 'pt' ? 'Imagem do produto' : 'Product image'} ${index + 1}`}
                   onError={(e) => {
                     e.target.src = '/placeholder-product.jpg';
@@ -160,7 +161,8 @@ const ImageGallery = ({ images, isOpen, onClose, initialIndex = 0 }) => {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

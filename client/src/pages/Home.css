@@ -4,9 +4,11 @@
   position: relative;
   overflow-x: hidden;
   padding-bottom: 40px;
-  padding-top: 0; /* No extra padding needed - Layout handles it */
+  padding-top: 0;
+  /* No extra padding needed - Layout handles it */
   width: 100%;
-  z-index: 1; /* CRITICAL: Keep content below header (1000) and slider (999) */
+  z-index: 1;
+  /* CRITICAL: Keep content below header (1000) and slider (999) */
 }
 
 .home::before {
@@ -30,7 +32,8 @@
   gap: 20px;
   position: relative;
   z-index: 1;
-  padding-top: 10px; /* Extra safety padding */
+  padding-top: 10px;
+  /* Extra safety padding */
 }
 
 .products-header h1 {
@@ -115,7 +118,8 @@
 /* ===== GRID LAYOUT ===== */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(5, 270px);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* Fix: Responsive grid */
   gap: 32px;
   margin-bottom: 60px;
   position: relative;
@@ -139,6 +143,7 @@
     gap: 28px;
     padding: 20px 40px;
   }
+
   .products-header h1 {
     font-size: 32px;
   }
@@ -153,6 +158,7 @@
     padding-top: 24px;  */
     margin-bottom: 40px;
   }
+
   .products-header {
     flex-direction: column;
     align-items: center;
@@ -161,9 +167,11 @@
     text-align: center;
     padding-top: 10px;
   }
+
   .products-header h1 {
     font-size: 28px;
   }
+
   .products-grid {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 24px;
@@ -175,23 +183,23 @@
 
 /* Large phones / small tablets */
 @media (max-width: 600px) {
-  .home {
-    /* padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 20px;
-    padding-top: 20px;  */
-  }
+
+
   .products-header {
-    padding-top: 15px; /* Extra spacing on mobile */
+    padding-top: 15px;
+    /* Extra spacing on mobile */
   }
+
   .products-header h1 {
     font-size: 26px;
   }
+
   .products-info {
     flex-direction: column;
     align-items: center;
     gap: 14px;
   }
+
   .products-grid {
     height: auto !important;
     overflow: visible !important;
@@ -200,22 +208,21 @@
 
 /* Mobile phones */
 @media (max-width: 480px) {
-  .home {
-    /* padding-left: 16px;
-    padding-right: 16px;
-    padding-bottom: 16px;
-    padding-top: 16px; */
-  }
+
+
   .products-header {
     padding-top: 12px;
   }
+
   .products-header h1 {
     font-size: 24px;
   }
+
   .sort-container {
     flex-direction: column;
     gap: 8px;
   }
+
   .products-grid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -224,18 +231,22 @@
     overflow: visible !important;
     max-height: none !important;
   }
+
   .product-card {
     width: 100% !important;
     max-width: 340px;
     margin: 0 auto;
     height: auto;
   }
+
   .product-image-container {
     height: 200px;
   }
+
   .product-title {
     font-size: 16px;
   }
+
   .current-price {
     font-size: 18px;
   }
@@ -243,15 +254,16 @@
 
 /* Very small phones */
 @media (max-width: 400px) {
-  .home {
-    /* padding-top: 12px; */
-  }
+
+
   .products-header {
     padding-top: 10px;
   }
+
   .products-header h1 {
     font-size: 22px;
   }
+
   .products-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -259,15 +271,19 @@
     height: auto !important;
     overflow: visible !important;
   }
+
   .product-card {
     max-width: 320px;
   }
+
   .product-image-container {
     height: 180px;
   }
+
   .product-title {
     font-size: 15px;
   }
+
   .current-price {
     font-size: 16px;
   }
@@ -278,6 +294,7 @@
   .products-header h1 {
     font-size: 20px;
   }
+
   .products-grid {
     padding: 0 6px;
     height: auto !important;

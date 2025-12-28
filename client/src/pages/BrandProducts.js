@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+
 import { useParams } from 'react-router-dom';
 import ProductCard from '../components/Product/ProductCard';
 import { getProducts } from '../services/productService';
 import './Home.css';
 import { useLanguage } from '../context/LanguageContext';
+import { useLoading } from '../context/LoadingContext';
 
 const BrandProducts = () => {
   const { brandSlug } = useParams();
   const { language } = useLanguage();
+  const { hideLoading } = useLoading();
   const [products, setProducts] = useState([]);
   const [brand, setBrand] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,7 +27,7 @@ const BrandProducts = () => {
         console.error("Failed to parse brands from localStorage", e);
       }
     }
-    
+
     loadProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brandSlug]);
@@ -49,20 +52,12 @@ const BrandProducts = () => {
     } finally {
       // Only set loading to false after fetch completes (success or failure)
       setLoading(false);
+      hideLoading();
     }
   };
 
   if (loading) {
-    return (
-      <div className="home">
-        <div className="container">
-          <div className="loading-state">
-            <div className="loading-spinner"></div>
-            <p>{language === 'pt' ? `Carregando produtos para ${brand?.name || brandSlug}...` : `Loading products for ${brand?.name || brandSlug}...`}</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <div className="home" style={{ minHeight: '60vh' }}></div>;
   }
 
   // Show error if fetch failed
@@ -86,17 +81,17 @@ const BrandProducts = () => {
   return (
     <div className="home">
       <div className="container">
-        <div style={{paddingLeft: '40px'}}>
-            <h1>{brand ? brand.name : brandSlug}</h1>
+        <div style={{ paddingLeft: '40px' }}>
+          <h1>{brand ? brand.name : brandSlug}</h1>
         </div>
-        
+
         <div className="products-grid">
           {products.map(product => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
         {!loading && products.length === 0 && (
-          <div className="empty-state" style={{ display: 'flex', justifyContent: 'center' ,textAlign: 'center', marginTop: '2rem' }}>
+          <div className="empty-state" style={{ display: 'flex', justifyContent: 'center', textAlign: 'center', marginTop: '2rem' }}>
             <h3 className="empty-state-title">{language === 'pt' ? `Nenhum produto encontrado para ${brand ? brand.name : brandSlug}` : `No products found for ${brand ? brand.name : brandSlug}`}</h3>
           </div>
         )}

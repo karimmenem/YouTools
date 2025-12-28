@@ -82,7 +82,8 @@
 .info-row b {
   color: #d32f2f;
   font-weight: 600;
-  min-width: 90px; /* keeps labels neatly aligned */
+  min-width: 90px;
+  /* keeps labels neatly aligned */
 }
 
 /* Value (e.g., YouTools, Hammer, etc.) */
@@ -98,7 +99,7 @@
     align-items: center;
     padding: 24px 12px;
     gap: 24px;
-    margin-top: 120px !important;
+    margin-top: 20px !important;
 
     /* ensure content is pushed below the fixed header on small screens */
 
@@ -128,7 +129,7 @@
 /* Extra small screens: slightly smaller offset */
 @media (max-width: 400px) {
   .product-detail-container {
-    
+
     padding: 18px 10px;
   }
 }

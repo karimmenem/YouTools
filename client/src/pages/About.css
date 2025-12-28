@@ -19,16 +19,8 @@
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: 36px;
   font-weight: 900;
-  color: black; /* white text */
-  /* text-shadow: 
-    -2px -2px 0 #d32f2f,
-    2px -2px 0 #d32f2f,
-    -2px 2px 0 #d32f2f,
-    2px 2px 0 #d32f2f,
-    -2px 0 0 #d32f2f,
-    2px 0 0 #d32f2f,
-    0 -2px 0 #d32f2f,
-    0 2px 0 #d32f2f; red outline */
+  color: black;
+  /* white text */
   letter-spacing: 1px;
   margin-right: 4px;
 }
@@ -37,27 +29,92 @@
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: 30px;
   font-weight: 900;
-  color: white; /* black text */
-  background: #d32f2f; /* solid red block */
-  padding: 4px 8px; /* adjust padding */
-  border-radius: 9px; /* rectangle corners */
- 
-  text-shadow: none; /* remove previous shadow */
+  color: white;
+  /* black text */
+  background: #d32f2f;
+  /* solid red block */
+  padding: 4px 8px;
+  /* adjust padding */
+  border-radius: 9px;
+  /* rectangle corners */
+  text-shadow: none;
+  /* remove previous shadow */
 }
 
 .logo-subtitle {
   font-family: 'Arial Black', Arial, sans-serif;
   font-size: 14px;
   font-weight: 900;
-  color: black; /* white subtitle */
-  /* text-shadow: 
-    -1px -1px 0 #d32f2f,
-    1px -1px 0 #d32f2f,
-    -1px 1px 0 #d32f2f,
-    1px 1px 0 #d32f2f; red outline */
+  color: black;
+  /* white subtitle */
   letter-spacing: 3px;
   margin-top: 2px;
   margin-left: 2px;
+}
+
+/* Responsive Logo Styles */
+
+@media (max-width: 1199px) {
+  .you-text {
+    font-size: 28px;
+  }
+
+  .tools-text {
+    font-size: 24px;
+    padding: 3px 6px;
+  }
+
+  .logo-subtitle {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .you-text {
+    font-size: 28px;
+  }
+
+  .tools-text {
+    font-size: 24px;
+    padding: 3px 6px;
+  }
+
+  .logo-subtitle {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 768px) {
+  .you-text {
+    font-size: 24px;
+  }
+
+  .tools-text {
+    font-size: 20px;
+    padding: 2px 6px;
+  }
+
+  .logo-subtitle {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .you-text {
+    font-size: 20px;
+    margin-right: 2px;
+  }
+
+  .tools-text {
+    font-size: 16px;
+    padding: 2px 5px;
+    border-radius: 6px;
+  }
+
+  .logo-subtitle {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
 }
 
 .about-content h1 {
@@ -87,6 +144,7 @@
   text-decoration: none;
   color: inherit;
 }
+
 .map-section {
   margin-top: 12px;
 }
@@ -104,10 +162,8 @@
 
 .about-content {
   text-align: center;
-  
+
 }
-
-
 
 .map-wrapper {
   position: relative;
@@ -150,5 +206,3 @@ body.page-about .brand-marquee::before,
 body.page-about .brand-marquee::after {
   display: none !important;
 }
-
-

@@ -1,0 +1,32 @@
+.global-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    /* Ensure it stays on top of everything */
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.global-loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.global-loading-video {
+    width: 300px;
+    height: auto;
+    object-fit: contain;
+}
+
+@media (max-width: 768px) {
+    .global-loading-video {
+        width: 200px;
+    }
+}

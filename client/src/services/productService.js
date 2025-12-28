@@ -1,8 +1,8 @@
 // Product service using Supabase only
 import { supabase } from './supabaseClient';
-import { productCache, withTimeout } from './productCache';
+import { productCache } from './productCache';
 const API_BASE = '/api';
-const REQUEST_TIMEOUT = 30000; // 30 seconds timeout
+const REQUEST_TIMEOUT = 60000; // 60 seconds timeout (increased for high latency)
 
 const safeJson = async (response) => {
   const ct = response.headers.get('content-type') || '';
@@ -35,7 +35,7 @@ const normalizeProductImages = (product) => {
 
 export const getProducts = async (useCache = true) => {
   const cacheKey = 'all-products';
-  
+
   // Try cache first (unless explicitly bypassed)
   if (useCache) {
     const cached = productCache.get(cacheKey);
@@ -60,7 +60,7 @@ export const getProducts = async (useCache = true) => {
         const timeoutPromise = new Promise((_, reject) => {
           timeoutId = setTimeout(() => reject(new Error('Query timeout after 30s')), REQUEST_TIMEOUT);
         });
-        
+
         let result;
         try {
           result = await Promise.race([
@@ -74,9 +74,9 @@ export const getProducts = async (useCache = true) => {
           clearTimeout(timeoutId);
           throw timeoutError;
         }
-        
+
         const { data, error } = result;
-        
+
         // If error about missing column, try without images column
         if (error && (error.message?.includes('column') || error.code === '42703')) {
           console.warn('Images column not found, retrying without it:', error.message);
@@ -86,69 +86,69 @@ export const getProducts = async (useCache = true) => {
             .select('id,name,brand,price,category,image,position,description')
             .order('position', { ascending: true })
             .order('id');
-          
+
           const fallbackResult = await Promise.race([
             fallbackQuery.then(result => result),
             new Promise((_, reject) => setTimeout(() => reject(new Error('Query timeout')), REQUEST_TIMEOUT))
           ]);
-          
+
           if (fallbackResult.error) {
             console.error('Supabase getProducts error (fallback):', fallbackResult.error);
             throw fallbackResult.error;
           }
-          
+
           const normalized = (fallbackResult.data || []).map(normalizeProductImages);
           console.log(`✅ Fetched ${normalized.length} products from Supabase (without images column)`);
           return { success: true, data: normalized, remote: true };
         }
-        
+
         if (error) {
           console.error('Supabase getProducts error:', error);
           console.error('Error details:', JSON.stringify(error, null, 2));
           throw error;
         }
-        
+
         const normalized = (data || []).map(normalizeProductImages);
         console.log(`✅ Fetched ${normalized.length} products from Supabase`);
         return { success: true, data: normalized, remote: true };
-      } catch (e) { 
+      } catch (e) {
         console.error('❌ Supabase getProducts failed:', e);
         console.error('Error message:', e.message);
         console.error('Error code:', e.code);
         // Return error - Supabase only, no fallback
-        return { 
-          success: false, 
+        return {
+          success: false,
           message: e.message || 'Failed to fetch products from database',
           error: e,
-          data: [] 
+          data: []
         };
       }
     }
-    
+
     // No Supabase configured
     console.error('❌ Supabase is not configured');
-    return { 
-      success: false, 
+    return {
+      success: false,
       message: 'Database not configured. Please check your environment variables.',
-      data: [] 
+      data: []
     };
   });
 };
 
 export const getSpecialOffers = async () => {
   try {
-    const response = await fetch(`${API_BASE}/products/special-offers`, { headers:{'Accept':'application/json'} });
+    const response = await fetch(`${API_BASE}/products/special-offers`, { headers: { 'Accept': 'application/json' } });
     const data = await handleResponse(response);
     return { success: true, data: data.products || data };
   } catch (error) {
     console.error('Error fetching special offers:', error);
-    return { success: true, data: [] , fallback:true};
+    return { success: true, data: [], fallback: true };
   }
 };
 
 export const getProductById = async (id, useCache = true) => {
   const cacheKey = `product-${id}`;
-  
+
   // Try cache first
   if (useCache) {
     const cached = productCache.get(cacheKey);
@@ -171,7 +171,7 @@ export const getProductById = async (id, useCache = true) => {
         const timeoutPromise = new Promise((_, reject) => {
           timeoutId = setTimeout(() => reject(new Error('Query timeout after 30s')), REQUEST_TIMEOUT);
         });
-        
+
         const { data, error } = await Promise.race([
           query.then(result => {
             clearTimeout(timeoutId);
@@ -179,23 +179,23 @@ export const getProductById = async (id, useCache = true) => {
           }),
           timeoutPromise
         ]);
-        
+
         if (error) throw error;
         const normalized = normalizeProductImages(data);
         return { success: true, data: normalized };
-      } catch (e) { 
+      } catch (e) {
         console.warn('Supabase getProductById error:', e.message);
         // Fallback to API if Supabase fails
         try {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
-          
-          const response = await fetch(`${API_BASE}/products/${id}`, { 
+
+          const response = await fetch(`${API_BASE}/products/${id}`, {
             headers: { 'Accept': 'application/json' },
             signal: controller.signal
           });
           clearTimeout(timeoutId);
-          
+
           const data = await handleResponse(response);
           const normalized = normalizeProductImages(data.product || data);
           return { success: true, data: normalized };
@@ -205,17 +205,17 @@ export const getProductById = async (id, useCache = true) => {
         }
       }
     }
-    
+
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
-      
-      const response = await fetch(`${API_BASE}/products/${id}`, { 
+
+      const response = await fetch(`${API_BASE}/products/${id}`, {
         headers: { 'Accept': 'application/json' },
         signal: controller.signal
       });
       clearTimeout(timeoutId);
-      
+
       const data = await handleResponse(response);
       const normalized = normalizeProductImages(data.product || data);
       return { success: true, data: normalized };
@@ -233,10 +233,10 @@ export const addProduct = async (product) => {
       try {
         const { data: posData } = await supabase.from('products').select('position').order('position', { ascending: false }).limit(1);
         if (posData && posData.length && typeof posData[0].position === 'number') nextPos = posData[0].position + 1;
-      } catch {}
-      
+      } catch { }
+
       const toInsert = { ...product, position: nextPos };
-      
+
       // Handle images array
       if (product.images && Array.isArray(product.images) && product.images.length > 0) {
         toInsert.images = product.images;
@@ -247,17 +247,17 @@ export const addProduct = async (product) => {
         toInsert.image = product.image_url || product.image;
         toInsert.images = [product.image_url || product.image];
       }
-      
+
       delete toInsert.image_url;
       const { data, error } = await supabase.from('products').insert(toInsert).select();
       if (error) throw error;
       const created = normalizeProductImages(data[0]);
-      
+
       // Clear cache and fetch fresh data (bypass cache)
       productCache.clear();
       const all = await getProducts(false);
       return { success: true, data: created, all: all.data };
-    } catch (e) { 
+    } catch (e) {
       console.error('❌ Supabase addProduct failed:', e);
       return { success: false, message: e.message || 'Failed to add product' };
     }
@@ -270,7 +270,7 @@ export const updateProduct = async (id, product) => {
   if (supabase) {
     try {
       const toUpdate = { ...product };
-      
+
       // Handle images array
       if (product.images && Array.isArray(product.images) && product.images.length > 0) {
         toUpdate.images = product.images;
@@ -284,17 +284,17 @@ export const updateProduct = async (id, product) => {
           toUpdate.images = [product.image_url || product.image];
         }
       }
-      
+
       delete toUpdate.image_url;
       const { data, error } = await supabase.from('products').update(toUpdate).eq('id', id).select();
       if (error) throw error;
       const updated = normalizeProductImages(data[0]);
-      
+
       // Clear cache and fetch fresh data (bypass cache)
       productCache.clear();
       const all = await getProducts(false);
       return { success: true, data: updated, all: all.data };
-    } catch (e) { 
+    } catch (e) {
       console.error('❌ Supabase updateProduct failed:', e);
       return { success: false, message: e.message || 'Failed to update product' };
     }
@@ -308,12 +308,12 @@ export const deleteProduct = async (id) => {
     try {
       const { error } = await supabase.from('products').delete().eq('id', id);
       if (error) throw error;
-      
+
       // Clear cache and fetch fresh data (bypass cache)
       productCache.clear();
       const all = await getProducts(false);
       return { success: true, data: all.data };
-    } catch (e) { 
+    } catch (e) {
       console.error('❌ Supabase deleteProduct failed:', e);
       return { success: false, message: e.message || 'Failed to delete product' };
     }
@@ -330,12 +330,12 @@ export const getCategories = async () => {
       return { success: true, data: data || [], remote: true };
     } catch (e) { console.warn('Supabase categories fallback:', e.message); }
   }
-  return { success: true, data: [], fallback:true };
+  return { success: true, data: [], fallback: true };
 };
 
-export const refreshProducts = async () => { 
+export const refreshProducts = async () => {
   productCache.clear();
-  return await getProducts(false); 
+  return await getProducts(false);
 };
 
 // Debug function to test Supabase connection
@@ -348,25 +348,25 @@ export const testSupabaseConnection = async () => {
   try {
     console.log('🔍 Testing Supabase connection...');
     const { data, error } = await supabase.from('products').select('count').limit(1);
-    
+
     if (error) {
       console.error('❌ Supabase connection error:', error);
       return { success: false, error };
     }
-    
+
     console.log('✅ Supabase connection successful');
-    
+
     // Try to get actual count
     const { count, error: countError } = await supabase
       .from('products')
       .select('*', { count: 'exact', head: true });
-    
+
     if (countError) {
       console.warn('⚠️ Could not get product count:', countError);
     } else {
       console.log(`📊 Products in database: ${count}`);
     }
-    
+
     return { success: true, count };
   } catch (e) {
     console.error('❌ Supabase test failed:', e);
