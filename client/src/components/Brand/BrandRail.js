@@ -33,7 +33,7 @@ const BrandRail = ({ onLoad }) => {
     return (
         <div className="brand-rail-container">
             <div className="brand-rail-track">
-                {loop.map((brand, i) => (
+                {loop?.filter(brand => brand.position !== 10)?.map((brand, i) => (
                     <div key={`${brand.slug}-${i}`} className="brand-rail-item">
                         <img src={brand.logo} alt={brand.name} loading="lazy" />
                     </div>
