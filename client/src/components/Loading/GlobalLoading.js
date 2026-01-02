@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLoading } from '../../context/LoadingContext';
 import './GlobalLoading.css';
-
 const GlobalLoading = () => {
     const { isLoading } = useLoading();
 
@@ -9,14 +8,7 @@ const GlobalLoading = () => {
 
     return (
         <div className="global-loading-overlay">
-            <video
-                src="/spinning_logo.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="global-loading-video"
-            />
+            <img src="/LoadingScreen.png" alt="Loading" className="global-loading-logo" />
         </div>
     );
 };

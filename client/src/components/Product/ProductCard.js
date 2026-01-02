@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createSlug } from '../../utils/slugUtils';
 import './ProductCard.css';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onImageLoad }) => {
   const navigate = useNavigate();
 
   const formatPrice = (price) => {
@@ -20,8 +20,10 @@ const ProductCard = ({ product }) => {
           src={product.image_url || product.image || '/placeholder-product.jpg'}
           alt={product.name}
           className="product-image"
+          onLoad={onImageLoad}
           onError={(e) => {
             e.target.src = '/placeholder-product.jpg';
+            if (onImageLoad) onImageLoad();
           }}
         />
       </div>

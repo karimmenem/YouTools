@@ -16,6 +16,7 @@ const BrandProducts = () => {
   const [brand, setBrand] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
+  const [imagesLoadedCount, setImagesLoadedCount] = useState(0);
 
   useEffect(() => {
     const storedBrands = localStorage.getItem('brands');
@@ -29,9 +30,26 @@ const BrandProducts = () => {
       }
     }
 
+    setImagesLoadedCount(0); // Reset on slug change
     loadProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brandSlug]);
+
+  // Check if all images are loaded
+  useEffect(() => {
+    if (!loading && products.length > 0) {
+      if (imagesLoadedCount === products.length) {
+        hideLoading();
+      }
+    } else if (!loading && products.length === 0) {
+      // If loaded but no products, hide immediately
+      hideLoading();
+    }
+  }, [imagesLoadedCount, products.length, loading, hideLoading]);
+
+  const handleImageLoad = () => {
+    setImagesLoadedCount(prev => prev + 1);
+  };
 
   const loadProducts = async () => {
     setLoading(true);
@@ -53,7 +71,7 @@ const BrandProducts = () => {
     } finally {
       // Only set loading to false after fetch completes (success or failure)
       setLoading(false);
-      hideLoading();
+      // Removed hideLoading() here, moved to image load effect
     }
   };
 
@@ -63,6 +81,7 @@ const BrandProducts = () => {
 
   // Show error if fetch failed
   if (fetchError) {
+    hideLoading(); // ensure loader is hidden on error
     return (
       <div className="home">
         <div className="container">
@@ -92,7 +111,7 @@ const BrandProducts = () => {
 
         <div className="products-grid">
           {products.map(product => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onImageLoad={handleImageLoad} />
           ))}
         </div>
         {!loading && products.length === 0 && (

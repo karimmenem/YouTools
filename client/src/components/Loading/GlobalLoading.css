@@ -19,14 +19,14 @@
     pointer-events: none;
 }
 
-.global-loading-video {
+.global-loading-logo {
     width: 300px;
     height: auto;
     object-fit: contain;
 }
 
 @media (max-width: 768px) {
-    .global-loading-video {
+    .global-loading-logo {
         width: 200px;
     }
 }

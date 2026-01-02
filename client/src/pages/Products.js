@@ -20,9 +20,11 @@ const Products = () => {
   const categoryId = getIdFromSlug(categorySlug);
   const { t, language } = useLanguage();
   const { hideLoading } = useLoading();
+  const [imagesLoadedCount, setImagesLoadedCount] = React.useState(0);
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filterProductsByCategory = useCallback((categoryId) => {
@@ -30,6 +32,7 @@ const Products = () => {
       (product) => String(product.category) === String(categoryId)
     );
     setProducts(filtered);
+    setImagesLoadedCount(0); // Reset when filtering changes list
   }, [allProducts]);
 
   useEffect(() => {
@@ -37,8 +40,25 @@ const Products = () => {
       filterProductsByCategory(categoryId);
     } else if (allProducts.length > 0) {
       setProducts(allProducts);
+      setImagesLoadedCount(0); // Reset when showing all
     }
   }, [categoryId, allProducts, filterProductsByCategory]);
+
+  // Check if all images are loaded
+  useEffect(() => {
+    // Safety: only check if we are still loading, have products, and count matches
+    if (!loading && products.length > 0) {
+      if (imagesLoadedCount === products.length) {
+        hideLoading();
+      }
+    } else if (!loading && products.length === 0) {
+      hideLoading();
+    }
+  }, [imagesLoadedCount, products.length, loading, hideLoading]);
+
+  const handleImageLoad = () => {
+    setImagesLoadedCount(prev => prev + 1);
+  };
 
   const loadData = async () => {
     setLoading(true);
@@ -67,7 +87,7 @@ const Products = () => {
     } finally {
       // Only set loading to false after fetch completes (success or failure)
       setLoading(false);
-      hideLoading();
+      // hideLoading() removed, handled by effect
     }
   };
 
@@ -91,6 +111,7 @@ const Products = () => {
 
   // Show error if fetch failed
   if (fetchError) {
+    hideLoading();
     return (
       <div className="home">
         <div className="container">
@@ -128,7 +149,7 @@ const Products = () => {
 
         {products.length > 0 ? (<div className="products-grid products-grid-compact">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onImageLoad={handleImageLoad} />
           ))}
         </div>) : null}
 

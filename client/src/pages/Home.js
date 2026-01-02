@@ -16,7 +16,7 @@ const Home = () => {
     grid: false
   });
 
-  const handleLoad = (component) => {
+  const handleLoad = React.useCallback((component) => {
     setLoadedComponents(prev => {
       const newState = { ...prev, [component]: true };
       // Check if all are true
@@ -25,7 +25,11 @@ const Home = () => {
       }
       return newState;
     });
-  };
+  }, [hideLoading]);
+
+  const handleRailLoad = React.useCallback(() => handleLoad('rail'), [handleLoad]);
+  const handlePosterLoad = React.useCallback(() => handleLoad('poster'), [handleLoad]);
+  const handleGridLoad = React.useCallback(() => handleLoad('grid'), [handleLoad]);
 
   return (
     <div className="home">
@@ -35,15 +39,15 @@ const Home = () => {
       />
       <div className="container">
         {/* Billboard section */}
-        <BrandRail onLoad={() => handleLoad('rail')} />
-        <PosterCarousel onLoad={() => handleLoad('poster')} />
+        <BrandRail onLoad={handleRailLoad} />
+        <PosterCarousel onLoad={handlePosterLoad} />
 
         {/* Trusted Brands Rail */}
 
 
         {/* Brand cards grid */}
         {/* Brand cards grid */}
-        <BrandGrid onLoad={() => handleLoad('grid')} />
+        <BrandGrid onLoad={handleGridLoad} />
       </div>
     </div>
   );
